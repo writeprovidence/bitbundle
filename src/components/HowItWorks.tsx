@@ -23,7 +23,7 @@ export default function HowItWorks() {
         <div className="text-center mb-16 sm:mb-20">
           <h2
             id="how-it-works-heading"
-            className="font-mono font-bold text-3xl sm:text-4xl md:text-5xl tracking-tight text-white mb-3"
+            className="font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight text-white mb-3"
           >
             From wallet to hello
             <br />
@@ -49,10 +49,10 @@ export default function HowItWorks() {
           <div className="lg:col-span-6 flex flex-col gap-6">
             {/* Step 1 */}
             <div className="p-6 rounded-2xl transition-all duration-200 hover:bg-white/[0.02]">
-              <span className="text-xs font-mono font-semibold text-gray-500 block mb-1">
+              <span className="text-xs font-semibold text-gray-500 block mb-1">
                 01
               </span>
-              <h3 className="text-xl font-bold font-mono text-white mb-2">
+              <h3 className="text-xl font-bold text-white mb-2">
                 Choose Airtime
               </h3>
               <p className="text-sm text-gray-400 leading-relaxed">
@@ -63,10 +63,10 @@ export default function HowItWorks() {
             {/* Step 2 (Highlighted with glowing green border box) */}
             <div className="p-6 rounded-2xl border border-[#00E599]/60 bg-[#00E599]/[0.04] shadow-[0_0_30px_rgba(0,229,153,0.12)] relative">
               <div className="absolute top-3 right-4 w-2 h-2 rounded-full bg-[#00E599] animate-pulse-dot" />
-              <span className="text-xs font-mono font-bold text-[#00E599] block mb-1">
+              <span className="text-xs font-bold text-[#00E599] block mb-1">
                 02
               </span>
-              <h3 className="text-xl font-bold font-mono text-white mb-2">
+              <h3 className="text-xl font-bold text-white mb-2">
                 Pay with Crypto
               </h3>
               <p className="text-sm text-gray-300 leading-relaxed">
@@ -76,10 +76,10 @@ export default function HowItWorks() {
 
             {/* Step 3 */}
             <div className="p-6 rounded-2xl transition-all duration-200 hover:bg-white/[0.02]">
-              <span className="text-xs font-mono font-semibold text-gray-500 block mb-1">
+              <span className="text-xs font-semibold text-gray-500 block mb-1">
                 03
               </span>
-              <h3 className="text-xl font-bold font-mono text-white mb-2">
+              <h3 className="text-xl font-bold text-white mb-2">
                 Receive Your Recharge
               </h3>
               <p className="text-sm text-gray-400 leading-relaxed">

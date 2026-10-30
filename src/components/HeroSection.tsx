@@ -135,7 +135,7 @@ export default function HeroSection() {
 
             <h1
               id="hero-heading"
-              className="font-mono font-bold tracking-tight text-4xl sm:text-5xl md:text-6xl text-white leading-[1.15]"
+              className="font-extrabold tracking-tight text-4xl sm:text-5xl md:text-6xl text-white leading-[1.15]"
             >
               Buy airtime using Crypto
               <br />

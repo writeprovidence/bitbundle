@@ -18,7 +18,7 @@ export default function RealLifeSection() {
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center max-w-5xl mx-auto">
           {/* Left Column: Text */}
           <div className="lg:col-span-6">
-            <h2 className="font-mono font-bold text-3xl sm:text-4xl lg:text-5xl tracking-tight leading-[1.2] mb-5">
+            <h2 className="font-extrabold text-3xl sm:text-4xl lg:text-5xl tracking-tight leading-[1.2] mb-5">
               Made for real life.
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00E599] via-[#00DFBD] to-[#00C8FF]">

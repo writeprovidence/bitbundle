@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Zap, ArrowLeft } from "lucide-react";
 import { OrderHistory } from "@/components/OrderHistory";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Dashboard — Bitbundle",
   description: "View your airtime purchase history and account details.",

@@ -1,6 +1,8 @@
 import { cookies } from "next/headers";
 import { createSupabaseAdminClient } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 /**
  * GET /api/orders
  * Returns the current user's order history, newest first.

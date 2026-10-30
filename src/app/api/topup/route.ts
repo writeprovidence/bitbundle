@@ -3,6 +3,8 @@ import { cookies } from "next/headers";
 import { createSupabaseAdminClient } from "@/lib/supabase/server";
 import { enqueueAirtimeFulfillment } from "@/lib/queue";
 
+export const dynamic = "force-dynamic";
+
 /**
  * POST /api/topup
  * Creates a new airtime order after blockchain payment is verified.

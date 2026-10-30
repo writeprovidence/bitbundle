@@ -1,5 +1,7 @@
 import { cookies } from "next/headers";
 
+export const dynamic = "force-dynamic";
+
 /**
  * GET /api/auth/me
  * Returns the current session's userId and address from the httpOnly cookie.

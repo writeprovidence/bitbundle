@@ -3,20 +3,49 @@ import { Redis } from "ioredis";
 import { airtimeSupplier } from "./airtime/vtpass";
 import { sendReceiptEmail } from "./resend";
 
-// Redis connection (Upstash compatible via ioredis)
-const connection = new Redis(process.env.UPSTASH_REDIS_URL ?? "redis://localhost:6379", {
-  maxRetriesPerRequest: null,
-  enableReadyCheck: false,
-  tls: process.env.UPSTASH_REDIS_URL?.startsWith("rediss://") ? {} : undefined,
-});
+let _connection: Redis | null = null;
+let _airtimeQueue: Queue<AirtimeJobData> | null = null;
 
-export const airtimeQueue = new Queue<AirtimeJobData>("airtime-fulfillment", {
-  connection,
-  defaultJobOptions: {
-    attempts: 3,
-    backoff: { type: "exponential", delay: 10_000 },
-    removeOnComplete: { count: 100 },
-    removeOnFail: { count: 100 },
+export function getRedisConnection(): Redis {
+  if (!_connection) {
+    _connection = new Redis(process.env.UPSTASH_REDIS_URL ?? "redis://localhost:6379", {
+      maxRetriesPerRequest: null,
+      enableReadyCheck: false,
+      lazyConnect: true,
+      tls: process.env.UPSTASH_REDIS_URL?.startsWith("rediss://") ? {} : undefined,
+    });
+
+    _connection.on("error", (err) => {
+      // Prevent unhandled exception logs during build or when Redis is offline
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("[Redis] connection warning:", err.message);
+      }
+    });
+  }
+  return _connection;
+}
+
+export function getAirtimeQueue(): Queue<AirtimeJobData> {
+  if (!_airtimeQueue) {
+    _airtimeQueue = new Queue<AirtimeJobData>("airtime-fulfillment", {
+      connection: getRedisConnection(),
+      defaultJobOptions: {
+        attempts: 3,
+        backoff: { type: "exponential", delay: 10_000 },
+        removeOnComplete: { count: 100 },
+        removeOnFail: { count: 100 },
+      },
+    });
+  }
+  return _airtimeQueue;
+}
+
+// Proxy for lazy initialization to prevent connection attempts during build/module collection
+export const airtimeQueue = new Proxy({} as Queue<AirtimeJobData>, {
+  get(_target, prop) {
+    if (prop === "then") return undefined;
+    const q = getAirtimeQueue();
+    return (q as unknown as Record<string | symbol, unknown>)[prop];
   },
 });
 
@@ -34,7 +63,7 @@ export interface AirtimeJobData {
  * Enqueue an airtime fulfillment job after payment is confirmed.
  */
 export async function enqueueAirtimeFulfillment(data: AirtimeJobData) {
-  return airtimeQueue.add("fulfill", data, { jobId: `order-${data.orderId}` });
+  return getAirtimeQueue().add("fulfill", data, { jobId: `order-${data.orderId}` });
 }
 
 /**
@@ -42,6 +71,8 @@ export async function enqueueAirtimeFulfillment(data: AirtimeJobData) {
  * Start this separately: `ts-node src/lib/worker.ts`
  */
 export function startAirtimeWorker() {
+  const connection = getRedisConnection();
+
   const worker = new Worker<AirtimeJobData>(
     "airtime-fulfillment",
     async (job: Job<AirtimeJobData>) => {

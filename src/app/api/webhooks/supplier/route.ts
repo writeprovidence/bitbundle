@@ -2,6 +2,8 @@ import type { NextRequest } from "next/server";
 import { airtimeSupplier } from "@/lib/airtime/vtpass";
 import { createSupabaseAdminClient } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 /**
  * POST /api/webhooks/supplier
  * Receives status callbacks from VTpass (or other supplier).

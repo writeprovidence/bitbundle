@@ -3,6 +3,8 @@ import { cookies } from "next/headers";
 import { generateNonce, SiweMessage } from "siwe";
 import { createSupabaseAdminClient } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 /**
  * GET /api/auth/siwe
  * Returns a fresh nonce to be included in the SIWE message.

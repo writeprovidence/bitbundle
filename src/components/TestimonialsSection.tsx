@@ -121,7 +121,7 @@ export default function TestimonialsSection() {
           <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">
             CLIENT TESTIMONIALS
           </p>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-950">
+          <h2 className="font-tosh font-black text-3xl sm:text-4xl md:text-5xl tracking-tight text-gray-950">
             What Our Clients Say
           </h2>
         </div>

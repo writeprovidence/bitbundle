@@ -45,13 +45,16 @@ function InstagramIcon() {
 
 export default function Footer() {
   return (
-    <footer id="contact" className="bg-[#050A18] text-white pt-20 pb-12 border-t border-white/5 relative overflow-hidden">
+    <footer
+      id="contact"
+      className="bg-[#050A18] text-white pt-32 sm:pt-40 lg:pt-48 pb-12 relative overflow-hidden"
+    >
       <div className="container-page relative z-10 max-w-6xl mx-auto">
         {/* Top 5-Column Navigation Grid */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 pb-16 border-b border-white/10">
           {/* Column 1: Follow Us */}
           <div className="col-span-2 md:col-span-1">
-            <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
+            <h4 className="font-tosh text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
               Follow Us
             </h4>
             <div className="flex items-center gap-2">
@@ -103,65 +106,128 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 2: Features */}
+          {/* Column 2: Product */}
           <div>
-            <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
-              Features
+            <h4 className="font-tosh text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+              Product
             </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm text-gray-400">
-              <li><a href="#how-it-works" className="hover:text-white transition-colors">Airtime Topup</a></li>
-              <li><a href="#how-it-works" className="hover:text-white transition-colors">Instant Delivery</a></li>
-              <li><a href="#hero" className="hover:text-white transition-colors">Multi-network</a></li>
-              <li><a href="#how-it-works" className="hover:text-white transition-colors">Cheap rates</a></li>
-              <li><a href="#how-it-works" className="hover:text-white transition-colors">Setup Operation</a></li>
+            <ul className="font-tosh space-y-2.5 text-xs sm:text-sm text-gray-400">
+              <li>
+                <a href="#hero" className="hover:text-white transition-colors">
+                  MTN
+                </a>
+              </li>
+              <li>
+                <a href="#hero" className="hover:text-white transition-colors">
+                  Airtel
+                </a>
+              </li>
+              <li>
+                <a href="#hero" className="hover:text-white transition-colors">
+                  Glo
+                </a>
+              </li>
+              <li>
+                <a href="#hero" className="hover:text-white transition-colors">
+                  9mobile
+                </a>
+              </li>
             </ul>
           </div>
 
-          {/* Column 3: Resources */}
+          {/* Column 3: Support */}
           <div>
-            <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
-              Resources
+            <h4 className="font-tosh text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+              Support
             </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm text-gray-400">
-              <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Community Blog</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Integrations</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">API Docs</a></li>
+            <ul className="font-tosh space-y-2.5 text-xs sm:text-sm text-gray-400">
+              <li>
+                <a
+                  href="https://address-patterns-jones-geometry.trycloudflare.com/hc/en-us"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors"
+                >
+                  Help
+                </a>
+              </li>
+              <li>
+                <a href="mailto:support@bitbundle.xyz" className="hover:text-white transition-colors">
+                  Contact Us
+                </a>
+              </li>
+              <li>
+                <a href="mailto:support@bitbundle.xyz?subject=Product%20Request" className="hover:text-white transition-colors">
+                  Product Request
+                </a>
+              </li>
             </ul>
           </div>
 
-          {/* Column 4: About Us */}
+          {/* Column 4: Company */}
           <div>
-            <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
-              About Us
+            <h4 className="font-tosh text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+              Company
             </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm text-gray-400">
-              <li><a href="#" className="hover:text-white transition-colors">Our Story</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-              <li><a href="mailto:support@bitbundle.xyz" className="hover:text-white transition-colors">Contact Us</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Brand Assets</a></li>
+            <ul className="font-tosh space-y-2.5 text-xs sm:text-sm text-gray-400">
+              <li>
+                <Link href="#" className="hover:text-white transition-colors">
+                  Our Story
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-white transition-colors">
+                  Careers
+                </Link>
+              </li>
+              <li>
+                <a href="#faq" className="hover:text-white transition-colors">
+                  Reviews
+                </a>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-white transition-colors">
+                  Refer a Friend
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Column 5: Legal */}
           <div>
-            <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
+            <h4 className="font-tosh text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
               Legal
             </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm text-gray-400">
-              <li><Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Terms of Service</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Security</Link></li>
+            <ul className="font-tosh space-y-2.5 text-xs sm:text-sm text-gray-400">
+              <li>
+                <Link href="#" className="hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-white transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-white transition-colors">
+                  Refund Policy
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
 
         {/* Copyright and Legal Line */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-8 text-xs text-gray-500">
+        <div className="font-tosh flex flex-col sm:flex-row items-center justify-between gap-4 py-8 text-xs text-gray-500">
           <p>Copyright © Bitbundle 2026. All rights reserved.</p>
           <div className="flex items-center gap-6">
-            <Link href="#" className="hover:text-gray-300 transition-colors">Privacy Policy</Link>
-            <Link href="#" className="hover:text-gray-300 transition-colors">Terms & Conditions</Link>
+            <Link href="#" className="hover:text-gray-300 transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="#" className="hover:text-gray-300 transition-colors">
+              Terms & Conditions
+            </Link>
           </div>
         </div>
 

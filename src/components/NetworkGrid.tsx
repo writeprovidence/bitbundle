@@ -8,7 +8,7 @@ const features = [
     id: "airtime",
     title: "Airtime top-up",
     description:
-      "Instantly top up any Nigerian number with USDT. The exact Naira equivalent is credited within 30 seconds.",
+      "Instantly top up any mobile number with crypto. The exact airtime equivalent is credited within 30 seconds.",
     color: "#ffcc00",
   },
   {
@@ -29,7 +29,7 @@ const features = [
     id: "networks",
     title: "All major networks",
     description:
-      "MTN, Airtel, Glo and 9mobile — every major Nigerian telco in one place. More networks coming soon.",
+      "MTN, Airtel, Glo and 9mobile — every major telco in one place. More networks coming soon.",
     color: "#9333ea",
   },
 ];
@@ -74,7 +74,7 @@ export default function NetworkGrid() {
             <span className="gradient-text">endless airtime</span>
           </h2>
           <p className="text-gray-400 text-lg max-w-lg mx-auto">
-            All major Nigerian telcos. Live rates. Instant delivery. Zero friction.
+            All major telcos. Live rates. Instant delivery. Zero friction.
           </p>
         </div>
 

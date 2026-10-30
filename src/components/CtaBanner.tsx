@@ -49,7 +49,7 @@ export default function CtaBanner() {
         </h2>
 
         <p className="text-gray-400 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-          Join thousands of Nigerians using crypto to stay connected.
+          Join thousands of people using crypto to stay connected.
           Connect your wallet and get airtime in under 30 seconds.
         </p>
 
@@ -80,7 +80,7 @@ export default function CtaBanner() {
             { name: "Airtel", color: "#e40000", text: "#fff" },
             { name: "Glo", color: "#48b834", text: "#fff" },
             { name: "9mobile", color: "#006633", text: "#fff" },
-            { name: "USDT", color: "#26a17b", text: "#fff" },
+            { name: "Crypto", color: "#26a17b", text: "#fff" },
           ].map((n) => (
             <span
               key={n.name}

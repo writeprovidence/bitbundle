@@ -1,12 +1,12 @@
 const marqueeItems = [
   "MTN", "Airtel", "Glo", "9mobile",
-  "USDT", "TRC20", "ERC20",
+  "Crypto", "TRC20", "ERC20",
   "Non-custodial", "Instant delivery", "On-chain verified",
   "10,000+ top-ups", "< 30s delivery", "No KYC",
   "MetaMask", "Trust Wallet", "WalletConnect",
   // duplicate for seamless loop
   "MTN", "Airtel", "Glo", "9mobile",
-  "USDT", "TRC20", "ERC20",
+  "Crypto", "TRC20", "ERC20",
   "Non-custodial", "Instant delivery", "On-chain verified",
   "10,000+ top-ups", "< 30s delivery", "No KYC",
   "MetaMask", "Trust Wallet", "WalletConnect",
@@ -17,7 +17,7 @@ const networkColors: Record<string, string> = {
   Airtel: "#e40000",
   Glo: "#48b834",
   "9mobile": "#006633",
-  USDT: "#26a17b",
+  Crypto: "#26a17b",
 };
 
 export default function TrustBar() {

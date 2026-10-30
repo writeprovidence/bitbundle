@@ -127,7 +127,7 @@ export function OrderHistory() {
               <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Network</th>
               <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Phone</th>
               <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Amount</th>
-              <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">USDT</th>
+              <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Crypto</th>
               <th className="text-center px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
               <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Tx</th>
             </tr>

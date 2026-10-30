@@ -90,13 +90,13 @@ const ppMori = localFont({
 export const metadata: Metadata = {
   title: "Bitbundle — Buy Airtime with Crypto",
   description:
-    "Pay with USDT and get Nigerian airtime in seconds. MTN, Airtel, Glo, and 9mobile supported. Fast, secure, and decentralized.",
-  keywords: ["airtime", "crypto", "USDT", "Nigeria", "MTN", "Airtel", "Glo", "9mobile", "blockchain"],
+    "Pay with crypto and get mobile airtime in seconds. MTN, Airtel, Glo, and 9mobile supported. Fast, secure, and decentralized.",
+  keywords: ["airtime", "crypto", "MTN", "Airtel", "Glo", "9mobile", "blockchain"],
   openGraph: {
     title: "Bitbundle — Buy Airtime with Crypto",
     description: "Pay with crypto. Get airtime in seconds.",
     type: "website",
-    locale: "en_NG",
+    locale: "en_US",
     siteName: "Bitbundle",
   },
   twitter: {

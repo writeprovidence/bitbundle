@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { Star } from "lucide-react";
 
 interface Testimonial {
   id: string;
@@ -45,7 +44,7 @@ const testimonials: Testimonial[] = [
     id: "4",
     name: "@david_crypto",
     date: "Nov 2026",
-    text: "I've tried so many crypto off-ramps, but Bitbundle is by far the simplest. Sent 10 USDT, received airtime in 15 seconds. Top notch service! ❤️",
+    text: "I've tried so many crypto off-ramps, but Bitbundle is by far the simplest. Sent crypto, received airtime in 15 seconds. Top notch service! ❤️",
     network: "9mobile",
     badgeType: "9mobile",
     reviews: "6 reviews",
@@ -136,7 +135,7 @@ export default function TestimonialsSection() {
                 className="bg-white border border-gray-200 rounded-[10px] p-4.5 sm:p-5 flex flex-col justify-between shadow-none min-h-[225px]"
               >
                 <div>
-                  {/* Top: Avatar + Name + Date + 5 Stars */}
+                  {/* Top: Avatar + Name */}
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 rounded-full bg-[#555E67] flex items-center justify-center shrink-0">
                       <svg
@@ -160,24 +159,9 @@ export default function TestimonialsSection() {
                       </svg>
                     </div>
 
-                    <div className="min-w-0">
-                      <p className="text-sm sm:text-[14.5px] font-bold text-gray-900 leading-tight truncate">
-                        {item.name}
-                      </p>
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className="text-xs text-gray-500 font-normal">
-                          {item.date}
-                        </span>
-                        <div className="flex items-center gap-0.5">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className="w-3.5 h-3.5 fill-amber-400 text-amber-400"
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+                    <p className="text-sm sm:text-[14.5px] font-bold text-gray-900 leading-tight truncate">
+                      {item.name}
+                    </p>
                   </div>
 
                   {/* Middle: Review text */}

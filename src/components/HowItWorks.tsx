@@ -1,20 +1,47 @@
 "use client";
 
+import { useState } from "react";
 import TopupCard from "./TopupCard";
 
+const steps = [
+  {
+    number: "01",
+    title: "Choose Airtime",
+    description:
+      "Select your network provider and enter recipient cell number and amount.",
+  },
+  {
+    number: "02",
+    title: "Pay with Crypto",
+    description:
+      "Connect your preferred crypto wallet, confirm your transaction and you are done.",
+  },
+  {
+    number: "03",
+    title: "Receive Your Recharge",
+    description:
+      "Once your payment is confirmed, airtime hits your mobile phone line within seconds.",
+  },
+];
+
 export default function HowItWorks() {
+  const [activeStep, setActiveStep] = useState<number>(0);
+
   return (
     <section
       id="products"
-      className="py-24 lg:py-32 bg-[#060B18] relative overflow-hidden text-white"
+      className="pt-36 sm:pt-44 lg:pt-52 pb-24 lg:pb-32 bg-gradient-to-b from-[#02091c] via-[#081533] to-[#030919] relative overflow-hidden text-white"
       aria-labelledby="how-it-works-heading"
     >
-      {/* Background radial glow */}
+      {/* Background ambient gradient lighting */}
       <div
-        className="absolute top-1/2 left-1/3 -translate-y-1/2 w-[600px] h-[500px] pointer-events-none opacity-20"
+        className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(circle, rgba(0, 229, 153, 0.25) 0%, rgba(0, 200, 255, 0.1) 50%, transparent 70%)",
-          filter: "blur(80px)",
+          background: [
+            "radial-gradient(ellipse 70% 50% at 75% 45%, rgba(0, 229, 153, 0.12) 0%, transparent 60%)",
+            "radial-gradient(ellipse 80% 65% at 20% 50%, rgba(20, 68, 168, 0.4) 0%, rgba(10, 34, 96, 0.2) 45%, transparent 75%)",
+            "radial-gradient(ellipse 60% 40% at 50% 15%, rgba(14, 52, 135, 0.3) 0%, transparent 70%)",
+          ].join(", "),
         }}
       />
 
@@ -23,7 +50,7 @@ export default function HowItWorks() {
         <div className="text-center mb-16 sm:mb-20">
           <h2
             id="how-it-works-heading"
-            className="font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight text-white mb-3"
+            className="font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight text-white mb-8 sm:mb-10"
           >
             From wallet to hello
             <br />
@@ -36,7 +63,7 @@ export default function HowItWorks() {
           </p>
         </div>
 
-        {/* 2-Column layout: App Interface on Left, Steps on Right */}
+        {/* 2-Column layout: App Interface on Left, Interactive Steps on Right */}
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center max-w-5xl mx-auto">
           {/* Left Column: Interactive App Preview */}
           <div className="lg:col-span-6 w-full flex justify-center">
@@ -45,47 +72,58 @@ export default function HowItWorks() {
             </div>
           </div>
 
-          {/* Right Column: 3 Steps */}
-          <div className="lg:col-span-6 flex flex-col gap-6">
-            {/* Step 1 */}
-            <div className="p-6 rounded-2xl transition-all duration-200 hover:bg-white/[0.02]">
-              <span className="text-xs font-semibold text-gray-500 block mb-1">
-                01
-              </span>
-              <h3 className="text-xl font-bold text-white mb-2">
-                Choose Airtime
-              </h3>
-              <p className="text-sm text-gray-400 leading-relaxed">
-                Select your network provider and enter recipient cell number and amount.
-              </p>
-            </div>
+          {/* Right Column: Steps Accordion inspired by reference design */}
+          <div className="lg:col-span-6 flex flex-col space-y-8 sm:space-y-10 pl-2 lg:pl-6">
+            {steps.map((step, index) => {
+              const isActive = activeStep === index;
+              return (
+                <div
+                  key={step.number}
+                  className="relative pl-6 text-left transition-all duration-300"
+                >
+                  {/* Vertical left accent bar for active step */}
+                  {isActive && (
+                    <div className="absolute left-0 top-1 bottom-1 w-[3.5px] bg-[#00E599] rounded-full shadow-[0_0_12px_rgba(0,229,153,0.5)] transition-all duration-300" />
+                  )}
 
-            {/* Step 2 (Highlighted with glowing green border box) */}
-            <div className="p-6 rounded-2xl border border-[#00E599]/60 bg-[#00E599]/[0.04] shadow-[0_0_30px_rgba(0,229,153,0.12)] relative">
-              <div className="absolute top-3 right-4 w-2 h-2 rounded-full bg-[#00E599] animate-pulse-dot" />
-              <span className="text-xs font-bold text-[#00E599] block mb-1">
-                02
-              </span>
-              <h3 className="text-xl font-bold text-white mb-2">
-                Pay with Crypto
-              </h3>
-              <p className="text-sm text-gray-300 leading-relaxed">
-                Connect your preferred crypto wallet: USDT on Polygon or Ethereum, confirm your transaction and you are done.
-              </p>
-            </div>
+                  {/* Header Button: Clickable to toggle and display content */}
+                  <button
+                    type="button"
+                    onClick={() => setActiveStep(isActive ? -1 : index)}
+                    className="w-full text-left group focus:outline-none cursor-pointer"
+                    aria-expanded={isActive}
+                  >
+                    <span
+                      className={`block font-mono text-xs sm:text-sm font-bold tracking-wider mb-1.5 transition-colors ${
+                        isActive
+                          ? "text-[#00E599]"
+                          : "text-gray-400 group-hover:text-gray-300"
+                      }`}
+                    >
+                      {step.number}
+                    </span>
+                    <h3
+                      className={`text-2xl sm:text-[28px] font-extrabold tracking-tight transition-colors leading-snug ${
+                        isActive
+                          ? "text-white"
+                          : "text-gray-300/80 group-hover:text-white"
+                      }`}
+                    >
+                      {step.title}
+                    </h3>
+                  </button>
 
-            {/* Step 3 */}
-            <div className="p-6 rounded-2xl transition-all duration-200 hover:bg-white/[0.02]">
-              <span className="text-xs font-semibold text-gray-500 block mb-1">
-                03
-              </span>
-              <h3 className="text-xl font-bold text-white mb-2">
-                Receive Your Recharge
-              </h3>
-              <p className="text-sm text-gray-400 leading-relaxed">
-                Once your payment is confirmed, airtime hits your mobile phone line within seconds.
-              </p>
-            </div>
+                  {/* Step Description: only appears when active */}
+                  {isActive && (
+                    <div className="mt-3 animate-slide-down">
+                      <p className="text-base text-gray-300 leading-relaxed font-normal max-w-md">
+                        {step.description}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

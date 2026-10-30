@@ -268,13 +268,13 @@ export default function TopupCard() {
         />
       </div>
 
-      {/* USDT preview */}
+      {/* Crypto preview */}
       {selectedAmount > 0 && (
         <div className="mb-5 px-4 py-3 bg-white/5 border border-white/8 rounded-xl flex items-center justify-between">
           <span className="text-xs text-gray-500 font-medium">You pay</span>
           <span className="text-base font-bold text-white">
             {usdtAmount}{" "}
-            <span style={{ color: "#26a17b" }}>USDT</span>
+            <span style={{ color: "#26a17b" }}>Crypto</span>
           </span>
         </div>
       )}
@@ -314,7 +314,7 @@ export default function TopupCard() {
           ) : txStatus === "submitting" ? (
             <><Loader2 className="w-4 h-4 animate-spin" /> Processing order…</>
           ) : (
-            <>Pay {selectedAmount > 0 ? `${usdtAmount} USDT` : ""} →</>
+            <>Pay {selectedAmount > 0 ? `${usdtAmount} Crypto` : ""} →</>
           )}
         </button>
       )}

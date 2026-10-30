@@ -230,6 +230,19 @@ export default function Footer() {
             </Link>
           </div>
         </div>
+
+        {/* Massive Giant Bitbundle Brand Logo at Bottom */}
+        <div className="pt-6 pb-2 flex justify-center">
+          <div className="w-full max-w-4xl px-4">
+            <Image
+              src="/assets/logo-footer.png"
+              alt="Bitbundle"
+              width={1000}
+              height={180}
+              className="w-full h-auto object-contain opacity-95 hover:opacity-100 transition-opacity"
+            />
+          </div>
+        </div>
       </div>
     </footer>
   );

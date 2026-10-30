@@ -3,18 +3,40 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 
-const inter = localFont({
+const ppMori = localFont({
   src: [
     {
-      path: "../fonts/Inter-VariableFont_opsz,wght.ttf",
+      path: "../fonts/PPMori-Extralight.otf",
+      weight: "200",
       style: "normal",
     },
     {
-      path: "../fonts/Inter-Italic-VariableFont_opsz,wght.ttf",
+      path: "../fonts/PPMori-Regular.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../fonts/PPMori-RegularItalic.otf",
+      weight: "400",
       style: "italic",
     },
+    {
+      path: "../fonts/PPMori-SemiBold.otf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../fonts/PPMori-SemiBold.otf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../fonts/PPMori-SemiBold.otf",
+      weight: "800",
+      style: "normal",
+    },
   ],
-  variable: "--font-inter",
+  variable: "--font-mori",
   display: "swap",
 });
 
@@ -44,8 +66,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} h-full`}>
-      <body className={`${inter.className} min-h-full flex flex-col antialiased`}>
+    <html lang="en" className={`${ppMori.variable} h-full`}>
+      <body className={`${ppMori.className} min-h-full flex flex-col antialiased`}>
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -1,6 +1,15 @@
 import { Resend } from "resend";
 
-export const resend = new Resend(process.env.RESEND_API_KEY);
+export function getResend(): Resend | null {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    return null;
+  }
+  return new Resend(apiKey);
+}
+
+// Fallback placeholder key prevents top-level errors during Next.js build / page data collection
+export const resend = new Resend(process.env.RESEND_API_KEY || "re_build_placeholder");
 
 export interface ReceiptEmailParams {
   to: string;
@@ -13,6 +22,11 @@ export interface ReceiptEmailParams {
 }
 
 export async function sendReceiptEmail(params: ReceiptEmailParams) {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn("[Resend] RESEND_API_KEY is not configured; skipping receipt email.");
+    return null;
+  }
+
   const { to, orderRef, network, phone, amountNgn, amountUsdt, txHash } = params;
 
   const html = `
@@ -51,7 +65,8 @@ export async function sendReceiptEmail(params: ReceiptEmailParams) {
     </html>
   `;
 
-  return resend.emails.send({
+  const client = getResend() ?? resend;
+  return client.emails.send({
     from: "Bitbundle <receipts@bitbundle.xyz>",
     to,
     subject: `Airtime receipt — ₦${amountNgn.toLocaleString()} top-up confirmed`,

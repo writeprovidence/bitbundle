@@ -41,23 +41,23 @@ export default function Footer() {
       id="contact"
       className="bg-[#050A18] text-white pt-32 sm:pt-40 lg:pt-48 pb-12 relative overflow-hidden"
     >
-      <div className="container-page relative z-10 max-w-6xl mx-auto">
+      <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10">
         {/* Top Navigation Grid with Brand/Social on Left */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-10 pb-16 border-b border-white/10">
           {/* Column 1: Logo & Follow Us */}
           <div className="col-span-2 md:col-span-2">
-            {/* Brand Logo placed on top */}
+            {/* Brand Logo placed on top - identical size and horizontal alignment with Header */}
             <Link
               href="/"
               className="inline-block mb-6 hover:opacity-90 transition-opacity"
               aria-label="Bitbundle home"
             >
               <Image
-                src="/assets/logo-footer.png"
+                src="/assets/logo-header.png"
                 alt="Bitbundle"
-                width={160}
-                height={34}
-                className="h-8 sm:h-9 w-auto object-contain"
+                width={145}
+                height={32}
+                className="h-6 sm:h-7 w-auto object-contain"
               />
             </Link>
 

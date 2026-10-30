@@ -43,3 +43,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# font extraction temp & assets backup
+/secondary font/
+/tosh-font-family/
+/public/assets/backup/
+

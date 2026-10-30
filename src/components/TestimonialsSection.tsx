@@ -1,83 +1,124 @@
 "use client";
 
-import { useState } from "react";
-import { Star, ChevronRight, ChevronLeft } from "lucide-react";
+import Image from "next/image";
+import { Star } from "lucide-react";
 
 interface Testimonial {
   id: string;
   name: string;
-  avatarBg: string;
-  avatarText: string;
+  date: string;
   text: string;
   network: string;
-  networkColor: string;
-  networkTextColor: string;
-  amountText: string;
+  badgeType: "mtn" | "airtel" | "glo" | "9mobile";
+  reviews: string;
 }
 
 const testimonials: Testimonial[] = [
   {
     id: "1",
-    name: "@richard_hendricks",
-    avatarBg: "bg-slate-300 text-slate-800",
-    avatarText: "RH",
-    text: "The swap was lightning fast and worked without any issues when I sent airtime to my sister in Lagos. Truly a life saver! 🙌",
+    name: "08145446766yes",
+    date: "Nov 2026",
+    text: "This app is highly recommendable for any transactions because it doesn't take minutes to respond.That's why I gave a five star ratings 🤩🤩🤩🤩🤩",
     network: "MTN",
-    networkColor: "bg-[#FFCC00]",
-    networkTextColor: "text-neutral-900",
-    amountText: "2k5 airtime",
+    badgeType: "mtn",
+    reviews: "12 reviews",
   },
   {
     id: "2",
     name: "@theparabolicguy",
-    avatarBg: "bg-amber-100 text-amber-800",
-    avatarText: "PG",
-    text: "Very fast and reliable! Instant top-up with zero slippage. This is the future of utility payments.",
+    date: "Nov 2026",
+    text: "Very fast and reliable! Instant top-up with zero slippage. This is the future of utility payments. Credited before I even refreshed the wallet. Highly recommend!",
     network: "Airtel",
-    networkColor: "bg-[#E40000]",
-    networkTextColor: "text-white",
-    amountText: "5k airtime",
+    badgeType: "airtel",
+    reviews: "8 reviews",
   },
   {
     id: "3",
     name: "@amina_tech99",
-    avatarBg: "bg-emerald-100 text-emerald-900",
-    avatarText: "AT",
-    text: "Everything fast and successful! Never had to stress looking for naira to buy recharge card again.",
+    date: "Nov 2026",
+    text: "Everything fast and successful! Never had to stress looking for naira to buy recharge card again. Direct swap from crypto to airtime without delay.",
     network: "Glo",
-    networkColor: "bg-[#00A859]",
-    networkTextColor: "text-white",
-    amountText: "1k airtime",
+    badgeType: "glo",
+    reviews: "15 reviews",
   },
   {
     id: "4",
     name: "@david_crypto",
-    avatarBg: "bg-neutral-800 text-white",
-    avatarText: "DC",
+    date: "Nov 2026",
     text: "I've tried so many crypto off-ramps, but Bitbundle is by far the simplest. Sent 10 USDT, received airtime in 15 seconds. Top notch service! ❤️",
     network: "9mobile",
-    networkColor: "bg-[#E6007E]",
-    networkTextColor: "text-white",
-    amountText: "1k airtime",
+    badgeType: "9mobile",
+    reviews: "6 reviews",
   },
 ];
 
-export default function TestimonialsSection() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const telecomLogos: Record<
+  Testimonial["badgeType"],
+  { src: string; alt: string; width: number; height: number; rotate: string; scale?: string }
+> = {
+  mtn: {
+    src: "/assets/mtn-card.png",
+    alt: "MTN",
+    width: 1160,
+    height: 760,
+    rotate: "rotate(8.8deg)",
+    scale: "scale(1.05)",
+  },
+  airtel: {
+    src: "/assets/airtel-logo.png",
+    alt: "Airtel",
+    width: 896,
+    height: 648,
+    rotate: "rotate(-6.5deg)",
+    scale: "scale(1.05)",
+  },
+  glo: {
+    src: "/assets/glo-card.png",
+    alt: "Glo",
+    width: 1272,
+    height: 980,
+    rotate: "rotate(14deg)",
+    scale: "scale(1.08)",
+  },
+  "9mobile": {
+    src: "/assets/9mobile-card.png",
+    alt: "9mobile",
+    width: 1264,
+    height: 800,
+    rotate: "rotate(-5.8deg)",
+    scale: "scale(1.05)",
+  },
+};
 
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
-
+function TelecomLogo({ type }: { type: Testimonial["badgeType"] }) {
+  const logo = telecomLogos[type];
   return (
-    <section className="py-20 bg-white text-gray-900 border-t border-b border-gray-100">
-      <div className="container-page">
+    <div className="w-13 h-9 sm:w-14 sm:h-9.5 flex items-center justify-center shrink-0">
+      <div
+        className="w-full h-full flex items-center justify-center"
+        style={{
+          transform: `${logo.rotate} ${logo.scale || ""}`,
+        }}
+      >
+        <Image
+          src={logo.src}
+          alt={logo.alt}
+          width={logo.width}
+          height={logo.height}
+          unoptimized
+          className="w-full h-full object-contain [image-rendering:-webkit-optimize-contrast]"
+        />
+      </div>
+    </div>
+  );
+}
+
+export default function TestimonialsSection() {
+  return (
+    <section className="py-36 lg:py-48 bg-white text-gray-900 border-t border-b border-gray-100">
+      <div className="container-page max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-14">
+        <div className="text-center mb-18 sm:mb-20">
           <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">
             CLIENT TESTIMONIALS
           </p>
@@ -88,66 +129,80 @@ export default function TestimonialsSection() {
 
         {/* Carousel / Grid container */}
         <div className="relative">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
             {testimonials.map((item) => (
               <div
                 key={item.id}
-                className="bg-white border border-gray-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
+                className="bg-white border border-gray-200 rounded-[10px] p-4.5 sm:p-5 flex flex-col justify-between shadow-none min-h-[225px]"
               >
                 <div>
-                  {/* Avatar + Handle */}
+                  {/* Top: Avatar + Name + Date + 5 Stars */}
                   <div className="flex items-center gap-3 mb-3">
-                    <div
-                      className={`w-9 h-9 rounded-full ${item.avatarBg} font-bold text-xs flex items-center justify-center shrink-0`}
-                    >
-                      {item.avatarText}
+                    <div className="w-10 h-10 rounded-full bg-[#555E67] flex items-center justify-center shrink-0">
+                      <svg
+                        className="w-6 h-6 text-white"
+                        viewBox="0 0 36 36"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        {/* Doodle hair */}
+                        <path d="M12 12c.8-2 2.6-3 4.5-2 1.2-.8 3.2-.8 4.4.4 1.2-.8 3.2-.4 3.8 1.6" />
+                        {/* Eyes */}
+                        <circle cx="14.5" cy="16" r="1.2" fill="currentColor" />
+                        <circle cx="21.5" cy="16" r="1.2" fill="currentColor" />
+                        {/* Nose */}
+                        <path d="M18 17v2" />
+                        {/* Smile */}
+                        <path d="M13.5 21.5c2 2.5 7 2.5 9 0" />
+                      </svg>
                     </div>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900 leading-tight">
+
+                    <div className="min-w-0">
+                      <p className="text-sm sm:text-[14.5px] font-bold text-gray-900 leading-tight truncate">
                         {item.name}
                       </p>
-                      {/* 5 Stars */}
-                      <div className="flex items-center gap-0.5 mt-0.5">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className="w-3.5 h-3.5 fill-amber-400 text-amber-400"
-                          />
-                        ))}
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className="text-xs text-gray-500 font-normal">
+                          {item.date}
+                        </span>
+                        <div className="flex items-center gap-0.5">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className="w-3.5 h-3.5 fill-amber-400 text-amber-400"
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Quote */}
-                  <p className="text-sm text-gray-600 leading-relaxed mb-6">
+                  {/* Middle: Review text */}
+                  <p className="text-[13.5px] sm:text-sm text-gray-700 leading-relaxed font-normal">
                     {item.text}
                   </p>
                 </div>
 
-                {/* Bottom Network Badge */}
-                <div className="pt-4 border-t border-gray-100 flex items-center gap-2">
-                  <span
-                    className={`px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${item.networkColor} ${item.networkTextColor}`}
-                  >
-                    {item.network}
-                  </span>
-                  <span className="text-xs font-medium text-gray-500">
-                    {item.amountText}
-                  </span>
+                {/* Bottom: Divider + Telecom Logo Badge & Reviews */}
+                <div>
+                  <hr className="border-t border-gray-100 my-3.5" />
+                  <div className="flex items-center gap-3">
+                    <TelecomLogo type={item.badgeType} />
+                    <div>
+                      <p className="text-sm font-bold text-gray-900 leading-tight">
+                        {item.network}
+                      </p>
+                      <p className="text-xs text-gray-500 font-normal leading-tight mt-0.5">
+                        {item.reviews}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Nav arrows */}
-          <div className="hidden lg:flex absolute -right-5 top-1/2 -translate-y-1/2">
-            <button
-              onClick={nextSlide}
-              aria-label="Next testimonial"
-              className="w-10 h-10 rounded-full bg-white border border-gray-200 shadow-md flex items-center justify-center text-gray-600 hover:text-black hover:scale-105 transition-all"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
           </div>
         </div>
       </div>

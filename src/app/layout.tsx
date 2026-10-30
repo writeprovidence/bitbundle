@@ -3,6 +3,53 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 
+const toshB = localFont({
+  src: [
+    {
+      path: "../fonts/TRYToshB-Thin-BF677df27a680ff.ttf",
+      weight: "100",
+      style: "normal",
+    },
+    {
+      path: "../fonts/TRYToshB-Light-BF677df27a54b9d.ttf",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "../fonts/TRYToshB-Regular-BF677df27a4c491.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../fonts/TRYToshB-Medium-BF677df27a667bb.ttf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../fonts/TRYToshB-Bold-BF677df279b315e.ttf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../fonts/TRYToshB-Bold-BF677df279b315e.ttf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../fonts/TRYToshB-Black-BF677df279930bb.ttf",
+      weight: "800",
+      style: "normal",
+    },
+    {
+      path: "../fonts/TRYToshB-Black-BF677df279930bb.ttf",
+      weight: "900",
+      style: "normal",
+    },
+  ],
+  variable: "--font-tosh",
+  display: "swap",
+});
+
 const ppMori = localFont({
   src: [
     {
@@ -66,7 +113,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${ppMori.variable} h-full`}>
+    <html lang="en" className={`${toshB.variable} ${ppMori.variable} h-full`}>
       <body className={`${ppMori.className} min-h-full flex flex-col antialiased`}>
         <Providers>{children}</Providers>
       </body>

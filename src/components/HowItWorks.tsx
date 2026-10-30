@@ -5,7 +5,7 @@ import TopupCard from "./TopupCard";
 export default function HowItWorks() {
   return (
     <section
-      id="how-it-works"
+      id="products"
       className="py-24 lg:py-32 bg-[#060B18] relative overflow-hidden text-white"
       aria-labelledby="how-it-works-heading"
     >

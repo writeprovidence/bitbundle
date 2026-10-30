@@ -3,13 +3,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, User } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 const navLinks = [
-  { label: "Features", href: "#how-it-works" },
-  { label: "FAQ", href: "#faq" },
-  { label: "Contact Us", href: "#contact" },
+  { label: "Products", href: "#products" },
+  { label: "FAQs", href: "#faq" },
+  { label: "Invite a friend", href: "#invite" },
 ];
 
 function shortAddress(addr: string) {
@@ -31,12 +31,12 @@ export default function Header() {
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[#060B18]/95 backdrop-blur-xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)]"
-          : "bg-[#060B18]/70 backdrop-blur-md border-b border-white/5"
+          ? "bg-[#010C24]/95 backdrop-blur-xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)]"
+          : "bg-transparent"
       }`}
     >
-      <div className="container-page">
-        <nav className="flex items-center justify-between h-20" aria-label="Main navigation">
+      <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+        <nav className="relative flex items-center justify-between h-20" aria-label="Main navigation">
           {/* Logo */}
           <Link
             href="/"
@@ -47,14 +47,14 @@ export default function Header() {
               src="/assets/logo-header.png"
               alt="Bitbundle"
               width={145}
-              height={34}
-              className="h-7 sm:h-8 w-auto object-contain"
+              height={32}
+              className="h-6 sm:h-7 w-auto object-contain"
               priority
             />
           </Link>
 
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* Desktop nav - centralized */}
+          <div className="hidden md:flex items-center gap-8 lg:gap-10 absolute left-1/2 -translate-x-1/2">
             {navLinks.map((link) => (
               <a
                 key={link.label}
@@ -101,17 +101,18 @@ export default function Header() {
                 <button
                   id="header-signin-btn"
                   onClick={() => signIn()}
-                  className="text-sm font-medium text-white/90 hover:text-white px-5 py-2 rounded-full border border-white/20 hover:border-white/40 hover:bg-white/5 transition-all"
+                  className="flex items-center gap-2.5 text-[15px] font-medium text-white/90 hover:text-white px-6 py-2.5 rounded-full border-[1.5px] border-white/50 hover:border-white/80 hover:bg-white/5 transition-all"
                 >
-                  Log in
+                  <User className="w-[18px] h-[18px] text-white/85" />
+                  <span>Log in</span>
                 </button>
-                <button
-                  id="header-getstarted-btn"
-                  onClick={() => signIn()}
-                  className="text-sm font-bold bg-gradient-to-r from-[#00E599] to-[#00DFBD] text-[#060B18] px-5 py-2 rounded-full shadow-[0_0_20px_rgba(0,229,153,0.35)] hover:shadow-[0_0_28px_rgba(0,229,153,0.5)] hover:scale-[1.02] transition-all"
+                <a
+                  href="#faq"
+                  id="header-help-btn"
+                  className="text-[15px] font-semibold bg-[#00F0A0] text-[#030A16] px-6 py-2.5 rounded-full shadow-[0_0_24px_rgba(0,240,160,0.5)] hover:shadow-[0_0_32px_rgba(0,240,160,0.75)] hover:scale-[1.02] active:scale-[0.98] transition-all"
                 >
-                  Get started
-                </button>
+                  Need Help?
+                </a>
               </>
             )}
           </div>
@@ -172,17 +173,19 @@ export default function Header() {
                   <button
                     id="mobile-signin-btn"
                     onClick={() => { signIn(); setIsOpen(false); }}
-                    className="text-sm font-medium text-white border border-white/20 py-2.5 px-4 rounded-full hover:bg-white/5 transition-colors text-center"
+                    className="flex items-center justify-center gap-2.5 text-[15px] font-medium text-white border-[1.5px] border-white/50 hover:border-white/80 py-3 px-5 rounded-full hover:bg-white/5 transition-colors text-center"
                   >
-                    Log in
+                    <User className="w-[18px] h-[18px] text-white/85" />
+                    <span>Log in</span>
                   </button>
-                  <button
-                    id="mobile-getstarted-btn"
-                    onClick={() => { signIn(); setIsOpen(false); }}
-                    className="text-sm font-bold bg-gradient-to-r from-[#00E599] to-[#00DFBD] text-[#060B18] py-2.5 px-4 rounded-full text-center shadow-[0_0_20px_rgba(0,229,153,0.35)]"
+                  <a
+                    href="#faq"
+                    id="mobile-help-btn"
+                    onClick={() => setIsOpen(false)}
+                    className="text-[15px] font-semibold bg-[#00F0A0] text-[#030A16] py-3 px-5 rounded-full text-center shadow-[0_0_24px_rgba(0,240,160,0.5)]"
                   >
-                    Get started
-                  </button>
+                    Need Help?
+                  </a>
                 </>
               )}
             </div>

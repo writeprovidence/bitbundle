@@ -172,11 +172,6 @@ export default function Footer() {
             <ul className="font-tosh space-y-2.5 text-xs sm:text-sm text-gray-400">
               <li>
                 <Link href="#" className="hover:text-white transition-colors">
-                  Our Story
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-white transition-colors">
                   Careers
                 </Link>
               </li>

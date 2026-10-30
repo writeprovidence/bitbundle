@@ -35,6 +35,7 @@ yarn-error.log*
 !.env.local.example
 
 .freebuff
+*.zip
 
 # vercel
 .vercel

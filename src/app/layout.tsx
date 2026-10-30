@@ -1,0 +1,44 @@
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { Providers } from "@/components/Providers";
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  title: "Bitbundle — Buy Airtime with Crypto",
+  description:
+    "Pay with USDT and get Nigerian airtime in seconds. MTN, Airtel, Glo, and 9mobile supported. Fast, secure, and decentralized.",
+  keywords: ["airtime", "crypto", "USDT", "Nigeria", "MTN", "Airtel", "Glo", "9mobile", "blockchain"],
+  openGraph: {
+    title: "Bitbundle — Buy Airtime with Crypto",
+    description: "Pay with crypto. Get airtime in seconds.",
+    type: "website",
+    locale: "en_NG",
+    siteName: "Bitbundle",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Bitbundle — Buy Airtime with Crypto",
+    description: "Pay with crypto. Get airtime in seconds.",
+  },
+  metadataBase: new URL("https://bitbundle.xyz"),
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" className={`${inter.variable} h-full`}>
+      <body className="min-h-full flex flex-col antialiased">
+          <Providers>{children}</Providers>
+        </body>
+    </html>
+  );
+}

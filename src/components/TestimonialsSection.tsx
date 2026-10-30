@@ -114,7 +114,7 @@ function TelecomLogo({ type }: { type: Testimonial["badgeType"] }) {
 
 export default function TestimonialsSection() {
   return (
-    <section className="py-36 lg:py-48 bg-white text-gray-900 border-t border-b border-gray-100">
+    <section id="reviews" className="py-36 lg:py-48 bg-white text-gray-900 border-t border-b border-gray-100">
       <div className="container-page max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-18 sm:mb-20">

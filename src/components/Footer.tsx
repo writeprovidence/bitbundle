@@ -136,6 +136,11 @@ export default function Footer() {
                 </a>
               </li>
               <li>
+                <a href="#faq" className="hover:text-white transition-colors">
+                  FAQs
+                </a>
+              </li>
+              <li>
                 <a href="mailto:support@bitbundle.xyz" className="hover:text-white transition-colors">
                   Contact Us
                 </a>
@@ -160,7 +165,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#faq" className="hover:text-white transition-colors">
+                <a href="#reviews" className="hover:text-white transition-colors">
                   Reviews
                 </a>
               </li>

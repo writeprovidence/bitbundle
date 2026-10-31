@@ -231,33 +231,59 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Massive Giant Bitbundle Brand Logo at Bottom */}
-        <div className="relative pt-8 pb-4 flex justify-center overflow-hidden">
+        {/* Massive Bitbundle Brand Logo with Paper Plane and Gift Box Icons */}
+        <div className="relative pt-10 pb-6 flex justify-center overflow-hidden">
           {/* Ambient gradient-like blue glow behind the logo */}
           <div
             className="absolute inset-0 pointer-events-none flex items-center justify-center"
             aria-hidden="true"
           >
-            <div className="w-[850px] lg:w-[1100px] h-[260px] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-500/25 via-[#1E4FD9]/15 to-transparent blur-3xl rounded-full" />
+            <div className="w-[650px] lg:w-[850px] h-[220px] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-500/25 via-[#1E4FD9]/15 to-transparent blur-3xl rounded-full" />
           </div>
 
-          <div className="relative w-full max-w-5xl px-4 flex justify-center">
-            {/* Very sharp high-res logo */}
-            <Image
-              src="/assets/logo-footer-large.png"
-              alt="Bitbundle"
-              width={2000}
-              height={425}
-              unoptimized
-              priority
-              className="w-full h-auto object-contain select-none [image-rendering:-webkit-optimize-contrast]"
-            />
+          <div className="relative w-full max-w-4xl px-4 sm:px-8 flex items-center justify-center">
+            {/* Origami Paper Airplane (Left of Logo) */}
+            <div className="flex-shrink-0 w-11 sm:w-14 md:w-16 lg:w-20 -mr-2 sm:-mr-4 z-10 pointer-events-none transition-transform hover:scale-105">
+              <Image
+                src="/assets/paper-plane.png"
+                alt="Origami paper airplane"
+                width={484}
+                height={484}
+                unoptimized
+                className="w-full h-auto object-contain drop-shadow-[0_4px_16px_rgba(0,229,153,0.35)] [image-rendering:-webkit-optimize-contrast]"
+              />
+            </div>
 
-            {/* Blue gradient overlay slightly covering the logo */}
-            <div
-              className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#0B1736] via-[#0B1736]/35 to-transparent"
-              aria-hidden="true"
-            />
+            {/* Crisp, slightly reduced size sharp logo */}
+            <div className="relative w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl mx-2 sm:mx-4 flex justify-center">
+              <Image
+                src="/assets/logo-footer-sharp.png"
+                alt="Bitbundle"
+                width={1828}
+                height={388}
+                unoptimized
+                priority
+                className="w-full h-auto object-contain select-none [image-rendering:-webkit-optimize-contrast]"
+              />
+
+              {/* Blue gradient overlay slightly covering the logo */}
+              <div
+                className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#0B1736] via-[#0B1736]/30 to-transparent"
+                aria-hidden="true"
+              />
+            </div>
+
+            {/* Celebratory Gift Box (Right of Logo) */}
+            <div className="flex-shrink-0 w-11 sm:w-14 md:w-16 lg:w-20 -ml-2 sm:-ml-4 z-10 pointer-events-none transition-transform hover:scale-105">
+              <Image
+                src="/assets/gift-box.png"
+                alt="Celebratory gift box"
+                width={384}
+                height={432}
+                unoptimized
+                className="w-full h-auto object-contain drop-shadow-[0_4px_16px_rgba(255,204,0,0.35)] [image-rendering:-webkit-optimize-contrast]"
+              />
+            </div>
           </div>
         </div>
       </div>

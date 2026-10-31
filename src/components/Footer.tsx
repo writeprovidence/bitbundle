@@ -232,14 +232,31 @@ export default function Footer() {
         </div>
 
         {/* Massive Giant Bitbundle Brand Logo at Bottom */}
-        <div className="pt-6 pb-2 flex justify-center">
-          <div className="w-full max-w-4xl px-4">
+        <div className="relative pt-8 pb-4 flex justify-center overflow-hidden">
+          {/* Ambient gradient-like blue glow behind the logo */}
+          <div
+            className="absolute inset-0 pointer-events-none flex items-center justify-center"
+            aria-hidden="true"
+          >
+            <div className="w-[850px] lg:w-[1100px] h-[260px] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-500/25 via-[#1E4FD9]/15 to-transparent blur-3xl rounded-full" />
+          </div>
+
+          <div className="relative w-full max-w-5xl px-4 flex justify-center">
+            {/* Very sharp high-res logo */}
             <Image
-              src="/assets/logo-footer.png"
+              src="/assets/logo-footer-large.png"
               alt="Bitbundle"
-              width={1000}
-              height={180}
-              className="w-full h-auto object-contain opacity-95 hover:opacity-100 transition-opacity"
+              width={2000}
+              height={425}
+              unoptimized
+              priority
+              className="w-full h-auto object-contain select-none [image-rendering:-webkit-optimize-contrast]"
+            />
+
+            {/* Blue gradient overlay slightly covering the logo */}
+            <div
+              className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#0B1736] via-[#0B1736]/35 to-transparent"
+              aria-hidden="true"
             />
           </div>
         </div>

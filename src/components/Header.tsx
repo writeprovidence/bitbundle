@@ -37,11 +37,11 @@ export default function Header() {
     >
       <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
         <nav className="relative flex items-center justify-between h-20" aria-label="Main navigation">
-          {/* Logo */}
+          {/* Logo - aligned with footer logo on the left */}
           <Link
             href="/"
             id="header-logo"
-            className="flex items-center gap-2 hover:opacity-90 transition-opacity"
+            className="flex items-center gap-2 hover:opacity-90 transition-opacity pl-2 sm:pl-6 lg:pl-8"
           >
             <Image
               src="/assets/logo-header.png"

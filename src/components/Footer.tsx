@@ -108,7 +108,7 @@ export default function Footer() {
 
           {/* Column 2: Product */}
           <div>
-            <h4 className="font-tosh text-xs font-bold text-gray-400 uppercase tracking-wider mb-5">
+            <h4 className="font-tosh text-sm font-semibold text-gray-400 mb-5">
               Product
             </h4>
             <ul className="font-tosh space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">
@@ -137,7 +137,7 @@ export default function Footer() {
 
           {/* Column 3: Support */}
           <div>
-            <h4 className="font-tosh text-xs font-bold text-gray-400 uppercase tracking-wider mb-5">
+            <h4 className="font-tosh text-sm font-semibold text-gray-400 mb-5">
               Support
             </h4>
             <ul className="font-tosh space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">
@@ -171,7 +171,7 @@ export default function Footer() {
 
           {/* Column 4: Company */}
           <div>
-            <h4 className="font-tosh text-xs font-bold text-gray-400 uppercase tracking-wider mb-5">
+            <h4 className="font-tosh text-sm font-semibold text-gray-400 mb-5">
               Company
             </h4>
             <ul className="font-tosh space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">
@@ -195,7 +195,7 @@ export default function Footer() {
 
           {/* Column 5: Legal */}
           <div>
-            <h4 className="font-tosh text-xs font-bold text-gray-400 uppercase tracking-wider mb-5">
+            <h4 className="font-tosh text-sm font-semibold text-gray-400 mb-5">
               Legal
             </h4>
             <ul className="font-tosh space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">

@@ -39,11 +39,11 @@ export default function Footer() {
   return (
     <footer
       id="contact"
-      className="bg-[#050A18] text-white pt-32 sm:pt-40 lg:pt-48 pb-12 relative overflow-hidden"
+      className="bg-[#0B1736] text-white pt-20 sm:pt-24 lg:pt-28 pb-12 relative overflow-hidden"
     >
       <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10">
         {/* Top Navigation Grid with Brand/Social on Left */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-10 sm:gap-12 lg:gap-14 pb-16 border-b border-white/10">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-10 sm:gap-12 lg:gap-14 pb-24 sm:pb-28 lg:pb-32 border-b border-white/10">
           {/* Column 1: Logo & Follow Us - shifted slightly to the right */}
           <div className="col-span-2 md:col-span-2 pl-2 sm:pl-6 lg:pl-8">
             {/* Brand Logo placed on top */}
@@ -72,7 +72,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Instagram"
-                className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#14223d] hover:bg-[#1e3258] border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-all shadow-sm group"
+                className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#16274a] hover:bg-[#203666] border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-all shadow-sm group"
               >
                 <InstagramIcon className="w-5 h-5 sm:w-5.5 sm:h-5.5 fill-current transition-transform group-hover:scale-110" />
               </a>
@@ -81,7 +81,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="LinkedIn"
-                className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#14223d] hover:bg-[#1e3258] border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-all shadow-sm group"
+                className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#16274a] hover:bg-[#203666] border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-all shadow-sm group"
               >
                 <LinkedInIcon className="w-5 h-5 sm:w-5.5 sm:h-5.5 fill-current transition-transform group-hover:scale-110" />
               </a>
@@ -90,7 +90,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Telegram"
-                className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#14223d] hover:bg-[#1e3258] border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-all shadow-sm group"
+                className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#16274a] hover:bg-[#203666] border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-all shadow-sm group"
               >
                 <TelegramIcon className="w-5 h-5 sm:w-5.5 sm:h-5.5 fill-current transition-transform group-hover:scale-110" />
               </a>
@@ -99,7 +99,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Twitter / X"
-                className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#14223d] hover:bg-[#1e3258] border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-all shadow-sm group"
+                className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#16274a] hover:bg-[#203666] border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-all shadow-sm group"
               >
                 <TwitterIcon className="w-5 h-5 sm:w-5.5 sm:h-5.5 fill-current transition-transform group-hover:scale-110" />
               </a>
@@ -219,13 +219,13 @@ export default function Footer() {
         </div>
 
         {/* Copyright and Legal Line */}
-        <div className="font-tosh flex flex-col sm:flex-row items-center justify-between gap-4 py-8 text-xs text-gray-500">
-          <p>Copyright © Bitbundle 2026. All rights reserved.</p>
+        <div className="font-tosh flex flex-col sm:flex-row items-center justify-between gap-4 py-8 text-xs text-white">
+          <p className="text-white">Copyright © Bitbundle 2026. All rights reserved.</p>
           <div className="flex items-center gap-6">
-            <Link href="#" className="hover:text-gray-300 transition-colors">
+            <Link href="#" className="text-white hover:opacity-80 transition-opacity">
               Privacy Policy
             </Link>
-            <Link href="#" className="hover:text-gray-300 transition-colors">
+            <Link href="#" className="text-white hover:opacity-80 transition-opacity">
               Terms & Conditions
             </Link>
           </div>

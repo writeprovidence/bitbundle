@@ -43,7 +43,7 @@ export default function Footer() {
     >
       <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 relative z-10">
         {/* Top Navigation Grid with Brand/Social on Left */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-10 pb-16 border-b border-white/10">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-10 sm:gap-12 lg:gap-14 pb-16 border-b border-white/10">
           {/* Column 1: Logo & Follow Us - shifted slightly to the right */}
           <div className="col-span-2 md:col-span-2 pl-2 sm:pl-6 lg:pl-8">
             {/* Brand Logo placed on top */}
@@ -108,27 +108,27 @@ export default function Footer() {
 
           {/* Column 2: Product */}
           <div>
-            <h4 className="font-tosh text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+            <h4 className="font-tosh text-xs sm:text-sm font-bold text-white uppercase tracking-wider mb-5">
               Product
             </h4>
-            <ul className="font-tosh space-y-2.5 text-xs sm:text-sm text-gray-400">
+            <ul className="font-tosh space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">
               <li>
-                <a href="#hero" className="hover:text-white transition-colors">
+                <a href="#hero" className="hover:opacity-80 transition-opacity">
                   MTN
                 </a>
               </li>
               <li>
-                <a href="#hero" className="hover:text-white transition-colors">
+                <a href="#hero" className="hover:opacity-80 transition-opacity">
                   Airtel
                 </a>
               </li>
               <li>
-                <a href="#hero" className="hover:text-white transition-colors">
+                <a href="#hero" className="hover:opacity-80 transition-opacity">
                   Glo
                 </a>
               </li>
               <li>
-                <a href="#hero" className="hover:text-white transition-colors">
+                <a href="#hero" className="hover:opacity-80 transition-opacity">
                   9mobile
                 </a>
               </li>
@@ -137,32 +137,32 @@ export default function Footer() {
 
           {/* Column 3: Support */}
           <div>
-            <h4 className="font-tosh text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+            <h4 className="font-tosh text-xs sm:text-sm font-bold text-white uppercase tracking-wider mb-5">
               Support
             </h4>
-            <ul className="font-tosh space-y-2.5 text-xs sm:text-sm text-gray-400">
+            <ul className="font-tosh space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">
               <li>
                 <a
                   href="https://address-patterns-jones-geometry.trycloudflare.com/hc/en-us"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-white transition-colors"
+                  className="hover:opacity-80 transition-opacity"
                 >
                   Help
                 </a>
               </li>
               <li>
-                <a href="#faq" className="hover:text-white transition-colors">
+                <a href="#faq" className="hover:opacity-80 transition-opacity">
                   FAQs
                 </a>
               </li>
               <li>
-                <a href="mailto:support@bitbundle.xyz" className="hover:text-white transition-colors">
+                <a href="mailto:support@bitbundle.xyz" className="hover:opacity-80 transition-opacity">
                   Contact Us
                 </a>
               </li>
               <li>
-                <a href="mailto:support@bitbundle.xyz?subject=Product%20Request" className="hover:text-white transition-colors">
+                <a href="mailto:support@bitbundle.xyz?subject=Product%20Request" className="hover:opacity-80 transition-opacity">
                   Product Request
                 </a>
               </li>
@@ -171,22 +171,22 @@ export default function Footer() {
 
           {/* Column 4: Company */}
           <div>
-            <h4 className="font-tosh text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+            <h4 className="font-tosh text-xs sm:text-sm font-bold text-white uppercase tracking-wider mb-5">
               Company
             </h4>
-            <ul className="font-tosh space-y-2.5 text-xs sm:text-sm text-gray-400">
+            <ul className="font-tosh space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">
               <li>
-                <Link href="#" className="hover:text-white transition-colors">
+                <Link href="#" className="hover:opacity-80 transition-opacity">
                   Careers
                 </Link>
               </li>
               <li>
-                <a href="#reviews" className="hover:text-white transition-colors">
+                <a href="#reviews" className="hover:opacity-80 transition-opacity">
                   Reviews
                 </a>
               </li>
               <li>
-                <Link href="#" className="hover:text-white transition-colors">
+                <Link href="#" className="hover:opacity-80 transition-opacity">
                   Refer a Friend
                 </Link>
               </li>
@@ -195,22 +195,22 @@ export default function Footer() {
 
           {/* Column 5: Legal */}
           <div>
-            <h4 className="font-tosh text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+            <h4 className="font-tosh text-xs sm:text-sm font-bold text-white uppercase tracking-wider mb-5">
               Legal
             </h4>
-            <ul className="font-tosh space-y-2.5 text-xs sm:text-sm text-gray-400">
+            <ul className="font-tosh space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">
               <li>
-                <Link href="#" className="hover:text-white transition-colors">
+                <Link href="#" className="hover:opacity-80 transition-opacity">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-white transition-colors">
+                <Link href="#" className="hover:opacity-80 transition-opacity">
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-white transition-colors">
+                <Link href="#" className="hover:opacity-80 transition-opacity">
                   Refund Policy
                 </Link>
               </li>

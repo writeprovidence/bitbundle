@@ -241,9 +241,9 @@ export default function Footer() {
             <div className="w-[650px] lg:w-[850px] h-[220px] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-500/25 via-[#1E4FD9]/15 to-transparent blur-3xl rounded-full" />
           </div>
 
-          <div className="relative w-full max-w-4xl px-4 sm:px-8 flex items-center justify-center">
+          <div className="relative w-full max-w-5xl px-4 sm:px-8 flex items-center justify-center">
             {/* Origami Paper Airplane (Left of Logo) */}
-            <div className="flex-shrink-0 w-11 sm:w-14 md:w-16 lg:w-20 -mr-2 sm:-mr-4 z-10 pointer-events-none transition-transform hover:scale-105">
+            <div className="flex-shrink-0 w-12 sm:w-16 md:w-20 lg:w-24 -mr-2 sm:-mr-4 z-10 pointer-events-none transition-transform hover:scale-105">
               <Image
                 src="/assets/paper-plane.png"
                 alt="Origami paper airplane"
@@ -254,13 +254,13 @@ export default function Footer() {
               />
             </div>
 
-            {/* Crisp, slightly reduced size sharp logo */}
-            <div className="relative w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl mx-2 sm:mx-4 flex justify-center">
+            {/* Sharp, new high-resolution footer logo */}
+            <div className="relative w-full max-w-sm sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-2 sm:mx-4 flex justify-center">
               <Image
-                src="/assets/logo-footer-sharp.png"
+                src="/assets/footer-logo-03.png"
                 alt="Bitbundle"
-                width={1828}
-                height={388}
+                width={1080}
+                height={198}
                 unoptimized
                 priority
                 className="w-full h-auto object-contain select-none [image-rendering:-webkit-optimize-contrast]"
@@ -268,13 +268,13 @@ export default function Footer() {
 
               {/* Blue gradient overlay slightly covering the logo */}
               <div
-                className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#0B1736] via-[#0B1736]/30 to-transparent"
+                className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#0B1736] via-[#0B1736]/25 to-transparent"
                 aria-hidden="true"
               />
             </div>
 
             {/* Celebratory Gift Box (Right of Logo) */}
-            <div className="flex-shrink-0 w-11 sm:w-14 md:w-16 lg:w-20 -ml-2 sm:-ml-4 z-10 pointer-events-none transition-transform hover:scale-105">
+            <div className="flex-shrink-0 w-12 sm:w-16 md:w-20 lg:w-24 -ml-2 sm:-ml-4 z-10 pointer-events-none transition-transform hover:scale-105">
               <Image
                 src="/assets/gift-box.png"
                 alt="Celebratory gift box"

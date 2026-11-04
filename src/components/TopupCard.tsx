@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Check, ChevronDown, Loader2, CheckCircle, XCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
@@ -51,6 +51,18 @@ export default function TopupCard() {
   const [txHash, setTxHash] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleSelectNetwork = (e: Event) => {
+      const customEvent = e as CustomEvent<{ id: string }>;
+      if (customEvent.detail?.id) {
+        const found = networks.find((n) => n.id === customEvent.detail.id);
+        if (found) setNetwork(found);
+      }
+    };
+    window.addEventListener("bitbundle:select-network", handleSelectNetwork);
+    return () => window.removeEventListener("bitbundle:select-network", handleSelectNetwork);
+  }, []);
 
   const { isLoading: isTxLoading } = useWaitForTransactionReceipt({
     hash: txHash as `0x${string}` | undefined,

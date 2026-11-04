@@ -8,10 +8,10 @@ export default function HeroSection() {
   const { signIn, isSignedIn } = useAuth();
 
   const handleCta = () => {
-    if (isSignedIn) {
-      const topup = document.getElementById("products") || document.getElementById("how-it-works");
-      topup?.scrollIntoView({ behavior: "smooth" });
-    } else {
+    const topup = document.getElementById("products") || document.getElementById("how-it-works");
+    if (topup) {
+      topup.scrollIntoView({ behavior: "smooth" });
+    } else if (!isSignedIn) {
       signIn();
     }
   };
@@ -162,11 +162,11 @@ export default function HeroSection() {
             <button
               onClick={handleCta}
               id="hero-cta-btn"
-              className="font-mori group inline-flex items-center gap-3 bg-[#00F0A0] text-[#030A16] font-semibold text-base sm:text-lg px-8 py-3.5 rounded-full shadow-[0_0_32px_rgba(0,240,160,0.45)] hover:shadow-[0_0_48px_rgba(0,240,160,0.7)] hover:scale-105 active:scale-95 transition-all duration-200"
+              className="font-mori group inline-flex items-center gap-3.5 bg-[#00F0A0] hover:bg-[#05e598] text-[#030A16] font-semibold text-lg sm:text-xl px-10 py-4 rounded-full shadow-[0_4px_18px_rgba(0,240,160,0.28)] hover:shadow-[0_4px_24px_rgba(0,240,160,0.45)] cursor-pointer transition-all duration-200"
             >
-              <span>Get started</span>
-              <span className="w-7 h-7 rounded-full bg-black text-white flex items-center justify-center transition-transform group-hover:translate-x-1">
-                <ArrowRight className="w-4 h-4" strokeWidth={2.5} />
+              <span>Buy airtime</span>
+              <span className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center transition-transform duration-200 group-hover:translate-x-2">
+                <ArrowRight className="w-5 h-5" strokeWidth={2.5} />
               </span>
             </button>
           </div>

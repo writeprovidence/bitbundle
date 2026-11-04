@@ -3,14 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, LogOut, LayoutDashboard, User } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-
-const navLinks = [
-  { label: "Products", href: "#products" },
-  { label: "FAQs", href: "#faq" },
-  { label: "Invite a friend", href: "#invite" },
-];
 
 function shortAddress(addr: string) {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
@@ -19,7 +13,8 @@ function shortAddress(addr: string) {
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { address, isSignedIn, isLoading, signIn, signOut } = useAuth();
+
+  const { address, isSignedIn, isLoading, signOut } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -55,16 +50,28 @@ export default function Header() {
 
           {/* Desktop nav - centralized */}
           <div className="hidden md:flex items-center gap-8 lg:gap-10 absolute left-1/2 -translate-x-1/2">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                id={`nav-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
-                className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-              >
-                {link.label}
-              </a>
-            ))}
+            <Link
+              href="/products"
+              id="nav-products-btn"
+              className="text-sm font-medium text-gray-300 hover:text-white transition-colors py-2"
+            >
+              Product
+            </Link>
+
+            <Link
+              href="/#faq"
+              id="nav-faqs"
+              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            >
+              FAQs
+            </Link>
+            <Link
+              href="/#invite"
+              id="nav-invite-a-friend"
+              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            >
+              Invite a friend
+            </Link>
           </div>
 
           {/* CTA buttons */}
@@ -97,23 +104,13 @@ export default function Header() {
                 </button>
               </>
             ) : (
-              <>
-                <button
-                  id="header-signin-btn"
-                  onClick={() => signIn()}
-                  className="flex items-center gap-2.5 text-[15px] font-medium text-white/90 hover:text-white px-6 py-2.5 rounded-full border-[1.5px] border-white/50 hover:border-white/80 hover:bg-white/5 transition-all"
-                >
-                  <User className="w-[18px] h-[18px] text-white/85" />
-                  <span>Log in</span>
-                </button>
-                <a
-                  href="#faq"
-                  id="header-help-btn"
-                  className="text-[15px] font-semibold bg-[#00F0A0] text-[#030A16] px-6 py-2.5 rounded-full shadow-[0_0_24px_rgba(0,240,160,0.5)] hover:shadow-[0_0_32px_rgba(0,240,160,0.75)] hover:scale-[1.02] active:scale-[0.98] transition-all"
-                >
-                  Need Help?
-                </a>
-              </>
+              <a
+                href="#products"
+                id="header-buy-airtime-btn"
+                className="text-base font-semibold bg-[#00F0A0] hover:bg-[#05e598] text-[#030A16] px-10 py-3 min-w-[170px] text-center rounded-full shadow-[0_2px_12px_rgba(0,240,160,0.25)] hover:shadow-[0_2px_18px_rgba(0,240,160,0.4)] cursor-pointer transition-all duration-200"
+              >
+                Buy airtime
+              </a>
             )}
           </div>
 
@@ -133,17 +130,33 @@ export default function Header() {
       {isOpen && (
         <div className="md:hidden border-t border-white/10 bg-[#060B18]/98 backdrop-blur-xl animate-slide-down">
           <div className="container-page py-5 flex flex-col gap-2">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                id={`mobile-nav-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
-                className="text-base font-medium text-gray-200 py-2.5 px-3 rounded-lg hover:bg-white/6 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                {link.label}
-              </a>
-            ))}
+            {/* Product link */}
+            <Link
+              href="/products"
+              id="mobile-nav-products-btn"
+              onClick={() => setIsOpen(false)}
+              className="text-base font-medium text-gray-200 py-2.5 px-3 rounded-lg hover:bg-white/6 transition-colors"
+            >
+              Product
+            </Link>
+
+            <Link
+              href="/#faq"
+              id="mobile-nav-faqs"
+              className="text-base font-medium text-gray-200 py-2.5 px-3 rounded-lg hover:bg-white/6 transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              FAQs
+            </Link>
+            <Link
+              href="/#invite"
+              id="mobile-nav-invite-a-friend"
+              className="text-base font-medium text-gray-200 py-2.5 px-3 rounded-lg hover:bg-white/6 transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              Invite a friend
+            </Link>
+
             <div className="flex flex-col gap-3 pt-4 border-t border-white/10 mt-2">
               {isSignedIn && address ? (
                 <>
@@ -169,24 +182,14 @@ export default function Header() {
                   </button>
                 </>
               ) : (
-                <>
-                  <button
-                    id="mobile-signin-btn"
-                    onClick={() => { signIn(); setIsOpen(false); }}
-                    className="flex items-center justify-center gap-2.5 text-[15px] font-medium text-white border-[1.5px] border-white/50 hover:border-white/80 py-3 px-5 rounded-full hover:bg-white/5 transition-colors text-center"
-                  >
-                    <User className="w-[18px] h-[18px] text-white/85" />
-                    <span>Log in</span>
-                  </button>
-                  <a
-                    href="#faq"
-                    id="mobile-help-btn"
-                    onClick={() => setIsOpen(false)}
-                    className="text-[15px] font-semibold bg-[#00F0A0] text-[#030A16] py-3 px-5 rounded-full text-center shadow-[0_0_24px_rgba(0,240,160,0.5)]"
-                  >
-                    Need Help?
-                  </a>
-                </>
+                <a
+                  href="#products"
+                  id="mobile-buy-airtime-btn"
+                  onClick={() => setIsOpen(false)}
+                  className="text-base font-semibold bg-[#00F0A0] hover:bg-[#05e598] text-[#030A16] py-3.5 px-8 rounded-full text-center shadow-[0_2px_12px_rgba(0,240,160,0.25)] hover:shadow-[0_2px_18px_rgba(0,240,160,0.4)] cursor-pointer transition-all duration-200"
+                >
+                  Buy airtime
+                </a>
               )}
             </div>
           </div>

@@ -58,7 +58,7 @@ export default function CtaBanner() {
             id="cta-getstarted-btn"
             className="gradient-btn inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-bold text-base shadow-[0_0_40px_rgba(0,200,83,0.35)]"
           >
-            Get started — it&apos;s free
+            Buy airtime
             <ArrowRight className="w-5 h-5" />
           </button>
           <button

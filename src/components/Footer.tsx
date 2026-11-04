@@ -113,24 +113,24 @@ export default function Footer() {
             </h4>
             <ul className="font-tosh space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">
               <li>
-                <a href="#hero" className="hover:opacity-80 transition-opacity">
+                <Link href="/products?network=mtn" className="hover:opacity-80 transition-opacity">
                   MTN
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#hero" className="hover:opacity-80 transition-opacity">
+                <Link href="/products?network=airtel" className="hover:opacity-80 transition-opacity">
                   Airtel
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#hero" className="hover:opacity-80 transition-opacity">
+                <Link href="/products?network=glo" className="hover:opacity-80 transition-opacity">
                   Glo
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#hero" className="hover:opacity-80 transition-opacity">
+                <Link href="/products?network=9mobile" className="hover:opacity-80 transition-opacity">
                   9mobile
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

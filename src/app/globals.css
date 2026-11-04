@@ -192,6 +192,7 @@ h1, h2, h3, h4, h5, h6, .font-tosh, .font-display {
 }
 .animate-pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
 
+
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: translateY(0); }

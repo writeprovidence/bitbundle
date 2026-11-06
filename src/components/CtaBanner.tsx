@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowRight, Rocket } from "lucide-react";
 
 export default function CtaBanner() {
@@ -54,13 +55,14 @@ export default function CtaBanner() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button
+          <Link
+            href="/products"
             id="cta-getstarted-btn"
             className="gradient-btn inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-bold text-base shadow-[0_0_40px_rgba(0,200,83,0.35)]"
           >
             Buy airtime
             <ArrowRight className="w-5 h-5" />
-          </button>
+          </Link>
           <button
             id="cta-learnmore-btn"
             className="glass-card inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-bold text-base text-gray-300 hover:text-white transition-colors glass-card-hover"

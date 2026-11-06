@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -13,6 +14,8 @@ function shortAddress(addr: string) {
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const isProductsPage = pathname === "/products";
 
   const { address, isSignedIn, isLoading, signOut } = useAuth();
 
@@ -53,7 +56,7 @@ export default function Header() {
             <Link
               href="/products"
               id="nav-products-btn"
-              className="text-sm font-medium text-gray-300 hover:text-white transition-colors py-2"
+              className="text-sm font-medium text-white hover:text-white/80 transition-colors py-2"
             >
               Product
             </Link>
@@ -61,14 +64,14 @@ export default function Header() {
             <Link
               href="/#faq"
               id="nav-faqs"
-              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              className="text-sm font-medium text-white hover:text-white/80 transition-colors"
             >
               FAQs
             </Link>
             <Link
               href="/#invite"
               id="nav-invite-a-friend"
-              className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              className="text-sm font-medium text-white hover:text-white/80 transition-colors"
             >
               Invite a friend
             </Link>
@@ -103,15 +106,15 @@ export default function Header() {
                   <LogOut className="w-4 h-4" />
                 </button>
               </>
-            ) : (
-              <a
-                href="#products"
+            ) : !isProductsPage ? (
+              <Link
+                href="/products"
                 id="header-buy-airtime-btn"
                 className="text-base font-semibold bg-[#00F0A0] hover:bg-[#05e598] text-[#030A16] px-10 py-3 min-w-[170px] text-center rounded-full shadow-[0_2px_12px_rgba(0,240,160,0.25)] hover:shadow-[0_2px_18px_rgba(0,240,160,0.4)] cursor-pointer transition-all duration-200"
               >
                 Buy airtime
-              </a>
-            )}
+              </Link>
+            ) : null}
           </div>
 
           {/* Mobile hamburger */}
@@ -135,7 +138,7 @@ export default function Header() {
               href="/products"
               id="mobile-nav-products-btn"
               onClick={() => setIsOpen(false)}
-              className="text-base font-medium text-gray-200 py-2.5 px-3 rounded-lg hover:bg-white/6 transition-colors"
+              className="text-base font-medium text-white py-2.5 px-3 rounded-lg hover:bg-white/6 transition-colors"
             >
               Product
             </Link>
@@ -143,7 +146,7 @@ export default function Header() {
             <Link
               href="/#faq"
               id="mobile-nav-faqs"
-              className="text-base font-medium text-gray-200 py-2.5 px-3 rounded-lg hover:bg-white/6 transition-colors"
+              className="text-base font-medium text-white py-2.5 px-3 rounded-lg hover:bg-white/6 transition-colors"
               onClick={() => setIsOpen(false)}
             >
               FAQs
@@ -151,7 +154,7 @@ export default function Header() {
             <Link
               href="/#invite"
               id="mobile-nav-invite-a-friend"
-              className="text-base font-medium text-gray-200 py-2.5 px-3 rounded-lg hover:bg-white/6 transition-colors"
+              className="text-base font-medium text-white py-2.5 px-3 rounded-lg hover:bg-white/6 transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Invite a friend
@@ -181,16 +184,16 @@ export default function Header() {
                     Sign out
                   </button>
                 </>
-              ) : (
-                <a
-                  href="#products"
+              ) : !isProductsPage ? (
+                <Link
+                  href="/products"
                   id="mobile-buy-airtime-btn"
                   onClick={() => setIsOpen(false)}
                   className="text-base font-semibold bg-[#00F0A0] hover:bg-[#05e598] text-[#030A16] py-3.5 px-8 rounded-full text-center shadow-[0_2px_12px_rgba(0,240,160,0.25)] hover:shadow-[0_2px_18px_rgba(0,240,160,0.4)] cursor-pointer transition-all duration-200"
                 >
                   Buy airtime
-                </a>
-              )}
+                </Link>
+              ) : null}
             </div>
           </div>
         </div>

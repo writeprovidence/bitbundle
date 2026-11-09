@@ -106,10 +106,10 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 2: Product */}
+          {/* Column 2: Top up */}
           <div>
             <h4 className="font-tosh text-sm font-semibold text-gray-400 mb-5">
-              Product
+              Top up
             </h4>
             <ul className="font-tosh space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">
               <li>

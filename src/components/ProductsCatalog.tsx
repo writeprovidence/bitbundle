@@ -18,6 +18,9 @@ import {
   ChevronDown,
 } from "lucide-react";
 import TopupCard from "./TopupCard";
+import RefillDetailsView, { OPERATORS } from "./RefillDetailsView";
+import AssistantModal from "./AssistantModal";
+import CheckoutModal from "./CheckoutModal";
 
 export interface ProductItem {
   id: string;
@@ -148,7 +151,7 @@ const PRODUCTS: ProductItem[] = [
     name: "MTN",
     networkId: "mtn",
     category: "Airtime",
-    range: "5 NGN - 50000 NGN",
+    range: "5 NGN - 10000 NGN",
     rating: 4.8,
     inStock: true,
     cardBg: "bg-[#FFCC00]",
@@ -159,7 +162,7 @@ const PRODUCTS: ProductItem[] = [
     name: "Airtel",
     networkId: "airtel",
     category: "Airtime",
-    range: "50 NGN - 150000 NGN",
+    range: "50 NGN - 10000 NGN",
     rating: 4.9,
     inStock: true,
     cardBg: "bg-white",
@@ -171,7 +174,7 @@ const PRODUCTS: ProductItem[] = [
     name: "GLO",
     networkId: "glo",
     category: "Airtime",
-    range: "1500 NGN - 70000 NGN",
+    range: "100 NGN - 10000 NGN",
     rating: 4.8,
     inStock: true,
     cardBg: "bg-white",
@@ -183,7 +186,7 @@ const PRODUCTS: ProductItem[] = [
     name: "9Mobile",
     networkId: "9mobile",
     category: "Airtime",
-    range: "5 NGN - 50000 NGN",
+    range: "5 NGN - 10000 NGN",
     rating: 4.3,
     inStock: true,
     badge: "⚡ -2%",
@@ -345,6 +348,15 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
   const [outOfStockModal, setOutOfStockModal] = useState<ProductItem | null>(null);
   const [waitlistEmail, setWaitlistEmail] = useState("");
   const [waitlistSuccess, setWaitlistSuccess] = useState(false);
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+
+  useEffect(() => {
+    if (initialNetwork) {
+      const found = PRODUCTS.find((p) => p.networkId === initialNetwork);
+      if (found) setSelectedProduct(found);
+    }
+  }, [initialNetwork]);
 
   // Close country dropdown on click outside
   useEffect(() => {
@@ -437,11 +449,19 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
   };
 
   return (
-    <div className="w-full bg-[#F4F6F8] text-gray-900 font-sans">
-      {/* ──────────────────────────────────────────────────────────
-          1. HERO BANNER (Dark Pine / Emerald Background with Input)
-      ────────────────────────────────────────────────────────── */}
-      <section className="relative bg-[#071F18] text-white pt-32 pb-20 sm:pt-40 sm:pb-28 lg:pt-44 lg:pb-32 px-4 sm:px-6 lg:px-8 overflow-visible">
+    <div className="w-full bg-[#F4F6F8] text-gray-900 font-sans pt-20">
+      {selectedProduct ? (
+        <RefillDetailsView
+          operatorId={selectedProduct.networkId as any}
+          initialPhone={phoneNumber}
+          onBack={() => setSelectedProduct(null)}
+        />
+      ) : (
+        <>
+          {/* ──────────────────────────────────────────────────────────
+              1. HERO BANNER (Dark Pine / Emerald Background with Input)
+          ────────────────────────────────────────────────────────── */}
+          <section className="relative bg-[#010C24] text-white pt-16 pb-16 sm:pt-24 sm:pb-24 lg:pt-28 lg:pb-28 px-4 sm:px-6 lg:px-8 overflow-visible">
         {/* Subtle radial ambient glow */}
         <div
           className="absolute inset-0 pointer-events-none opacity-40"
@@ -456,7 +476,7 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
           </h1>
 
           {/* Hand-drawn style note with curved arrow */}
-          <div className="relative inline-block w-full max-w-md mx-auto">
+          <div className="relative inline-block w-full max-w-[340px] mx-auto">
             <div className="absolute -top-10 -left-6 sm:-left-12 flex items-center gap-1.5 text-white/90 select-none pointer-events-none">
               <span className="font-serif italic font-semibold text-sm sm:text-base tracking-wide rotate-[-6deg] text-emerald-200">
                 Type in number
@@ -478,14 +498,14 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
             {/* Input Bar Pill */}
             <form
               onSubmit={handlePhoneSubmit}
-              className="w-full flex items-center bg-white rounded-xl shadow-2xl p-1.5 sm:p-2 border border-white/20 transition-all focus-within:ring-4 focus-within:ring-emerald-400/40 relative z-30"
+              className="w-full flex items-stretch bg-white rounded-lg shadow-xl transition-all focus-within:ring-4 focus-within:ring-emerald-400/30 relative z-30"
             >
               {/* Country selector */}
-              <div className="relative" ref={countryDropdownRef}>
+              <div className="relative flex items-center" ref={countryDropdownRef}>
                 <button
                   type="button"
                   onClick={() => setIsCountryDropdownOpen((v) => !v)}
-                  className="flex items-center gap-2 px-3 py-2 text-gray-800 border-r border-gray-200 cursor-pointer hover:bg-gray-100/70 rounded-lg transition-colors select-none focus:outline-none"
+                  className="flex items-center gap-2 px-3 py-2 text-gray-800 border-r border-gray-200 cursor-pointer hover:bg-gray-100/70 rounded-l-lg transition-colors select-none focus:outline-none"
                   aria-expanded={isCountryDropdownOpen}
                   aria-label={`Select country, currently ${selectedCountry.name}`}
                 >
@@ -498,67 +518,28 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
                   />
                 </button>
 
-                {/* Country Dropdown Menu - Opens UPWARDS with clear countries & real SVG flags */}
+                {/* Country Dropdown Menu */}
                 {isCountryDropdownOpen && (
-                  <div className="absolute bottom-full left-0 mb-3 w-80 sm:w-96 max-h-[380px] flex flex-col bg-white rounded-2xl shadow-[0_-12px_45px_rgba(0,0,0,0.35)] border border-gray-200 z-[100] text-left animate-in fade-in slide-in-from-bottom-2 overflow-hidden">
-                    {/* Header + Search */}
-                    <div className="p-3 border-b border-gray-100 bg-gray-50/80">
-                      <div className="text-[10px] font-extrabold uppercase tracking-wider text-gray-400 mb-1.5 px-0.5">
-                        Select Destination Country
-                      </div>
-                      <div className="relative">
-                        <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
-                        <input
-                          type="text"
-                          value={countrySearch}
-                          onChange={(e) => setCountrySearch(e.target.value)}
-                          placeholder="Search country or code (+234)..."
-                          className="w-full pl-8 pr-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
-                          autoFocus
-                        />
-                      </div>
-                    </div>
-
-                    {/* Countries List */}
-                    <div className="overflow-y-auto max-h-64 p-1.5 divide-y divide-gray-50">
-                      {filteredCountries.map((c) => (
-                        <button
-                          key={c.code}
-                          type="button"
-                          onClick={() => {
-                            setSelectedCountry(c);
-                            setIsCountryDropdownOpen(false);
-                            setCountrySearch("");
-                          }}
-                          className={`w-full flex items-center justify-between px-3 py-2.5 hover:bg-emerald-50/80 rounded-xl text-left transition-colors cursor-pointer group ${
-                            selectedCountry.code === c.code ? "bg-emerald-50/90 font-semibold" : ""
-                          }`}
-                        >
-                          <div className="flex items-center gap-3 min-w-0">
-                            <CountryFlag code={c.code} className="w-6 h-4" />
-                            <div className="min-w-0">
-                              <div className="text-sm font-bold text-gray-900 leading-tight group-hover:text-emerald-900">
-                                {c.name}
-                              </div>
-                              <div className="text-[11px] text-gray-500 font-medium">
-                                <span className="font-mono font-semibold text-gray-700">{c.dialCode}</span>
-                                <span className="mx-1 text-gray-300">•</span>
-                                <span className="uppercase text-[10px] text-gray-500">{c.networks.join(", ")}</span>
-                              </div>
-                            </div>
-                          </div>
-                          {selectedCountry.code === c.code && (
-                            <Check className="w-4 h-4 text-emerald-600 shrink-0 ml-2" />
-                          )}
-                        </button>
-                      ))}
-
-                      {filteredCountries.length === 0 && (
-                        <div className="py-6 text-center text-xs text-gray-400">
-                          No country found matching &quot;{countrySearch}&quot;
-                        </div>
-                      )}
-                    </div>
+                  <div className="absolute bottom-full left-0 mb-2 w-72 max-h-72 overflow-y-auto bg-white border border-gray-200 shadow-xl z-[100] text-left">
+                    {COUNTRIES.map((c) => (
+                      <button
+                        key={c.code}
+                        type="button"
+                        onClick={() => {
+                          setSelectedCountry(c);
+                          setIsCountryDropdownOpen(false);
+                        }}
+                        className={`w-full flex items-baseline gap-1.5 px-3 py-2 text-sm text-left cursor-pointer transition-colors ${
+                          selectedCountry.code === c.code
+                            ? "bg-[#1a73e8] text-white"
+                            : "text-gray-800 hover:bg-gray-100"
+                        }`}
+                      >
+                        <span className="font-normal">{c.name}</span>
+                        <span className={`font-normal ${selectedCountry.code === c.code ? "text-white" : "text-gray-500"}`}>({c.dialCode})</span>
+                        <span className={`text-xs uppercase font-normal ${selectedCountry.code === c.code ? "text-white/80" : "text-gray-400"}`}>{c.code}</span>
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>
@@ -569,14 +550,14 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 placeholder={selectedCountry.placeholder}
-                className="flex-1 px-3 sm:px-4 py-2 text-sm sm:text-base text-gray-900 placeholder-gray-400 font-medium focus:outline-none bg-transparent"
+                className="flex-1 min-w-0 px-3 py-3 text-sm sm:text-base text-gray-900 placeholder-gray-400 font-medium focus:outline-none bg-transparent border-0"
               />
 
               {/* Submit Red Button with arrow */}
               <button
                 type="submit"
                 aria-label="Submit phone number for top-up"
-                className="bg-[#DE1D35] hover:bg-[#c21429] active:scale-95 text-white p-2.5 sm:px-4 sm:py-2.5 rounded-lg flex items-center justify-center font-bold transition-all shadow-md cursor-pointer"
+                className="bg-[#DE1D35] hover:bg-[#c21429] active:bg-[#b01024] text-white w-12 sm:w-14 rounded-r-lg flex items-center justify-center font-bold transition-all cursor-pointer shrink-0 self-stretch border-0"
               >
                 <ArrowRight className="w-5 h-5 stroke-[2.5]" />
               </button>
@@ -618,7 +599,9 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
               >
                 {/* Visual Card Canvas */}
                 <div
-                  className={`relative w-full aspect-[16/10] sm:aspect-[4/3] rounded-2xl flex items-center justify-center p-6 transition-all duration-200 group-hover:shadow-xl group-hover:-translate-y-1 ${product.cardBg} ${product.cardBorder || ""}`}
+                  className={`relative w-full aspect-[16/10] sm:aspect-[4/3] rounded-2xl flex items-center justify-center ${
+                    product.logoType === "mtn" ? "p-0 overflow-hidden" : "p-6"
+                  } transition-all duration-200 group-hover:shadow-xl group-hover:-translate-y-1 ${product.cardBg} ${product.cardBorder || ""}`}
                 >
                   {/* Top-left badge */}
                   {product.badge && (
@@ -637,11 +620,14 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
 
                   {/* Brand Logo Presentation: straight and enlarged */}
                   {product.logoType === "mtn" && (
-                    <div className="w-[160px] h-[92px] sm:w-[180px] sm:h-[100px] rounded-full border-[3.5px] border-black flex items-center justify-center shadow-sm select-none">
-                      <span className="text-black font-black text-3xl sm:text-4xl tracking-wider leading-none">
-                        MTN
-                      </span>
-                    </div>
+                    <Image
+                      src="/assets/mtn_banner.jpg"
+                      alt="MTN"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
+                      priority
+                    />
                   )}
 
                   {product.logoType === "airtel" && (
@@ -860,37 +846,7 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
         </div>
       </section>
 
-      {/* ──────────────────────────────────────────────────────────
-          MODAL: ACTIVE OPERATOR TOP-UP (Connected to TopupCard)
-      ────────────────────────────────────────────────────────── */}
-      {selectedProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-lg bg-[#0C152B] border border-white/15 rounded-3xl p-5 sm:p-7 shadow-[0_25px_60px_rgba(0,0,0,0.8)] text-white">
-            <button
-              onClick={() => setSelectedProduct(null)}
-              className="absolute top-5 right-5 text-gray-400 hover:text-white p-1 rounded-full hover:bg-white/10 transition-colors"
-              aria-label="Close modal"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="mb-4">
-              <span className="text-xs font-mono text-[#00E599] uppercase tracking-wider">
-                Top-up product
-              </span>
-              <h3 className="text-xl sm:text-2xl font-bold text-white mt-0.5">
-                {selectedProduct.name}
-              </h3>
-              <p className="text-xs text-gray-400 mt-1">
-                {selectedProduct.category} • Range: {selectedProduct.range}
-              </p>
-            </div>
-
-            <div className="mt-4">
-              <TopupCard />
-            </div>
-          </div>
-        </div>
+        </>
       )}
 
       {/* ──────────────────────────────────────────────────────────
@@ -960,6 +916,18 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
           </div>
         </div>
       )}
+
+      {/* Assistant Modal */}
+      <AssistantModal
+        isOpen={isAssistantOpen}
+        onClose={() => setIsAssistantOpen(false)}
+      />
+
+      {/* Checkout Modal */}
+      <CheckoutModal
+        isOpen={isCheckoutOpen}
+        onClose={() => setIsCheckoutOpen(false)}
+      />
     </div>
   );
 }

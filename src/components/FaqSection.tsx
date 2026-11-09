@@ -64,7 +64,7 @@ export default function FaqSection() {
   };
 
   return (
-    <section id="faq" className="py-24 lg:py-36 bg-white text-gray-900 border-t border-gray-100">
+    <section id="faq" className="py-24 lg:py-36 bg-[#FAFAFA] text-gray-900">
       <div className="container-page max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Left Column: Heading (exact typography from reference, strictly 2 lines) */}

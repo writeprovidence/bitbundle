@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createAppKit } from "@reown/appkit/react";
 import { wagmiAdapter, wagmiConfig, networks, projectId } from "@/lib/wagmi";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { CartProvider } from "@/contexts/CartContext";
 
 // Suppress non-critical third-party telemetry/analytics fetch errors on localhost
 if (typeof window !== "undefined") {
@@ -80,7 +81,9 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <CartProvider>{children}</CartProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

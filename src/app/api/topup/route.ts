@@ -36,6 +36,13 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: "Missing required fields" }, { status: 400 });
     }
 
+    if (amountNgn > 10000) {
+      return Response.json(
+        { error: "Maximum airtime purchase is 10,000 NGN" },
+        { status: 400 }
+      );
+    }
+
     const supabase = await createSupabaseAdminClient();
 
     // Prevent duplicate orders for same tx hash

@@ -30,18 +30,33 @@ export default function HowItWorks() {
   return (
     <section
       id="products"
-      className="pt-36 sm:pt-44 lg:pt-52 pb-24 lg:pb-32 bg-gradient-to-b from-[#02091c] via-[#081533] to-[#030919] relative overflow-hidden text-white"
+      className="pt-16 sm:pt-20 lg:pt-24 pb-24 lg:pb-32 bg-transparent relative overflow-hidden text-white"
       aria-labelledby="how-it-works-heading"
     >
-      {/* Background ambient gradient lighting */}
+      {/* Subtle hairline divider between the second and third blue sections */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl px-4 sm:px-6 lg:px-8 pointer-events-none">
+        <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+      </div>
+
+      {/* Reloadly-style gradient blend on the third section - calibrated so it is clearly visible without being overpowering */}
+      <div
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[1250px] lg:w-[1600px] h-[500px] lg:h-[650px] pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(120% 70% at 30% 30%, #26267D 0%, #1B1B62 18%, #421B6F 38%, rgba(9, 250, 163, 0.22) 58%, #1B1B62 80%, transparent 100%)",
+          opacity: 0.52,
+          backgroundBlendMode: "color-dodge",
+          filter: "blur(85px)",
+        }}
+      />
+
+      {/* Soft atmospheric depth glow */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: [
-            "radial-gradient(ellipse 70% 50% at 75% 45%, rgba(0, 229, 153, 0.12) 0%, transparent 60%)",
-            "radial-gradient(ellipse 80% 65% at 20% 50%, rgba(20, 68, 168, 0.4) 0%, rgba(10, 34, 96, 0.2) 45%, transparent 75%)",
-            "radial-gradient(ellipse 60% 40% at 50% 15%, rgba(14, 52, 135, 0.3) 0%, transparent 70%)",
-          ].join(", "),
+          background:
+            "radial-gradient(ellipse 80% 50% at 50% 50%, rgba(38, 38, 125, 0.25) 0%, rgba(66, 27, 111, 0.16) 45%, transparent 75%)",
+          filter: "blur(65px)",
         }}
       />
 

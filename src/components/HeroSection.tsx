@@ -20,56 +20,36 @@ export default function HeroSection() {
   return (
     <section
       id="hero"
-      className="relative min-h-[96vh] lg:min-h-[110vh] flex items-center justify-center pt-28 pb-28 lg:pt-36 lg:pb-44 xl:pb-52 overflow-hidden bg-[#010C24]"
+      className="relative min-h-[98vh] lg:min-h-[108vh] flex items-center justify-center pt-28 pb-24 sm:pb-28 lg:pt-36 lg:pb-40 xl:pb-48 overflow-hidden bg-transparent"
       aria-labelledby="hero-heading"
     >
-      {/* Background ambient lighting - primary deep blue radial bloom */}
-      <div
-        className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[950px] lg:w-[1300px] h-[800px] lg:h-[1050px] pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 60% at 50% 45%, rgba(24, 65, 145, 0.5) 0%, rgba(12, 36, 92, 0.3) 50%, transparent 80%)",
-          filter: "blur(50px)",
-        }}
-      />
-
-      {/* Extended downward blue lighting - casts soft, luminous blue through the lower half */}
-      <div
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[1500px] h-[600px] lg:h-[800px] pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 65% at 50% 75%, rgba(20, 62, 145, 0.45) 0%, rgba(10, 32, 88, 0.28) 45%, rgba(1, 12, 36, 0.1) 75%, transparent 100%)",
-          filter: "blur(60px)",
-        }}
-      />
-
       {/* ── Extreme Left Cards (Sharp, High-Resolution, Tilted & Fanned like the design) ── */}
 
-      {/* 1. Airtel Card - Upper Left (Netflix position: top-left, tilted clockwise ~+6deg) */}
-      <div className="hidden lg:block absolute -left-6 lg:-left-10 xl:-left-14 2xl:-left-16 top-[285px] sm:top-[295px] lg:top-[315px] xl:top-[335px] z-10 pointer-events-auto">
-        <div className="w-48 lg:w-56 xl:w-64 2xl:w-72 rotate-6 hover:rotate-0 hover:scale-105 transition-all duration-300 drop-shadow-[0_16px_30px_rgba(0,0,0,0.6)] [outline:1px_solid_transparent]">
+      {/* 1. Airtel Card - Upper Left (moved down away from header ornaments) */}
+      <div className="hidden lg:block absolute -left-8 lg:-left-10 xl:-left-12 top-[285px] lg:top-[310px] xl:top-[330px] z-20 pointer-events-auto">
+        <div className="w-48 lg:w-56 xl:w-68 2xl:w-76 h-32 lg:h-36 xl:h-44 2xl:h-48 rotate-6 hover:rotate-0 hover:scale-105 transition-all duration-300 [will-change:transform] [backface-visibility:hidden] [transform:translateZ(0)] [outline:1px_solid_transparent]">
           <Image
             src="/assets/airtel-logo.png"
             alt="Airtel card"
             width={896}
             height={648}
             unoptimized
-            className="w-full h-auto object-contain select-none [image-rendering:auto]"
+            className="w-full h-full object-contain select-none"
             priority
           />
         </div>
       </div>
 
-      {/* 2. Glo Card - Lower Left (Airbnb position: bottom-left, tilted counter-clockwise ~-6deg, pointing inward toward CTA) */}
-      <div className="hidden lg:block absolute -left-4 lg:-left-6 xl:-left-8 2xl:-left-10 top-[455px] sm:top-[475px] lg:top-[495px] xl:top-[520px] z-20 pointer-events-auto">
-        <div className="w-52 lg:w-60 xl:w-68 2xl:w-76 -rotate-6 hover:rotate-0 hover:scale-105 transition-all duration-300 drop-shadow-[0_20px_36px_rgba(0,0,0,0.65)] [outline:1px_solid_transparent]">
+      {/* 2. Glo Card - Lower Left */}
+      <div className="hidden lg:block absolute -left-8 lg:-left-10 xl:-left-12 top-[485px] lg:top-[515px] xl:top-[535px] z-30 pointer-events-auto">
+        <div className="w-56 lg:w-64 xl:w-76 2xl:w-84 h-36 lg:h-40 xl:h-48 2xl:h-52 -rotate-6 hover:rotate-0 hover:scale-105 transition-all duration-300 [will-change:transform] [backface-visibility:hidden] [transform:translateZ(0)] [outline:1px_solid_transparent]">
           <Image
             src="/assets/glo-card.png"
             alt="Glo card"
             width={1272}
             height={980}
             unoptimized
-            className="w-full h-auto object-contain select-none [image-rendering:auto]"
+            className="w-full h-full object-contain select-none"
             priority
           />
         </div>
@@ -77,31 +57,31 @@ export default function HeroSection() {
 
       {/* ── Extreme Right Cards (Sharp, High-Resolution, Tilted & Fanned like the design) ── */}
 
-      {/* 3. MTN Card - Upper Right (Starbucks position: upper-right, tilted counter-clockwise ~-6deg) */}
-      <div className="hidden lg:block absolute -right-6 lg:-right-10 xl:-right-14 2xl:-right-16 top-[285px] sm:top-[295px] lg:top-[315px] xl:top-[335px] z-10 pointer-events-auto">
-        <div className="w-52 lg:w-60 xl:w-68 2xl:w-76 -rotate-6 hover:rotate-0 hover:scale-105 transition-all duration-300 drop-shadow-[0_16px_30px_rgba(0,0,0,0.6)] [outline:1px_solid_transparent]">
+      {/* 3. MTN Card - Upper Right (moved down away from gift box) */}
+      <div className="hidden lg:block absolute right-0 top-[285px] lg:top-[310px] xl:top-[330px] z-20 pointer-events-auto">
+        <div className="w-48 lg:w-56 xl:w-68 2xl:w-76 h-32 lg:h-36 xl:h-44 2xl:h-48 -rotate-6 hover:rotate-0 hover:scale-105 transition-all duration-300 [will-change:transform] [backface-visibility:hidden] [transform:translateZ(0)] [outline:1px_solid_transparent]">
           <Image
             src="/assets/mtn-card.png"
             alt="MTN card"
             width={1160}
             height={760}
             unoptimized
-            className="w-full h-auto object-contain select-none [image-rendering:auto]"
+            className="w-full h-full object-contain select-none rounded-2xl"
             priority
           />
         </div>
       </div>
 
-      {/* 4. 9mobile Card - Lower Right (Visa position: lower-right, tilted clockwise ~+6deg, extending further inward) */}
-      <div className="hidden lg:block absolute right-2 lg:right-4 xl:right-6 2xl:right-8 top-[450px] sm:top-[470px] lg:top-[490px] xl:top-[515px] z-20 pointer-events-auto">
-        <div className="w-52 lg:w-60 xl:w-68 2xl:w-76 rotate-6 hover:rotate-0 hover:scale-105 transition-all duration-300 drop-shadow-[0_20px_36px_rgba(0,0,0,0.65)] [outline:1px_solid_transparent]">
+      {/* 4. 9mobile Card - Lower Right */}
+      <div className="hidden lg:block absolute right-0 top-[480px] lg:top-[510px] xl:top-[530px] z-30 pointer-events-auto">
+        <div className="w-48 lg:w-56 xl:w-68 2xl:w-76 h-32 lg:h-36 xl:h-44 2xl:h-48 rotate-6 hover:rotate-0 hover:scale-105 transition-all duration-300 [will-change:transform] [backface-visibility:hidden] [transform:translateZ(0)] [outline:1px_solid_transparent]">
           <Image
             src="/assets/9mobile-card.png"
             alt="9mobile card"
             width={1264}
             height={800}
             unoptimized
-            className="w-full h-auto object-contain select-none [image-rendering:auto]"
+            className="w-full h-full object-contain select-none"
             priority
           />
         </div>
@@ -176,7 +156,7 @@ export default function HeroSection() {
           </div>
 
           {/* Mobile & Tablet Network Cards Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 lg:hidden mt-10 pt-8 border-t border-white/10 w-full max-w-md mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 lg:hidden mt-10 pt-4 w-full max-w-md mx-auto">
             <div className="flex items-center justify-center p-1">
               <Image
                 src="/assets/airtel-logo.png"

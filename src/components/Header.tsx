@@ -4,8 +4,11 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, ShoppingCart } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCart } from "@/contexts/CartContext";
+import CartDropdown from "./CartDropdown";
+import CheckoutModal from "./CheckoutModal";
 
 function shortAddress(addr: string) {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
@@ -18,6 +21,8 @@ export default function Header() {
   const isProductsPage = pathname === "/products";
 
   const { address, isSignedIn, isLoading, signOut } = useAuth();
+  const { itemCount, isCartOpen, setIsCartOpen } = useCart();
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -58,7 +63,7 @@ export default function Header() {
               id="nav-products-btn"
               className="text-sm font-medium text-white hover:text-white/80 transition-colors py-2"
             >
-              Product
+              Top up
             </Link>
 
             <Link
@@ -133,14 +138,14 @@ export default function Header() {
       {isOpen && (
         <div className="md:hidden border-t border-white/10 bg-[#060B18]/98 backdrop-blur-xl animate-slide-down">
           <div className="container-page py-5 flex flex-col gap-2">
-            {/* Product link */}
+            {/* Top up link */}
             <Link
               href="/products"
               id="mobile-nav-products-btn"
               onClick={() => setIsOpen(false)}
               className="text-base font-medium text-white py-2.5 px-3 rounded-lg hover:bg-white/6 transition-colors"
             >
-              Product
+              Top up
             </Link>
 
             <Link
@@ -198,6 +203,8 @@ export default function Header() {
           </div>
         </div>
       )}
+      {/* Checkout Modal */}
+      <CheckoutModal isOpen={isCheckoutOpen} onClose={() => setIsCheckoutOpen(false)} />
     </header>
   );
 }

@@ -13,7 +13,7 @@ const networks = [
   { id: "9mobile", label: "9mobile", color: "#006633", textColor: "#fff" },
 ];
 
-const amounts = [100, 200, 500, 1000, 2000, 5000];
+const amounts = [100, 200, 500, 1000, 2000, 5000, 10000];
 
 // Approximate USDT/NGN rate (real-time in prod)
 const USDT_PER_NGN = 0.00065;
@@ -72,7 +72,7 @@ export default function TopupCard() {
   const usdtAmount = (selectedAmount * USDT_PER_NGN).toFixed(4);
 
   const isPhoneValid = phone.length >= 10 && phone.length <= 11;
-  const canPay = isSignedIn && isPhoneValid && selectedAmount > 0;
+  const canPay = isSignedIn && isPhoneValid && selectedAmount > 0 && selectedAmount <= 10000;
 
   async function handleSignIn() {
     try { await signIn(); } catch (err) { console.error(err); }
@@ -273,11 +273,17 @@ export default function TopupCard() {
         <input
           id="custom-amount-input"
           type="number"
-          placeholder="Custom amount"
+          max={10000}
+          placeholder="Custom amount (max ₦10,000)"
           value={customAmount}
           onChange={(e) => { setCustomAmount(e.target.value); setAmount(null); }}
           className="w-full px-4 py-2.5 rounded-xl border border-white/10 hover:border-white/20 focus:border-[#00d4ff]/50 outline-none text-sm text-white placeholder:text-gray-600 transition-colors bg-white/5"
         />
+        {selectedAmount > 10000 && (
+          <p className="text-xs text-red-400 font-semibold mt-1.5">
+            Maximum airtime allowed is ₦10,000
+          </p>
+        )}
       </div>
 
       {/* Crypto preview */}

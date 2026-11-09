@@ -1,7 +1,9 @@
 "use client";
 
+import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ReferFriendCard } from "./ReferFriendModal";
 
 function TwitterIcon({ className = "w-5 h-5 fill-current" }: { className?: string }) {
   return (
@@ -36,6 +38,16 @@ function InstagramIcon({ className = "w-5 h-5 fill-current" }: { className?: str
 }
 
 export default function Footer() {
+  const [showReferCard, setShowReferCard] = useState(false);
+  const referCardRef = useRef<HTMLDivElement>(null);
+
+  const handleReferClick = () => {
+    setShowReferCard(true);
+    setTimeout(() => {
+      referCardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 120);
+  };
+
   return (
     <footer
       id="contact"
@@ -186,9 +198,14 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <Link href="#" className="hover:opacity-80 transition-opacity">
+                <button
+                  type="button"
+                  id="footer-refer-a-friend-btn"
+                  onClick={handleReferClick}
+                  className="hover:opacity-80 transition-opacity cursor-pointer text-left font-medium"
+                >
                   Refer a Friend
-                </Link>
+                </button>
               </li>
             </ul>
           </div>
@@ -217,6 +234,21 @@ export default function Footer() {
             </ul>
           </div>
         </div>
+
+        {/* Inline Refer a Friend Card within Footer */}
+        {showReferCard && (
+          <div
+            ref={referCardRef}
+            id="footer-refer-section"
+            className="my-14 sm:my-16 flex justify-center animate-in fade-in slide-in-from-bottom-6 duration-300 relative z-20"
+          >
+            <div className="w-full max-w-[420px] relative">
+              {/* Atmospheric emerald glow behind card in footer */}
+              <div className="absolute inset-0 bg-[#00F0A0]/20 blur-3xl rounded-full pointer-events-none -z-10" />
+              <ReferFriendCard onClose={() => setShowReferCard(false)} />
+            </div>
+          </div>
+        )}
 
         {/* Copyright and Legal Line */}
         <div className="font-tosh flex flex-col sm:flex-row items-center justify-between gap-4 py-8 text-xs text-white">

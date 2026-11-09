@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import CartDropdown from "./CartDropdown";
 import CheckoutModal from "./CheckoutModal";
+import ReferFriendModal from "./ReferFriendModal";
 
 function shortAddress(addr: string) {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
@@ -18,11 +19,12 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-  const isProductsPage = pathname === "/products";
+  const isProductsPage = pathname === "/products" || (pathname?.startsWith("/products") ?? false);
 
   const { address, isSignedIn, isLoading, signOut } = useAuth();
-  const { itemCount, isCartOpen, setIsCartOpen } = useCart();
+  const { itemCount, totalUsd, isCartOpen, setIsCartOpen } = useCart();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [isReferOpen, setIsReferOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -73,17 +75,46 @@ export default function Header() {
             >
               FAQs
             </Link>
-            <Link
-              href="/#invite"
-              id="nav-invite-a-friend"
-              className="text-sm font-medium text-white hover:text-white/80 transition-colors"
+
+            <button
+              type="button"
+              id="nav-refer-a-friend"
+              onClick={() => setIsReferOpen(true)}
+              className="text-sm font-medium text-white hover:text-white/80 transition-colors py-2 cursor-pointer"
             >
-              Invite a friend
-            </Link>
+              Refer a friend
+            </button>
           </div>
 
           {/* CTA buttons */}
           <div className="hidden md:flex items-center gap-3">
+            {/* Cart Icon on Product Page - Top Right Corner */}
+            {isProductsPage && (
+              <div className="relative">
+                <button
+                  type="button"
+                  id="header-cart-btn"
+                  onClick={() => setIsCartOpen(!isCartOpen)}
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/10 hover:bg-white/15 border border-white/20 text-white backdrop-blur-md transition-all cursor-pointer shadow-md hover:border-white/30"
+                  aria-label="View shopping cart"
+                >
+                  <div className="relative">
+                    <ShoppingCart className="w-5 h-5 text-[#00F0A0]" />
+                    {itemCount > 0 && (
+                      <span className="absolute -top-1.5 -right-2 bg-[#DE1D35] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                        {itemCount}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-xs font-bold text-white font-mono">
+                    {itemCount > 0 ? `${itemCount} ($${totalUsd.toFixed(2)})` : "Cart (0)"}
+                  </span>
+                </button>
+
+                <CartDropdown onCheckout={() => setIsCheckoutOpen(true)} />
+              </div>
+            )}
+
             {isLoading ? (
               <div className="w-24 h-9 bg-white/10 rounded-full animate-pulse" />
             ) : isSignedIn && address ? (
@@ -122,15 +153,37 @@ export default function Header() {
             ) : null}
           </div>
 
-          {/* Mobile hamburger */}
-          <button
-            id="header-menu-toggle"
-            aria-label={isOpen ? "Close menu" : "Open menu"}
-            className="md:hidden p-2 rounded-lg text-gray-300 hover:bg-white/8 transition-colors"
-            onClick={() => setIsOpen((v) => !v)}
-          >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* Mobile Right Corner: Cart (on product page) + Hamburger */}
+          <div className="md:hidden flex items-center gap-2">
+            {isProductsPage && (
+              <div className="relative">
+                <button
+                  type="button"
+                  id="mobile-header-cart-btn"
+                  onClick={() => setIsCartOpen(!isCartOpen)}
+                  className="relative p-2 rounded-full bg-white/10 text-white flex items-center justify-center cursor-pointer border border-white/10"
+                  aria-label="View shopping cart"
+                >
+                  <ShoppingCart className="w-5 h-5 text-[#00F0A0]" />
+                  {itemCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-[#DE1D35] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                      {itemCount}
+                    </span>
+                  )}
+                </button>
+                <CartDropdown onCheckout={() => setIsCheckoutOpen(true)} />
+              </div>
+            )}
+
+            <button
+              id="header-menu-toggle"
+              aria-label={isOpen ? "Close menu" : "Open menu"}
+              className="p-2 rounded-lg text-gray-300 hover:bg-white/8 transition-colors"
+              onClick={() => setIsOpen((v) => !v)}
+            >
+              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </nav>
       </div>
 
@@ -156,14 +209,18 @@ export default function Header() {
             >
               FAQs
             </Link>
-            <Link
-              href="/#invite"
-              id="mobile-nav-invite-a-friend"
-              className="text-base font-medium text-white py-2.5 px-3 rounded-lg hover:bg-white/6 transition-colors"
-              onClick={() => setIsOpen(false)}
+
+            <button
+              type="button"
+              id="mobile-nav-refer-a-friend"
+              onClick={() => {
+                setIsOpen(false);
+                setIsReferOpen(true);
+              }}
+              className="text-base font-medium text-white py-2.5 px-3 rounded-lg hover:bg-white/6 transition-colors text-left cursor-pointer"
             >
-              Invite a friend
-            </Link>
+              Refer a friend
+            </button>
 
             <div className="flex flex-col gap-3 pt-4 border-t border-white/10 mt-2">
               {isSignedIn && address ? (
@@ -205,6 +262,9 @@ export default function Header() {
       )}
       {/* Checkout Modal */}
       <CheckoutModal isOpen={isCheckoutOpen} onClose={() => setIsCheckoutOpen(false)} />
+
+      {/* Refer a Friend Modal */}
+      <ReferFriendModal isOpen={isReferOpen} onClose={() => setIsReferOpen(false)} />
     </header>
   );
 }

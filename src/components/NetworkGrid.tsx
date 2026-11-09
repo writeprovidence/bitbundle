@@ -37,7 +37,7 @@ const features = [
 const networkCards = [
   { name: "MTN", tagline: "Largest network", bg: "#ffcc00", text: "#1a1a00", initial: "M" },
   { name: "Airtel", tagline: "Fast coverage", bg: "#e40000", text: "#ffffff", initial: "A" },
-  { name: "Glo", tagline: "Data grandmaster", bg: "#48b834", text: "#ffffff", initial: "G" },
+  { name: "Glo", tagline: "Largest coverage", bg: "#48b834", text: "#ffffff", initial: "G" },
   { name: "9mobile", tagline: "4G everywhere", bg: "#006633", text: "#ffffff", initial: "9" },
 ];
 

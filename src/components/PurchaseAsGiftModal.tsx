@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Gift, X, ShoppingCart } from "lucide-react";
+import { Gift, X } from "lucide-react";
 import Image from "next/image";
 
 export interface GiftModalData {
@@ -63,7 +63,7 @@ export default function PurchaseAsGiftModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
       <div
         className="relative w-full max-w-lg bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl border border-gray-100 text-gray-900 animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
@@ -206,14 +206,14 @@ export default function PurchaseAsGiftModal({
             </div>
           </div>
 
-          {/* Add to cart red button */}
+          {/* Continue to gift checkout button */}
           <div className="pt-2">
             <button
               type="submit"
-              className="w-full py-3 sm:py-3.5 px-6 bg-[#DE1D35] hover:bg-[#c21429] active:scale-[0.99] text-white font-bold text-sm sm:text-base rounded-full shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3 sm:py-3.5 px-6 bg-[#00F0A0] hover:bg-[#05e598] active:scale-[0.99] text-[#030A16] font-extrabold text-sm sm:text-base rounded-full shadow-[0_4px_16px_rgba(0,240,160,0.3)] hover:shadow-[0_4px_22px_rgba(0,240,160,0.45)] transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <ShoppingCart className="w-4 h-4" />
-              <span>Add to cart</span>
+              <Gift className="w-4 h-4 fill-current" />
+              <span>Continue to gift checkout</span>
             </button>
           </div>
         </form>

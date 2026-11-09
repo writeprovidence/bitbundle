@@ -36,10 +36,10 @@ export default function AssistantModal({
     // Smart automated reply
     setTimeout(() => {
       const lower = userText.toLowerCase();
-      let botResponse = "You can refill MTN, Airtel, Glo, and 9mobile instantly using USDT, cUSD, Ethereum, or Bitcoin.";
+      let botResponse = "You can top up MTN, Airtel, Glo, and 9mobile instantly.";
 
       if (lower.includes("mtn")) {
-        botResponse = "MTN refills start from 5 NGN up to 50,000 NGN. Average delivery time is under 30 seconds!";
+        botResponse = "MTN top-ups start from 5 NGN up to 50,000 NGN. Average delivery time is under 30 seconds!";
       } else if (lower.includes("gift")) {
         botResponse = "Yes! You can click 'Purchase as gift' to send airtime directly to a loved one with a personalized note and email notification.";
       } else if (lower.includes("crypto") || lower.includes("pay") || lower.includes("wallet")) {
@@ -122,7 +122,7 @@ export default function AssistantModal({
             Supported tokens
           </button>
           <button
-            onClick={() => setInput("MTN refill delivery speed")}
+            onClick={() => setInput("MTN top-up delivery speed")}
             className="text-[11px] font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 px-2.5 py-1 rounded-full whitespace-nowrap cursor-pointer"
           >
             Delivery speed

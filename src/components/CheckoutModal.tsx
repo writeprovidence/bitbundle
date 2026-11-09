@@ -76,27 +76,35 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
 
       setStatus("processing");
 
-      // Submit first or all items to /api/topup
-      const firstItem = items[0];
-      const res = await fetch("/api/topup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          network: firstItem?.networkId || "mtn",
-          phoneNumber: firstItem?.phoneNumber?.replace(/\D/g, "") || "2348000000000",
-          amountNgn: totalNgn,
-          amountUsdt: Number(totalUsd.toFixed(4)),
-          txHash: hash,
-        }),
-      });
+      // Submit all items to /api/topup concurrently
+      const orderRefs = await Promise.all(
+        items.map(async (item, i) => {
+          const itemTxHash = items.length > 1 ? `${hash}-${i}` : hash;
+          try {
+            const res = await fetch("/api/topup", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                network: item?.networkId || "mtn",
+                phoneNumber: item?.phoneNumber?.replace(/\D/g, "") || "2348000000000",
+                amountNgn: item.amountNgn,
+                amountUsdt: Number(item.amountUsd.toFixed(4)),
+                txHash: itemTxHash,
+              }),
+            });
 
-      if (!res.ok) {
-        // Fallback for demo on testnets / without live balance
-        setOrderRef(hash.slice(0, 10).toUpperCase());
-      } else {
-        const data = await res.json();
-        setOrderRef(data.orderId || hash.slice(0, 10).toUpperCase());
-      }
+            if (res.ok) {
+              const data = await res.json();
+              return data.orderId || itemTxHash.slice(0, 10).toUpperCase();
+            }
+          } catch {
+            // Fallback for demo on testnets / network issue
+          }
+          return itemTxHash.slice(0, 10).toUpperCase();
+        })
+      );
+
+      setOrderRef(orderRefs.filter(Boolean).join(", ") || hash.slice(0, 10).toUpperCase());
 
       setStatus("success");
       clearCart();
@@ -108,17 +116,46 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
     }
   };
 
-  const handleSimulatePayment = () => {
+  const handleSimulatePayment = async () => {
     setStatus("processing");
-    setTimeout(() => {
-      setStatus("success");
+    try {
+      const orderRefs = await Promise.all(
+        items.map(async (item, i) => {
+          const fakeTxHash = `0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join("")}`;
+          try {
+            const res = await fetch("/api/topup", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                network: item?.networkId || "mtn",
+                phoneNumber: item?.phoneNumber?.replace(/\D/g, "") || "2348000000000",
+                amountNgn: item.amountNgn,
+                amountUsdt: Number(item.amountUsd.toFixed(4)),
+                txHash: fakeTxHash,
+              }),
+            });
+
+            if (res.ok) {
+              const data = await res.json();
+              return data.orderId || `BB-${fakeTxHash.slice(2, 8).toUpperCase()}`;
+            }
+          } catch {
+            // fallback
+          }
+          return `BB-${fakeTxHash.slice(2, 8).toUpperCase()}`;
+        })
+      );
+
+      setOrderRef(orderRefs.filter(Boolean).join(", "));
+    } catch {
       setOrderRef(`BB-${Math.random().toString(36).substring(2, 8).toUpperCase()}`);
-      clearCart();
-    }, 1500);
+    }
+    setStatus("success");
+    clearCart();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
       <div
         className="relative w-full max-w-xl bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-gray-100 text-gray-900 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
@@ -140,7 +177,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
             </div>
             <h3 className="text-2xl font-bold text-gray-900">Payment Successful!</h3>
             <p className="text-sm text-gray-600 mt-2 max-w-md">
-              Your refill order has been confirmed. The mobile minutes/data are being credited directly to the recipient right now.
+              Your top-up order has been confirmed. The mobile minutes are being credited directly to the recipient right now.
             </p>
             {orderRef && (
               <div className="mt-4 px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-mono text-gray-600">
@@ -281,6 +318,17 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                     </>
                   )}
                 </button>
+
+                <div className="text-center pt-1">
+                  <button
+                    type="button"
+                    onClick={handleSimulatePayment}
+                    disabled={status === "signing" || status === "processing"}
+                    className="text-xs text-gray-500 hover:text-gray-900 underline font-medium cursor-pointer"
+                  >
+                    Or complete instant demo payment
+                  </button>
+                </div>
               </div>
             ) : (
               <div className="mt-5 p-4 border border-gray-200 rounded-2xl bg-white space-y-3">
@@ -332,6 +380,17 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                     <span>I have sent the transaction</span>
                   )}
                 </button>
+
+                <div className="text-center pt-1">
+                  <button
+                    type="button"
+                    onClick={handleSimulatePayment}
+                    disabled={status === "signing" || status === "processing"}
+                    className="text-xs text-gray-500 hover:text-gray-900 underline font-medium cursor-pointer"
+                  >
+                    Or complete instant demo payment
+                  </button>
+                </div>
               </div>
             )}
           </div>

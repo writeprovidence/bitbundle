@@ -66,7 +66,7 @@ export default function CategoryNavbar({
                   : "text-gray-500 hover:text-gray-800"
               }`}
             >
-              Phone Refills
+              Phone Top-ups
             </button>
           </nav>
 

@@ -3,6 +3,7 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Search,
   ArrowRight,
@@ -16,11 +17,13 @@ import {
   QrCode,
   CreditCard,
   ChevronDown,
+  ShoppingCart,
 } from "lucide-react";
 import TopupCard from "./TopupCard";
 import RefillDetailsView, { OPERATORS } from "./RefillDetailsView";
 import AssistantModal from "./AssistantModal";
 import CheckoutModal from "./CheckoutModal";
+import { useCart } from "@/contexts/CartContext";
 
 export interface ProductItem {
   id: string;
@@ -337,6 +340,7 @@ function CountryFlag({ code, className = "w-5 h-3.5" }: { code: string; classNam
 }
 
 export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: string }) {
+  const router = useRouter();
   const [selectedCountry, setSelectedCountry] = useState<CountryOption>(COUNTRIES[0]);
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const [countrySearch, setCountrySearch] = useState("");
@@ -350,6 +354,7 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
   const [waitlistSuccess, setWaitlistSuccess] = useState(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const { itemCount, totalUsd, isCartOpen, setIsCartOpen } = useCart();
 
   useEffect(() => {
     if (initialNetwork) {
@@ -385,15 +390,23 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
     );
   }, [countrySearch]);
 
-  // Filter products by country networks and search query
+  // Products list with dynamic inStock / out-of-stock badge per country
   const filteredProducts = useMemo(() => {
-    let inStockList = PRODUCTS.filter((p) => p.inStock);
-    if (selectedCountry.networks && selectedCountry.networks.length > 0) {
-      inStockList = inStockList.filter((p) => selectedCountry.networks.includes(p.networkId));
-    }
-    if (!searchQuery.trim()) return inStockList;
+    const list = PRODUCTS.map((product) => {
+      const isSupportedInCountry = selectedCountry.networks?.includes(product.networkId) ?? true;
+      const isActuallyInStock = product.inStock && isSupportedInCountry;
+
+      return {
+        ...product,
+        inStock: isActuallyInStock,
+        badge: !isActuallyInStock ? "Out Of Stock" : product.badge,
+        badgeType: !isActuallyInStock ? ("outofstock" as const) : product.badgeType,
+      };
+    });
+
+    if (!searchQuery.trim()) return list;
     const query = searchQuery.toLowerCase();
-    return inStockList.filter(
+    return list.filter(
       (p) =>
         p.name.toLowerCase().includes(query) ||
         p.category.toLowerCase().includes(query) ||
@@ -406,39 +419,31 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
     if (!phoneNumber.trim()) return;
 
     const detected = detectOperator(phoneNumber);
-    const countryProducts = PRODUCTS.filter(
-      (p) => p.inStock && selectedCountry.networks.includes(p.networkId)
-    );
+    const countryProducts = filteredProducts;
     const matchedProduct =
       countryProducts.find((p) => p.networkId === detected) ||
+      countryProducts.find((p) => p.inStock) ||
       countryProducts[0] ||
       PRODUCTS[0];
-    
-    // Select and open purchase modal
-    setSelectedProduct(matchedProduct);
-    setTimeout(() => {
-      window.dispatchEvent(
-        new CustomEvent("bitbundle:select-network", {
-          detail: { id: matchedProduct.networkId },
-        })
-      );
-    }, 100);
+
+    const params = new URLSearchParams();
+    params.set("phone", phoneNumber.trim());
+    if (selectedCountry.code) {
+      params.set("country", selectedCountry.code);
+    }
+    router.push(`/products/${matchedProduct.networkId}?${params.toString()}`);
   };
 
   const handleCardClick = (product: ProductItem) => {
-    if (!product.inStock) {
-      setOutOfStockModal(product);
-      setWaitlistSuccess(false);
-      return;
+    const params = new URLSearchParams();
+    if (phoneNumber.trim()) {
+      params.set("phone", phoneNumber.trim());
     }
-    setSelectedProduct(product);
-    setTimeout(() => {
-      window.dispatchEvent(
-        new CustomEvent("bitbundle:select-network", {
-          detail: { id: product.networkId },
-        })
-      );
-    }, 100);
+    if (selectedCountry.code) {
+      params.set("country", selectedCountry.code);
+    }
+    const query = params.toString() ? `?${params.toString()}` : "";
+    router.push(`/products/${product.networkId}${query}`);
   };
 
   const handleJoinWaitlist = (e: React.FormEvent) => {
@@ -448,29 +453,32 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
     }
   };
 
+  const handleCloseProductModal = () => {
+    setSelectedProduct(null);
+    if (typeof window !== "undefined") {
+      if (window.location.pathname.startsWith("/products/")) {
+        window.history.pushState(null, "", "/products");
+      } else if (window.location.search.includes("network=")) {
+        window.history.pushState(null, "", "/products");
+      }
+    }
+  };
+
   return (
     <div className="w-full bg-[#F4F6F8] text-gray-900 font-sans pt-20">
-      {selectedProduct ? (
-        <RefillDetailsView
-          operatorId={selectedProduct.networkId as any}
-          initialPhone={phoneNumber}
-          onBack={() => setSelectedProduct(null)}
-        />
-      ) : (
-        <>
-          {/* ──────────────────────────────────────────────────────────
-              1. HERO BANNER (Dark Pine / Emerald Background with Input)
-          ────────────────────────────────────────────────────────── */}
-          <section className="relative bg-[#010C24] text-white pt-16 pb-16 sm:pt-24 sm:pb-24 lg:pt-28 lg:pb-28 px-4 sm:px-6 lg:px-8 overflow-visible">
-        {/* Subtle radial ambient glow */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-40"
-          style={{
-            background: "radial-gradient(circle at 50% 25%, rgba(0, 229, 153, 0.18) 0%, transparent 70%)",
-          }}
-        />
+      {/* ──────────────────────────────────────────────────────────
+          1. HERO BANNER (Dark Pine / Emerald Background with Input)
+      ────────────────────────────────────────────────────────── */}
+      <section className="relative bg-[#010C24] text-white pt-16 pb-16 sm:pt-20 sm:pb-24 lg:pt-24 lg:pb-28 px-4 sm:px-6 lg:px-8 overflow-visible">
+            {/* Subtle radial ambient glow */}
+            <div
+              className="absolute inset-0 pointer-events-none opacity-40"
+              style={{
+                background: "radial-gradient(circle at 50% 25%, rgba(0, 229, 153, 0.18) 0%, transparent 70%)",
+              }}
+            />
 
-        <div className="relative max-w-4xl mx-auto text-center z-10">
+            <div className="relative max-w-4xl mx-auto text-center z-10">
           <h1 className="font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-[42px] leading-tight text-white tracking-tight mb-10 sm:mb-14 max-w-3xl mx-auto">
             Top up prepaid mobile phones with USDT and other cryptocurrencies from anywhere in the world
           </h1>
@@ -620,14 +628,13 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
 
                   {/* Brand Logo Presentation: straight and enlarged */}
                   {product.logoType === "mtn" && (
-                    <Image
-                      src="/assets/mtn_banner.jpg"
-                      alt="MTN"
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
-                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
-                      priority
-                    />
+                    <div className="w-full h-full bg-[#FFCC00] rounded-2xl flex items-center justify-center p-4">
+                      <div className="w-36 h-22 sm:w-40 sm:h-24 border-[4.5px] border-black rounded-full flex items-center justify-center">
+                        <span className="text-3xl font-black tracking-tight text-black select-none">
+                          MTN
+                        </span>
+                      </div>
+                    </div>
                   )}
 
                   {product.logoType === "airtel" && (
@@ -838,7 +845,7 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
                   Instant top-up delivered
                 </h3>
                 <p className="text-xs sm:text-sm text-gray-600 mt-2 leading-relaxed">
-                  As soon as your transaction is confirmed on-chain, airtime or data is credited directly to the phone.
+                  As soon as your transaction is confirmed on-chain, airtime is credited directly to the phone.
                 </p>
               </div>
             </div>
@@ -846,8 +853,7 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
         </div>
       </section>
 
-        </>
-      )}
+
 
       {/* ──────────────────────────────────────────────────────────
           MODAL: OUT OF STOCK ITEM
@@ -863,15 +869,50 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
               <X className="w-5 h-5" />
             </button>
 
-            <div className="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mb-4">
-              <AlertCircle className="w-6 h-6" />
-            </div>
+            {/* Visual Card Preview for Out Of Stock Operator */}
+            {outOfStockModal.logoType === "mtn" && (
+              <div className="relative w-full h-36 bg-[#FFCC00] rounded-2xl flex items-center justify-center mb-6 shadow-sm overflow-hidden">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm select-none">
+                  Out Of Stock
+                </span>
+                <div className="w-32 h-20 border-[4px] border-black rounded-full flex items-center justify-center">
+                  <span className="text-2xl font-black tracking-tight text-black select-none">MTN</span>
+                </div>
+              </div>
+            )}
+
+            {outOfStockModal.logoType === "airtel" && (
+              <div className="relative w-full h-32 bg-white rounded-2xl border border-gray-200 flex items-center justify-center mb-6 shadow-sm overflow-hidden p-4">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm select-none">
+                  Out Of Stock
+                </span>
+                <Image src="/assets/airtel-brand-logo.png" alt="Airtel" width={160} height={60} className="w-auto h-12 object-contain" />
+              </div>
+            )}
+
+            {outOfStockModal.logoType === "glo" && (
+              <div className="relative w-full h-32 bg-white rounded-2xl border border-gray-200 flex items-center justify-center mb-6 shadow-sm overflow-hidden p-4">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm select-none">
+                  Out Of Stock
+                </span>
+                <Image src="/assets/glo.jpg" alt="Glo" width={80} height={80} className="w-16 h-16 rounded-xl object-cover" />
+              </div>
+            )}
+
+            {outOfStockModal.logoType === "9mobile" && (
+              <div className="relative w-full h-32 bg-[#045F40] rounded-2xl flex items-center justify-center mb-6 shadow-sm overflow-hidden p-4">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm select-none">
+                  Out Of Stock
+                </span>
+                <Image src="/assets/9mobile-brand-logo.png" alt="9mobile" width={120} height={60} className="w-auto h-14 object-contain brightness-0 invert" />
+              </div>
+            )}
 
             <h3 className="text-xl font-bold text-gray-900">
-              {outOfStockModal.name} is currently out of stock
+              {outOfStockModal.name} is currently out of stock in {selectedCountry.name}
             </h3>
             <p className="text-sm text-gray-600 mt-2 leading-relaxed">
-              We are currently restocking {outOfStockModal.name} PINs and vouchers. Leave your email to be notified instantly when stock arrives.
+              We are currently expanding coverage and restocking {outOfStockModal.name} in {selectedCountry.name}. Leave your email to be notified instantly when stock arrives.
             </p>
 
             {waitlistSuccess ? (
@@ -905,12 +946,15 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
               <button
                 type="button"
                 onClick={() => {
+                  const fallback = PRODUCTS.find((p) =>
+                    selectedCountry.networks.includes(p.networkId)
+                  ) || PRODUCTS[0];
                   setOutOfStockModal(null);
-                  setSelectedProduct(PRODUCTS[0]);
+                  setSelectedProduct(fallback);
                 }}
                 className="text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline"
               >
-                Choose MTN or Airtel →
+                Choose {selectedCountry.networks.map(n => n.toUpperCase()).join(" or ")} →
               </button>
             </div>
           </div>
@@ -928,6 +972,40 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
       />
+
+      {/* Floating Cart Pill on Product Page */}
+      {itemCount > 0 && (
+        <div className="fixed bottom-6 right-6 z-40 animate-in fade-in slide-in-from-bottom-4 duration-300">
+          <button
+            type="button"
+            id="product-page-floating-cart-btn"
+            onClick={() => setIsCartOpen(true)}
+            className="flex items-center gap-3 bg-[#010C24] hover:bg-[#07173e] text-white px-5 py-3.5 rounded-full shadow-[0_10px_35px_rgba(0,0,0,0.45)] border border-white/20 transition-all hover:scale-105 cursor-pointer group"
+          >
+            <div className="relative">
+              <ShoppingCart className="w-5 h-5 text-[#00F0A0]" />
+              <span className="absolute -top-2 -right-2 bg-[#DE1D35] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                {itemCount}
+              </span>
+            </div>
+            <div className="text-left font-sans">
+              <div className="text-[11px] text-gray-400 font-medium">Cart ({itemCount})</div>
+              <div className="text-sm font-bold text-white font-mono leading-none">
+                ${totalUsd.toFixed(2)} USD
+              </div>
+            </div>
+            <span
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsCheckoutOpen(true);
+              }}
+              className="ml-1 px-3.5 py-1.5 bg-[#00F0A0] hover:bg-[#05e598] text-[#030A16] font-bold text-xs rounded-full transition-colors"
+            >
+              Checkout →
+            </span>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

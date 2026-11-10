@@ -162,7 +162,7 @@ export default function CartDropdown({ onCheckout }: CartDropdownProps) {
               setIsCartOpen(false);
               onCheckout();
             }}
-            className="w-full py-3 bg-[#DE1D35] hover:bg-[#c21429] active:scale-[0.99] text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center justify-center cursor-pointer"
+            className="w-full py-3.5 bg-[#DE1D35] hover:bg-[#c21429] active:scale-[0.99] text-white font-extrabold text-sm rounded-full shadow-md transition-all flex items-center justify-center cursor-pointer"
           >
             Checkout
           </button>

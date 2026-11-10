@@ -965,15 +965,7 @@ export default function RefillDetailsView({
           )}
         </div>
 
-        {/* Report an Issue */}
-        <div className="pt-3.5 pb-2 flex justify-end">
-          <a
-            href="mailto:support@bitbundle.io?subject=Issue%20with%20top-up"
-            className="text-xs text-slate-500 hover:text-slate-900 underline font-medium"
-          >
-            Report an Issue
-          </a>
-        </div>
+
       </div>
     </div>
   );

@@ -3,6 +3,12 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 
+const manrope = localFont({
+  src: "../fonts/Manrope-VariableFont_wght.ttf",
+  variable: "--font-manrope",
+  display: "swap",
+});
+
 const toshB = localFont({
   src: [
     {
@@ -50,42 +56,7 @@ const toshB = localFont({
   display: "swap",
 });
 
-const ppMori = localFont({
-  src: [
-    {
-      path: "../fonts/PPMori-Extralight.otf",
-      weight: "200",
-      style: "normal",
-    },
-    {
-      path: "../fonts/PPMori-Regular.otf",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "../fonts/PPMori-RegularItalic.otf",
-      weight: "400",
-      style: "italic",
-    },
-    {
-      path: "../fonts/PPMori-SemiBold.otf",
-      weight: "600",
-      style: "normal",
-    },
-    {
-      path: "../fonts/PPMori-SemiBold.otf",
-      weight: "700",
-      style: "normal",
-    },
-    {
-      path: "../fonts/PPMori-SemiBold.otf",
-      weight: "800",
-      style: "normal",
-    },
-  ],
-  variable: "--font-mori",
-  display: "swap",
-});
+
 
 export const metadata: Metadata = {
   title: "Bitbundle — Buy Airtime with Crypto",
@@ -113,8 +84,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${toshB.variable} ${ppMori.variable} h-full`}>
-      <body className={`${ppMori.className} min-h-full flex flex-col antialiased`}>
+    <html lang="en" className={`${toshB.variable} ${manrope.variable} h-full`}>
+      <body className={`${manrope.className} min-h-full flex flex-col antialiased`}>
         <Providers>{children}</Providers>
       </body>
     </html>

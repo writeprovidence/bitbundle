@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, LogOut, LayoutDashboard, ShoppingCart } from "lucide-react";
+import { Menu, X, LogOut, ShoppingCart, User, ChevronDown } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import CartDropdown from "./CartDropdown";
@@ -25,6 +25,18 @@ export default function Header() {
   const { itemCount, totalUsd, isCartOpen, setIsCartOpen } = useCart();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isReferOpen, setIsReferOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -88,7 +100,7 @@ export default function Header() {
 
           {/* CTA buttons */}
           <div className="hidden md:flex items-center gap-3">
-            {/* Cart Icon on Product Page - Top Right Corner */}
+            {/* Cart Button with Popover (only on products pages, not on landing page) */}
             {isProductsPage && (
               <div className="relative">
                 <button
@@ -118,30 +130,45 @@ export default function Header() {
             {isLoading ? (
               <div className="w-24 h-9 bg-white/10 rounded-full animate-pulse" />
             ) : isSignedIn && address ? (
-              <>
-                <Link
-                  href="/dashboard"
-                  id="header-dashboard-btn"
-                  className="flex items-center gap-1.5 text-sm font-semibold text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/8 transition-colors"
-                >
-                  <LayoutDashboard className="w-4 h-4" />
-                  Dashboard
-                </Link>
-                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#00d4ff]/25 bg-[#00d4ff]/10">
-                  <span className="w-2 h-2 rounded-full bg-[#00E599] animate-pulse-dot" />
-                  <span id="header-wallet-address" className="text-xs font-mono font-semibold text-[#00d4ff]">
-                    {shortAddress(address)}
-                  </span>
-                </div>
+              <div className="relative" ref={userMenuRef}>
+                {/* Connected Wallet Pill Button */}
                 <button
-                  id="header-signout-btn"
-                  onClick={() => signOut()}
-                  className="p-2 rounded-full text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                  aria-label="Sign out"
+                  type="button"
+                  id="header-user-menu-btn"
+                  onClick={() => setIsUserMenuOpen((prev) => !prev)}
+                  className="flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-[#0B1527] border border-slate-700/70 hover:border-slate-500/80 transition-all cursor-pointer shadow-xs select-none"
+                  aria-expanded={isUserMenuOpen}
                 >
-                  <LogOut className="w-4 h-4" />
+                  <div className="w-6 h-6 rounded-full bg-[#05332B] flex items-center justify-center text-[#2DD4BF] shrink-0">
+                    <User className="w-3.5 h-3.5 stroke-[2.2]" />
+                  </div>
+                  <span className="text-xs sm:text-sm font-mono font-bold text-white tracking-tight">
+                    {`${address.slice(0, 6)}...${address.slice(-4).toLowerCase()}`}
+                  </span>
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${
+                      isUserMenuOpen ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
-              </>
+
+                {/* Dropdown Menu */}
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-44 bg-[#0B1527] border border-slate-700/70 rounded-2xl p-1.5 shadow-2xl backdrop-blur-md z-50 animate-in fade-in zoom-in-95 duration-150">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        signOut();
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-semibold text-rose-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors text-left cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4 text-rose-500" />
+                      <span>Disconnect</span>
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : !isProductsPage ? (
               <Link
                 href="/products"
@@ -153,7 +180,7 @@ export default function Header() {
             ) : null}
           </div>
 
-          {/* Mobile Right Corner: Cart (on product page) + Hamburger */}
+          {/* Mobile Right Corner: Cart (products pages only) + Hamburger */}
           <div className="md:hidden flex items-center gap-2">
             {isProductsPage && (
               <div className="relative">
@@ -224,28 +251,28 @@ export default function Header() {
 
             <div className="flex flex-col gap-3 pt-4 border-t border-white/10 mt-2">
               {isSignedIn && address ? (
-                <>
-                  <Link
-                    href="/dashboard"
-                    id="mobile-dashboard-btn"
-                    className="flex items-center gap-2 text-sm font-semibold text-gray-200 py-2.5 px-3 rounded-lg hover:bg-white/6 transition-colors"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    <LayoutDashboard className="w-4 h-4" />
-                    Dashboard
-                  </Link>
-                  <div className="px-3 py-2 text-xs font-mono font-semibold text-[#00d4ff] bg-[#00d4ff]/10 border border-[#00d4ff]/20 rounded-full text-center">
-                    {shortAddress(address)}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-[#0B1527] border border-slate-700/70">
+                    <div className="w-6 h-6 rounded-full bg-[#05332B] flex items-center justify-center text-[#2DD4BF] shrink-0">
+                      <User className="w-3.5 h-3.5 stroke-[2.2]" />
+                    </div>
+                    <span className="text-xs font-mono font-bold text-white tracking-tight">
+                      {`${address.slice(0, 6)}...${address.slice(-4).toLowerCase()}`}
+                    </span>
                   </div>
+
                   <button
                     id="mobile-signout-btn"
-                    onClick={() => { signOut(); setIsOpen(false); }}
-                    className="flex items-center gap-2 text-sm font-semibold text-red-400 py-2 px-3 rounded-lg hover:bg-red-500/10 transition-colors text-left"
+                    onClick={() => {
+                      signOut();
+                      setIsOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2.5 text-sm font-semibold text-rose-500 hover:text-rose-400 py-2 px-3 rounded-lg hover:bg-rose-500/10 transition-colors text-left cursor-pointer"
                   >
-                    <LogOut className="w-4 h-4" />
-                    Sign out
+                    <LogOut className="w-4 h-4 text-rose-500" />
+                    <span>Disconnect</span>
                   </button>
-                </>
+                </div>
               ) : !isProductsPage ? (
                 <Link
                   href="/products"

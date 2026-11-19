@@ -489,7 +489,7 @@ export default function BulkUploadModal({
               type="button"
               disabled={validItems.length === 0}
               onClick={handleProceed}
-              className="flex items-center gap-2 py-2.5 px-6 bg-[#00F0A0] hover:bg-[#05e598] text-[#030A16] font-bold text-xs sm:text-sm rounded-full transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-xs active:scale-95"
+              className="flex items-center gap-2 py-2.5 px-6 bg-[#DE1D35] hover:bg-[#c21429] text-white font-bold text-xs sm:text-sm rounded-none transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-xs active:scale-95"
             >
               <span>
                 Proceed to Checkout ({validItems.length} number{validItems.length === 1 ? "" : "s"} · ${totalUsd})

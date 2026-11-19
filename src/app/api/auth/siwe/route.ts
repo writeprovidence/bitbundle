@@ -49,25 +49,37 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: "Nonce mismatch" }, { status: 422 });
     }
 
-    // Store wallet address in Supabase users table
-    const supabase = await createSupabaseAdminClient();
+    // Default userId from verified address
+    let userId = `usr_${fields.address.slice(2, 10).toLowerCase()}`;
 
-    const { data: user, error } = await supabase
-      .from("users")
-      .upsert(
-        { wallet_address: fields.address.toLowerCase() },
-        { onConflict: "wallet_address" },
-      )
-      .select("id")
-      .single();
+    // Try storing wallet address in Supabase users table if configured and reachable
+    try {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const isPlaceholder = !supabaseUrl || supabaseUrl.includes("your-project.supabase.co");
 
-    if (error) {
-      console.error("[SIWE] Supabase upsert error:", error);
-      return Response.json({ error: "Database error" }, { status: 500 });
+      if (!isPlaceholder) {
+        const supabase = await createSupabaseAdminClient();
+        const { data: user, error } = await supabase
+          .from("users")
+          .upsert(
+            { wallet_address: fields.address.toLowerCase() },
+            { onConflict: "wallet_address" },
+          )
+          .select("id")
+          .single();
+
+        if (user && !error) {
+          userId = user.id;
+        } else if (error) {
+          console.warn("[SIWE] Supabase non-critical warning:", error.message);
+        }
+      }
+    } catch (dbErr) {
+      console.warn("[SIWE] Supabase unreachable, proceeding with verified address session:", dbErr);
     }
 
     // Set session cookie
-    cookieStore.set("bb-session", JSON.stringify({ userId: user.id, address: fields.address }), {
+    cookieStore.set("bb-session", JSON.stringify({ userId, address: fields.address }), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
@@ -78,7 +90,7 @@ export async function POST(request: NextRequest) {
     // Clear nonce
     cookieStore.delete("siwe-nonce");
 
-    return Response.json({ ok: true, address: fields.address, userId: user.id });
+    return Response.json({ ok: true, address: fields.address, userId });
   } catch (err) {
     console.error("[SIWE] Verification error:", err);
     return Response.json({ error: "Verification failed" }, { status: 422 });

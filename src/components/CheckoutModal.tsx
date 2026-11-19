@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
-import Image from "next/image";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   X,
   CheckCircle,
@@ -13,20 +13,17 @@ import {
   Copy,
   Check,
   Gift,
-  Trash2,
-  Tag,
   Shield,
   Mail,
   Share2,
   HelpCircle,
-  RefreshCw,
   Sparkles,
   ChevronDown,
   Check as CheckIcon,
 } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { useWriteContract } from "wagmi";
+import { useAccount, useWriteContract } from "wagmi";
 import { parseUnits } from "viem";
 
 const USDT_CONTRACT = "0xdAC17F958D2ee523a2206206994597C13D831ec7" as const;
@@ -59,8 +56,12 @@ type CheckoutStep =
   | "completed"; // Step 5: Order completed
 
 export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
+  const router = useRouter();
   const { items, totalUsd, totalNgn, clearCart, removeItem } = useCart();
   const { isSignedIn, address, signIn } = useAuth();
+  const { isConnected, address: wagmiAddress } = useAccount();
+  const activeAddress = address || wagmiAddress;
+  const isWalletConnected = isSignedIn || isConnected;
   const { writeContractAsync } = useWriteContract();
 
   // Multi-step state
@@ -77,17 +78,9 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const [giftMessage, setGiftMessage] = useState("");
   const [giftSenderName, setGiftSenderName] = useState("");
 
-  // Step 2: Payment method
-  const [selectedWalletBalance, setSelectedWalletBalance] = useState<string>("base_eth");
-  const [selectedCrypto, setSelectedCrypto] = useState<"eth_base" | "eth_mainnet" | "usdt_arbitrum" | "btc" | "sol">("eth_base");
-
-  // Promo code
-  const [showPromoInput, setShowPromoInput] = useState(false);
-  const [promoCode, setPromoCode] = useState("");
-  const [promoApplied, setPromoApplied] = useState(false);
-
   // Transaction state
   const [isPaying, setIsPaying] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
   const [invoiceId, setInvoiceId] = useState("");
   const [orderRef, setOrderRef] = useState("");
   const [purchaseDate, setPurchaseDate] = useState("");
@@ -115,11 +108,18 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
     }
   }, [invoiceId]);
 
-  if (!isOpen) return null;
+  // Lock body scroll when modal is open so page stays completely static
+  useEffect(() => {
+    if (isOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [isOpen]);
 
-  // Approximate crypto conversion
-  const ethRateNgn = 2984642.72;
-  const totalEth = (totalNgn / ethRateNgn).toFixed(6);
+  if (!isOpen) return null;
 
   // First item preview helper
   const primaryItem = items[0] || {
@@ -150,6 +150,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   // Perform actual or simulated Web3 payment
   const handleExecutePayment = async () => {
     setIsPaying(true);
+    setPaymentError(null);
     setPurchaseDate(
       new Date().toLocaleDateString("en-US", {
         month: "2-digit",
@@ -161,9 +162,6 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
       })
     );
 
-    // Show step 4: Payment Pending
-    setStep("pending");
-
     try {
       if (isSignedIn) {
         const usdtUnits = parseUnits(totalUsd.toFixed(6), 6);
@@ -173,6 +171,9 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
           functionName: "transfer",
           args: [TREASURY_ADDRESS, usdtUnits],
         });
+
+        // Only show pending once user approves in wallet and tx is broadcast
+        setStep("pending");
 
         // Submit items to backend /api/topup
         const orderRefs = await Promise.all(
@@ -203,20 +204,31 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
         setOrderRef(orderRefs.filter(Boolean).join(", ") || hash.slice(0, 10).toUpperCase());
       } else {
         // Instant simulated fulfillment for demo/test
+        setStep("pending");
         await new Promise((resolve) => setTimeout(resolve, 3200));
         setOrderRef(`BB-${Math.random().toString(36).substring(2, 8).toUpperCase()}`);
       }
 
       setStep("completed");
       clearCart();
-    } catch (err) {
-      console.error(err);
-      // Even on local cancellation, allow completing for demo if user clicks continue
-      setTimeout(() => {
-        setOrderRef(`BB-${Math.random().toString(36).substring(2, 8).toUpperCase()}`);
-        setStep("completed");
-        clearCart();
-      }, 2500);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err || "");
+      const isUserRejected =
+        message.includes("User rejected") ||
+        message.includes("denied transaction signature") ||
+        message.includes("User denied");
+
+      if (isUserRejected) {
+        // User cancelled in their wallet - polite feedback without dev overlay
+        setPaymentError("Transaction cancelled in wallet. You can try again whenever you're ready.");
+      } else {
+        console.error(err);
+        setPaymentError(
+          message.length > 120
+            ? "Payment could not be completed. Please check your wallet balance and network."
+            : message
+        );
+      }
     } finally {
       setIsPaying(false);
     }
@@ -228,216 +240,28 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
-  const handleResetCheckout = () => {
-    setStep("email");
+  const handleClose = () => {
+    if (isPaying || step === "pending") return;
+    if (step === "completed") {
+      setStep("email");
+      router.push("/products");
+    }
     onClose();
   };
 
-  // Render Right Column (Summary / Order Details Sidebar)
-  const renderSummarySidebar = () => (
-    <div className="w-full lg:w-[360px] shrink-0 bg-white border border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between">
-      <div>
-        <h3 className="text-lg font-extrabold text-slate-900 tracking-tight mb-4">
-          {step === "pay" || step === "pending" || step === "completed" ? "Order details" : "Summary"}
-        </h3>
-
-        {/* Order Details header in later steps */}
-        {(step === "pay" || step === "pending" || step === "completed") && (
-          <div className="pb-4 mb-4 border-b border-slate-100 text-xs space-y-2.5">
-            <div className="flex items-center justify-between">
-              <span className="text-slate-500 font-medium">Email address</span>
-              <div className="flex items-center gap-1.5">
-                <span className="font-semibold text-slate-900 truncate max-w-[140px]">{email}</span>
-                {step === "pay" && (
-                  <button
-                    type="button"
-                    onClick={() => setStep("email")}
-                    className="text-slate-500 hover:text-slate-900 underline font-medium cursor-pointer"
-                  >
-                    Change
-                  </button>
-                )}
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-slate-500 font-medium">Payment method</span>
-              <div className="flex items-center gap-1.5">
-                <span className="font-semibold text-slate-900">ETH Base</span>
-                {step === "pay" && (
-                  <button
-                    type="button"
-                    onClick={() => setStep("payment_method")}
-                    className="text-slate-500 hover:text-slate-900 underline font-medium cursor-pointer"
-                  >
-                    Change
-                  </button>
-                )}
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-slate-500 font-medium">Invoice id</span>
-              <span className="font-mono text-[11px] text-slate-800 truncate max-w-[170px]" title={invoiceId}>
-                {invoiceId}
-              </span>
-            </div>
-
-            {purchaseDate && (
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500 font-medium">Purchase date</span>
-                <span className="text-slate-800 font-semibold">{purchaseDate}</span>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Items List in Sidebar */}
-        <div className="space-y-3 max-h-56 overflow-y-auto divide-y divide-slate-100 pr-1">
-          {items.map((it) => (
-            <div key={it.id} className="pt-3 first:pt-0 flex items-start justify-between gap-3 text-xs">
-              <div className="flex items-start gap-2.5 min-w-0">
-                {/* Yellow MTN brand thumbnail */}
-                {it.networkId === "mtn" ? (
-                  <div className="w-9 h-7 rounded-md bg-[#FFCC00] flex items-center justify-center p-0.5 border border-black/10 shrink-0 mt-0.5">
-                    <div className="w-full h-full border border-black rounded-full flex items-center justify-center">
-                      <span className="text-[8px] font-black tracking-tight text-black">MTN</span>
-                    </div>
-                  </div>
-                ) : it.networkId === "airtel" ? (
-                  <div className="w-9 h-7 rounded-md bg-white border border-slate-200 flex items-center justify-center p-1 shrink-0 mt-0.5">
-                    <Image src="/assets/airtel-brand-logo.png" alt="Airtel" width={32} height={14} className="w-auto h-3 object-contain" />
-                  </div>
-                ) : it.networkId === "glo" ? (
-                  <div className="w-9 h-7 rounded-md bg-white border border-slate-200 flex items-center justify-center p-0.5 shrink-0 mt-0.5">
-                    <Image src="/assets/glo.jpg" alt="Glo" width={28} height={28} className="w-5 h-5 object-cover rounded-xs" />
-                  </div>
-                ) : (
-                  <div className="w-9 h-7 rounded-md bg-[#045F40] flex items-center justify-center p-0.5 shrink-0 mt-0.5 text-[8px] font-bold text-white">
-                    9mobile
-                  </div>
-                )}
-
-                <div className="min-w-0">
-                  <div className="font-bold text-slate-900 truncate">{it.networkName}</div>
-                  <div className="text-slate-500 font-medium text-[11px] mt-0.5">
-                    {it.amountNgn.toFixed(2)} NGN value
-                  </div>
-
-                  {/* Gift badge with recipient email */}
-                  {it.isGift && (
-                    <div className="mt-1">
-                      <span className="inline-flex items-center gap-1 bg-[#DE1D35] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                        <Gift className="w-2.5 h-2.5" />
-                        <span>Gift {giftRecipientEmail ? giftRecipientEmail : email}</span>
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Price & Actions */}
-              <div className="text-right shrink-0">
-                <div className="font-bold text-slate-900">${it.amountUsd.toFixed(2)}</div>
-                {step === "email" && items.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeItem(it.id)}
-                    className="text-slate-400 hover:text-rose-600 mt-1 cursor-pointer p-0.5"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Promo code toggle row */}
-        {step !== "completed" && (
-          <div className="mt-5 pt-4 border-t border-slate-100">
-            <div className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-1.5 text-slate-700 font-semibold">
-                <Tag className="w-3.5 h-3.5 text-slate-500" />
-                <span>Enter a Promo Code</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowPromoInput(!showPromoInput)}
-                className={`w-9 h-5 rounded-full transition-colors p-0.5 flex items-center cursor-pointer ${
-                  showPromoInput ? "bg-slate-900 justify-end" : "bg-slate-200 justify-start"
-                }`}
-              >
-                <div className="w-4 h-4 rounded-full bg-white shadow-xs" />
-              </button>
-            </div>
-
-            {showPromoInput && (
-              <div className="mt-2.5 flex gap-2 animate-in fade-in duration-150">
-                <input
-                  type="text"
-                  value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value)}
-                  placeholder="Promo code"
-                  className="flex-1 px-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-slate-800"
-                />
-                <button
-                  type="button"
-                  onClick={() => setPromoApplied(true)}
-                  className="px-3 py-1.5 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-lg cursor-pointer transition-colors"
-                >
-                  Apply
-                </button>
-              </div>
-            )}
-            {promoApplied && (
-              <p className="text-[11px] text-emerald-600 font-semibold mt-1">
-                Promo code applied!
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* Total & Rates */}
-        <div className="mt-5 pt-4 border-t border-slate-100 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-bold text-slate-900">Total</span>
-            <div className="text-right">
-              <span className="text-base font-extrabold text-slate-900">
-                ${totalUsd.toFixed(2)}
-              </span>
-              {(step === "pay" || step === "pending" || step === "completed") && (
-                <span className="text-xs text-slate-500 block font-mono">
-                  {totalEth} ETH
-                </span>
-              )}
-            </div>
-          </div>
-
-          <div className="pt-2 text-[11px] text-slate-400 leading-relaxed flex items-start gap-1">
-            <RefreshCw className="w-3 h-3 shrink-0 mt-0.5 text-slate-400" />
-            <span>
-              We&apos;ve converted this price from NGN to USD at our rate of approximately 1 USD = 1,346.46 NGN
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200 overflow-y-auto"
-      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/60 backdrop-blur-xs select-none"
+      onClick={handleClose}
       role="dialog"
       aria-modal="true"
     >
       <div
-        className="relative w-full max-w-5xl bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-200 my-auto text-slate-900"
+        className="relative w-full max-w-5xl h-[92vh] md:h-[620px] bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col text-slate-900"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Navbar in Modal */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/40">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-100 bg-slate-50/40 shrink-0">
           <div className="flex items-center gap-3">
             {step !== "email" && step !== "completed" ? (
               <button
@@ -472,7 +296,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
             )}
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />
@@ -480,11 +304,40 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
           </div>
         </div>
 
-        {/* Main 2-Column Content */}
-        <div className="p-6 sm:p-10 max-h-[82vh] overflow-y-auto">
-          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start justify-between">
-            {/* ── LEFT COLUMN ── */}
-            <div className="flex-1 min-w-0 w-full max-w-xl">
+        {/* Main Content */}
+        <div className="p-4 sm:p-6 lg:p-10 flex-1 min-h-0 overflow-y-auto flex flex-col justify-center">
+          {step === "completed" ? (
+            <div className="py-12 sm:py-16 text-center flex flex-col items-center justify-center space-y-4 animate-in fade-in zoom-in-95 duration-200">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mb-1 shadow-xs">
+                <CheckCircle2 className="w-9 h-9 sm:w-11 sm:h-11 stroke-[2.2]" />
+              </div>
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                Order completed
+              </h2>
+              <p className="text-sm sm:text-base text-slate-500 font-medium max-w-sm">
+                Thank you for your purchase
+              </p>
+            </div>
+          ) : (
+            <>
+              {step === "payment_method" && (
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#0B1527] tracking-tight mb-4 sm:mb-6">
+                  Payment
+                </h2>
+              )}
+
+              {step === "pay" && (
+                <div className="flex items-center gap-2.5 mb-4 sm:mb-6">
+                  <div className="w-8 h-8 rounded-full bg-[#26A17B] text-white flex items-center justify-center font-bold text-sm">
+                    ₮
+                  </div>
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">
+                    Pay with USDT on Base
+                  </h2>
+                </div>
+              )}
+
+              <div className="flex flex-col min-h-full">
               {/* ── STEP 1: WHERE SHOULD WE SEND YOUR ORDER? ── */}
               {step === "email" && (
                 <div className="space-y-6 animate-in fade-in duration-150">
@@ -501,6 +354,12 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleContinueFromEmail();
+                        }
+                      }}
                       placeholder="you@example.com"
                       className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm sm:text-base text-slate-900 font-medium placeholder-slate-400 focus:outline-none focus:border-slate-800 transition-colors"
                     />
@@ -543,25 +402,24 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                     <button
                       type="button"
                       onClick={() => setIsSendAsGift(!isSendAsGift)}
-                      className={`w-11 h-6 rounded-full transition-colors p-0.5 flex items-center cursor-pointer ${
-                        isSendAsGift ? "bg-slate-900 justify-end" : "bg-slate-200 justify-start"
-                      }`}
+                      className={`w-11 h-6 rounded-full transition-colors p-0.5 flex items-center cursor-pointer ${isSendAsGift ? "bg-slate-900 justify-end" : "bg-slate-200 justify-start"
+                        }`}
                     >
                       <div className="w-5 h-5 rounded-full bg-white shadow-xs" />
                     </button>
                   </div>
 
-                  {/* Continue Button */}
-                  <div className="pt-2">
+                  {/* Continue button */}
+                  <div className="space-y-2.5 flex flex-col">
                     <button
                       type="button"
                       onClick={handleContinueFromEmail}
                       disabled={!email.trim() || !email.includes("@")}
-                      className="w-full sm:w-auto min-w-[200px] py-3.5 px-8 bg-[#DE1D35] hover:bg-[#c21429] text-white font-bold text-sm rounded-full transition-all cursor-pointer shadow-xs disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
+                      className="w-full py-3 px-8 bg-[#DE1D35] hover:bg-[#c21429] text-white font-bold text-sm rounded-none transition-all cursor-pointer shadow-xs disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
                     >
                       Continue
                     </button>
-                    <p className="text-[11px] text-slate-500 mt-3 leading-relaxed">
+                    <p className="text-[11px] text-slate-500 leading-relaxed text-center">
                       By clicking &apos;Continue&apos;, you agree to our{" "}
                       <span className="underline cursor-pointer">Terms &amp; Conditions</span> and{" "}
                       <span className="underline cursor-pointer">Privacy Policy</span>.
@@ -658,150 +516,106 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                     </div>
                   </div>
 
-                  <div className="pt-2">
-                    <button
-                      type="button"
-                      onClick={handleContinueFromGift}
-                      className="w-full sm:w-auto min-w-[200px] py-3.5 px-8 bg-[#DE1D35] hover:bg-[#c21429] text-white font-bold text-sm rounded-full transition-all cursor-pointer shadow-xs active:scale-95"
-                    >
-                      Continue
-                    </button>
-                  </div>
+                  {/* Continue button */}
+                  <button
+                    type="button"
+                    onClick={handleContinueFromGift}
+                    className="w-full py-3 px-8 bg-[#DE1D35] hover:bg-[#c21429] text-white font-bold text-sm rounded-none transition-all cursor-pointer shadow-xs active:scale-95"
+                  >
+                    Continue
+                  </button>
                 </div>
               )}
 
-              {/* ── STEP 2: PAYMENT METHOD ── */}
+              {/* ── STEP 2: PAYMENT & WALLET CONNECTION ── */}
               {step === "payment_method" && (
-                <div className="space-y-6 animate-in fade-in duration-150">
-                  <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                    Payment method
-                  </h2>
-
-                  {/* WALLETS BALANCES */}
+                <div className="animate-in fade-in duration-150">
+                  {/* Wallet Connection / Pay Action */}
                   <div>
-                    <div className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-2.5">
-                      Wallets Balances
-                    </div>
-                    <div className="space-y-2">
-                      <label
-                        onClick={() => setSelectedWalletBalance("base_eth")}
-                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer ${
-                          selectedWalletBalance === "base_eth"
-                            ? "border-slate-900 bg-slate-50/70"
-                            : "border-slate-200 hover:border-slate-300 bg-white"
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <input
-                            type="radio"
-                            name="wallet_balance"
-                            checked={selectedWalletBalance === "base_eth"}
-                            onChange={() => setSelectedWalletBalance("base_eth")}
-                            className="text-slate-900 focus:ring-slate-900"
-                          />
-                          <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white text-[10px] font-bold">
-                            Ξ
-                          </div>
-                          <span className="text-xs sm:text-sm font-bold text-slate-900">
-                            0.00015513 ETH <span className="font-normal text-slate-500">Base</span>
-                          </span>
+                    {!isWalletConnected ? (
+                      <div className="p-6 sm:p-8 bg-white border border-slate-200 rounded-2xl text-center space-y-4 shadow-xs">
+                        <div className="w-14 h-14 mx-auto rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-700 shadow-xs">
+                          <Wallet className="w-7 h-7 stroke-[1.75]" />
                         </div>
-                      </label>
+                        <div>
+                          <h3 className="text-base font-bold text-slate-900">
+                            Connect your wallet
+                          </h3>
 
-                      <label
-                        onClick={() => setSelectedWalletBalance("eth_main")}
-                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer opacity-60 ${
-                          selectedWalletBalance === "eth_main"
-                            ? "border-slate-900 bg-slate-50/70"
-                            : "border-slate-200 hover:border-slate-300 bg-white"
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <input
-                            type="radio"
-                            name="wallet_balance"
-                            checked={selectedWalletBalance === "eth_main"}
-                            onChange={() => setSelectedWalletBalance("eth_main")}
-                            className="text-slate-900 focus:ring-slate-900"
-                          />
-                          <div className="w-6 h-6 rounded-full bg-slate-400 flex items-center justify-center text-white text-[10px] font-bold">
-                            Ξ
-                          </div>
-                          <span className="text-xs sm:text-sm font-bold text-slate-700">
-                            0.00003481 ETH <span className="font-normal text-slate-400">Ethereum</span>{" "}
-                            <span className="text-[11px] text-slate-400">Not enough balance</span>
-                          </span>
                         </div>
-                      </label>
 
-                      <label
-                        onClick={() => setSelectedWalletBalance("usdt_arb")}
-                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer opacity-60 ${
-                          selectedWalletBalance === "usdt_arb"
-                            ? "border-slate-900 bg-slate-50/70"
-                            : "border-slate-200 hover:border-slate-300 bg-white"
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <input
-                            type="radio"
-                            name="wallet_balance"
-                            checked={selectedWalletBalance === "usdt_arb"}
-                            onChange={() => setSelectedWalletBalance("usdt_arb")}
-                            className="text-slate-900 focus:ring-slate-900"
-                          />
-                          <div className="w-6 h-6 rounded-full bg-emerald-600 flex items-center justify-center text-white text-[10px] font-bold">
-                            ₮
-                          </div>
-                          <span className="text-xs sm:text-sm font-bold text-slate-700">
-                            0.001763 USDT <span className="font-normal text-slate-400">Arbitrum</span>{" "}
-                            <span className="text-[11px] text-slate-400">Not enough balance</span>
-                          </span>
+                        <div className="pt-2 flex flex-col items-center">
+                          <button
+                            type="button"
+                            onClick={() => signIn()}
+                            className="w-full sm:w-auto min-w-[220px] py-3.5 px-8 bg-[#DE1D35] hover:bg-[#c21429] text-white font-bold text-sm rounded-none transition-all cursor-pointer shadow-xs active:scale-95 flex items-center justify-center gap-2"
+                          >
+                            <Wallet className="w-4 h-4" />
+                            <span>Connect Wallet</span>
+                          </button>
                         </div>
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* CHOOSE A PAYMENT METHOD */}
-                  <div>
-                    <div className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-2.5">
-                      Choose a Payment Method
-                    </div>
-                    <div className="space-y-2">
-                      <div className="p-3.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-white flex items-center justify-between cursor-pointer">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-6 h-6 rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold">
-                            ₿
-                          </div>
-                          <span className="text-xs sm:text-sm font-bold text-slate-900">BTC</span>
-                        </div>
-                        <ChevronDown className="w-4 h-4 text-slate-400" />
                       </div>
-
-                      <div
-                        onClick={() => setSelectedCrypto("eth_base")}
-                        className="p-3.5 rounded-xl border border-slate-900 bg-slate-50/70 flex items-center justify-between cursor-pointer"
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">
-                            Ξ
+                    ) : (
+                      <div className="p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl shadow-xs space-y-5">
+                        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+                          <div>
+                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                              Connected Wallet
+                            </div>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-base">🦊</span>
+                              <span className="font-mono text-sm font-bold text-slate-900">
+                                {activeAddress
+                                  ? `${activeAddress.slice(0, 6)}••••${activeAddress.slice(-4)}`
+                                  : "0xb404••••ea49"}
+                              </span>
+                            </div>
                           </div>
-                          <span className="text-xs sm:text-sm font-bold text-slate-900">ETH</span>
-                          <span className="text-xs text-slate-500 font-semibold">(Base Network)</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
+                              Base Ready
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => signIn()}
+                              className="text-xs font-bold text-slate-500 hover:text-rose-600 transition-colors cursor-pointer px-2 py-1"
+                            >
+                              Change
+                            </button>
+                          </div>
                         </div>
-                        <CheckIcon className="w-4 h-4 text-emerald-600" />
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="pt-2">
-                    <button
-                      type="button"
-                      onClick={handleSelectPaymentMethod}
-                      className="w-full sm:w-auto min-w-[200px] py-3.5 px-8 bg-[#DE1D35] hover:bg-[#c21429] text-white font-bold text-sm rounded-full transition-all cursor-pointer shadow-xs active:scale-95"
-                    >
-                      Continue
-                    </button>
+                        {paymentError && (
+                          <div className="p-3 bg-amber-50 border border-amber-200/80 rounded-xl text-xs font-semibold text-amber-900 leading-relaxed text-center animate-in fade-in">
+                            {paymentError}
+                          </div>
+                        )}
+
+                        <div>
+                          <button
+                            type="button"
+                            disabled={isPaying}
+                            onClick={handleExecutePayment}
+                            className="w-full py-4 bg-[#DE1D35] hover:bg-[#c21429] text-white font-extrabold text-sm sm:text-base rounded-none shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-50"
+                          >
+                            {isPaying ? (
+                              <>
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                                <span>Confirming in wallet...</span>
+                              </>
+                            ) : (
+                              <>
+                                <span>Pay ${totalUsd.toFixed(2)} USDT</span>
+                                <ArrowRight className="w-4 h-4" />
+                              </>
+                            )}
+                          </button>
+                          <p className="text-xs text-center text-slate-500 mt-2.5 font-medium">
+                            Click to open your wallet and confirm the payment
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -809,15 +623,6 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
               {/* ── STEP 3: PAY WITH ETH ON BASE ── */}
               {step === "pay" && (
                 <div className="space-y-6 animate-in fade-in duration-150">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm">
-                      Ξ
-                    </div>
-                    <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                      Pay with ETH on Base
-                    </h2>
-                  </div>
-
                   {/* Connected Wallet Box */}
                   <div className="p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl shadow-xs space-y-4">
                     <div className="flex items-center justify-between">
@@ -841,12 +646,18 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                       </button>
                     </div>
 
+                    {paymentError && (
+                      <div className="p-3 bg-amber-50 border border-amber-200/80 rounded-xl text-xs font-semibold text-amber-900 leading-relaxed text-center animate-in fade-in">
+                        {paymentError}
+                      </div>
+                    )}
+
                     <div className="pt-2">
                       <button
                         type="button"
                         disabled={isPaying}
                         onClick={handleExecutePayment}
-                        className="w-full py-4 bg-[#032320] hover:bg-black text-white font-extrabold text-sm sm:text-base rounded-full shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-50"
+                        className="w-full py-4 bg-[#DE1D35] hover:bg-[#c21429] text-white font-extrabold text-sm sm:text-base rounded-none shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-50"
                       >
                         {isPaying ? (
                           <>
@@ -875,123 +686,15 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                     Payment Pending
                   </h2>
                   <p className="text-sm text-slate-600 max-w-md leading-relaxed">
-                    We have detected your payment of <strong className="text-slate-900">{totalEth} ETH</strong> and are waiting for it to be confirmed on the network. You may continue to browse &amp; buy products. We will send you an email once confirmed.
+                    We have detected your payment of <strong className="text-slate-900">${totalUsd.toFixed(2)} USDT</strong> and are waiting for it to be confirmed on the network. We will send you an email once confirmed.
                   </p>
                 </div>
               )}
-
-              {/* ── STEP 5: ORDER COMPLETED ── */}
-              {step === "completed" && (
-                <div className="space-y-6 animate-in fade-in zoom-in-95 duration-200">
-                  <div className="text-center sm:text-left flex flex-col sm:flex-row items-center gap-4 pb-2">
-                    <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-                      <CheckCircle2 className="w-8 h-8 stroke-[2.2]" />
-                    </div>
-                    <div>
-                      <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-                        Order completed
-                      </h2>
-                      <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-                        Thank you for your purchase
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Digital Voucher / Gift Card Graphic (Matches Image 11) */}
-                  <div className="relative w-full rounded-2xl bg-[#FFCC00] p-6 sm:p-8 text-black shadow-md overflow-hidden">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-6 rounded border border-black/20 flex items-center justify-center p-0.5">
-                          <span className="text-[10px] font-black">MTN</span>
-                        </div>
-                        <span className="font-extrabold text-sm tracking-tight">{primaryItem.networkName}</span>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-2xl sm:text-3xl font-black">{primaryItem.amountNgn.toFixed(2)}</span>
-                        <span className="text-xs font-bold uppercase ml-1">NGN</span>
-                      </div>
-                    </div>
-
-                    <div className="mt-12 sm:mt-16 space-y-1">
-                      <div className="text-base sm:text-lg font-mono font-bold tracking-wider">
-                        +234 806 226 8255
-                      </div>
-                      <div className="text-xs font-medium text-black/80">
-                        Delivered to {email}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons under voucher card */}
-                  <div className="flex items-center gap-3">
-                    <button
-                      type="button"
-                      onClick={handleCopyLink}
-                      className="flex items-center justify-center gap-2 py-3 px-5 bg-white border border-slate-200 hover:border-slate-300 text-slate-800 font-bold text-xs sm:text-sm rounded-full transition-all cursor-pointer shadow-2xs"
-                    >
-                      <Copy className="w-4 h-4 text-slate-600" />
-                      <span>{copiedLink ? "Copied!" : "Copy link"}</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={handleResetCheckout}
-                      className="flex items-center justify-center gap-2 py-3 px-6 bg-[#032320] hover:bg-black text-white font-bold text-xs sm:text-sm rounded-full transition-all cursor-pointer shadow-xs"
-                    >
-                      <Gift className="w-4 h-4 text-[#00F0A0]" />
-                      <span>View Gift</span>
-                    </button>
-                  </div>
-
-                  {/* "Get more from every purchase" perks (Matches Image 12) */}
-                  <div className="pt-6 border-t border-slate-100">
-                    <h4 className="text-xs font-extrabold text-slate-900 text-center mb-3">
-                      Get more from every purchase
-                    </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                      <div className="p-3 bg-white border border-slate-200 rounded-xl flex items-center gap-2.5 font-semibold text-slate-800">
-                        <span className="text-rose-500 font-bold">%</span>
-                        <span>Up to 10% cashback on purchases</span>
-                      </div>
-                      <div className="p-3 bg-white border border-slate-200 rounded-xl flex items-center gap-2.5 font-semibold text-slate-800">
-                        <span className="text-rose-500 font-bold">↗</span>
-                        <span>Unlock higher spending limits</span>
-                      </div>
-                      <div className="p-3 bg-white border border-slate-200 rounded-xl flex items-center gap-2.5 font-semibold text-slate-800">
-                        <span className="text-rose-500 font-bold">☲</span>
-                        <span>Track orders and balances</span>
-                      </div>
-                      <div className="p-3 bg-white border border-slate-200 rounded-xl flex items-center gap-2.5 font-semibold text-slate-800">
-                        <span className="text-rose-500 font-bold">🎧</span>
-                        <span>Faster, more effective support</span>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
-                      <button
-                        type="button"
-                        onClick={handleResetCheckout}
-                        className="w-full sm:w-auto py-2.5 px-6 bg-[#032320] hover:bg-black text-white font-bold text-xs rounded-full cursor-pointer transition-all"
-                      >
-                        New order
-                      </button>
-                      <a
-                        href="mailto:support@bitbundle.io"
-                        className="w-full sm:w-auto py-2.5 px-5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-full text-center cursor-pointer transition-colors"
-                      >
-                        Ask for support
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
-
-            {/* ── RIGHT COLUMN (PERSISTENT SUMMARY SIDEBAR) ── */}
-            {renderSummarySidebar()}
-          </div>
-        </div>
-      </div>
+          </>
+        )}
     </div>
-  );
+  </div>
+</div>
+);
 }

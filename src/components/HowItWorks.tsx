@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import TopupCard from "./TopupCard";
+import Image from "next/image";
 
 const steps = [
   {
@@ -9,18 +9,21 @@ const steps = [
     title: "Choose Airtime",
     description:
       "Select your network provider and enter recipient cell number and amount.",
+    image: "/landing-page-image/pic1.png",
   },
   {
     number: "02",
     title: "Pay with Crypto",
     description:
       "Connect your preferred crypto wallet, confirm your transaction and you are done.",
+    image: "/landing-page-image/pic2.png",
   },
   {
     number: "03",
     title: "Receive Your Recharge",
     description:
       "Once your payment is confirmed, airtime hits your mobile phone line within seconds.",
+    image: "/landing-page-image/pic3.png",
   },
 ];
 
@@ -30,20 +33,20 @@ export default function HowItWorks() {
   return (
     <section
       id="products"
-      className="pt-16 sm:pt-20 lg:pt-24 pb-24 lg:pb-32 bg-transparent relative overflow-hidden text-white"
+      className="pt-16 sm:pt-20 lg:pt-24 pb-28 sm:pb-36 lg:pb-40 bg-transparent relative overflow-hidden text-white"
       aria-labelledby="how-it-works-heading"
     >
-      {/* Subtle hairline divider between the second and third blue sections */}
+      {/* Subtle light blue hairline divider between sections */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl px-4 sm:px-6 lg:px-8 pointer-events-none">
-        <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+        <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-[#38BDF8]/40 via-[#60A5FA]/30 to-transparent" />
       </div>
 
-      {/* Reloadly-style gradient blend on the third section - calibrated so it is clearly visible without being overpowering */}
+      {/* Atmospheric gradient blend - calibrated to match the brand gradient palette */}
       <div
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[1250px] lg:w-[1600px] h-[500px] lg:h-[650px] pointer-events-none"
         style={{
           background:
-            "radial-gradient(120% 70% at 30% 30%, #26267D 0%, #1B1B62 18%, #421B6F 38%, rgba(9, 250, 163, 0.22) 58%, #1B1B62 80%, transparent 100%)",
+            "radial-gradient(120% 70% at 30% 30%, #26267D 0%, #1B1B62 18%, #421B6F 38%, rgba(101, 239, 189, 0.22) 58%, #1B1B62 80%, transparent 100%)",
           opacity: 0.52,
           backgroundBlendMode: "color-dodge",
           filter: "blur(85px)",
@@ -60,6 +63,16 @@ export default function HowItWorks() {
         }}
       />
 
+      {/* Bottom atmospheric glow matching brand gradient */}
+      <div
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[1100px] lg:w-[1500px] h-[320px] pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 75% 55% at 50% 100%, rgba(101, 239, 189, 0.16) 0%, rgba(116, 229, 227, 0.11) 32%, rgba(194, 168, 255, 0.08) 64%, transparent 100%)",
+          filter: "blur(75px)",
+        }}
+      />
+
       <div className="container-page relative z-10">
         {/* Section Heading */}
         <div className="text-center mb-16 sm:mb-20">
@@ -69,7 +82,7 @@ export default function HowItWorks() {
           >
             From wallet to hello
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00E599] to-[#00C8FF]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#65EFBD] via-[#74E5E3] via-[#95CCFF] to-[#C2A8FF]">
               made simple
             </span>
           </h2>
@@ -78,33 +91,55 @@ export default function HowItWorks() {
           </p>
         </div>
 
-        {/* 2-Column layout: App Interface on Left, Interactive Steps on Right */}
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center max-w-5xl mx-auto">
-          {/* Left Column: Interactive App Preview */}
-          <div className="lg:col-span-6 w-full flex justify-center">
-            <div className="w-full max-w-md bg-[#0D152A]/90 border border-white/10 rounded-3xl p-2 sm:p-3 shadow-[0_25px_60px_rgba(0,0,0,0.7)] backdrop-blur-xl">
-              <TopupCard />
+        {/* 2-Column layout: Step Preview Image on Left, Interactive Steps on Right */}
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center max-w-7xl mx-auto">
+          {/* Left Column: Plain, rounded preview image - shifted left, sleek height */}
+          <div className="lg:col-span-7 w-full flex justify-center lg:justify-start order-2 lg:order-1 lg:-translate-x-6 xl:-translate-x-10">
+            <div className="relative w-full max-w-2xl xl:max-w-3xl aspect-[16/9.5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.45)] border border-white/20 bg-white flex items-center justify-center">
+              {steps.map((step, index) => (
+                <div
+                  key={step.number}
+                  className={`absolute inset-0 transition-all duration-300 ease-out ${
+                    activeStep === index
+                      ? "opacity-100 scale-100 z-10 pointer-events-auto"
+                      : "opacity-0 scale-95 z-0 pointer-events-none"
+                  }`}
+                >
+                  <Image
+                    src={step.image}
+                    alt={`${step.title} preview`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 60vw, 760px"
+                    priority={index === 0}
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Right Column: Steps Accordion inspired by reference design */}
-          <div className="lg:col-span-6 flex flex-col space-y-8 sm:space-y-10 pl-2 lg:pl-6">
+          {/* Right Column: Steps Accordion */}
+          <div className="lg:col-span-5 flex flex-col space-y-6 sm:space-y-8 pl-2 lg:pl-4 order-1 lg:order-2">
             {steps.map((step, index) => {
               const isActive = activeStep === index;
               return (
                 <div
                   key={step.number}
-                  className="relative pl-6 text-left transition-all duration-300"
+                  onClick={() => setActiveStep(index)}
+                  className="relative pl-6 sm:pl-7 text-left transition-all duration-300 cursor-pointer py-1"
                 >
                   {/* Vertical left accent bar for active step */}
                   {isActive && (
                     <div className="absolute left-0 top-1 bottom-1 w-[3.5px] bg-[#00E599] rounded-full shadow-[0_0_12px_rgba(0,229,153,0.5)] transition-all duration-300" />
                   )}
 
-                  {/* Header Button: Clickable to toggle and display content */}
+                  {/* Header Button: Clickable to activate and display corresponding picture */}
                   <button
                     type="button"
-                    onClick={() => setActiveStep(isActive ? -1 : index)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveStep(index);
+                    }}
                     className="w-full text-left group focus:outline-none cursor-pointer"
                     aria-expanded={isActive}
                   >

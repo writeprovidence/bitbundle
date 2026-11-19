@@ -123,7 +123,7 @@ export default function Footer() {
             <h4 className="font-tosh text-sm font-semibold text-gray-400 mb-5">
               Top up
             </h4>
-            <ul className="font-tosh space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">
+            <ul className="font-manrope space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">
               <li>
                 <Link href="/products?network=mtn" className="hover:opacity-80 transition-opacity">
                   MTN
@@ -152,7 +152,7 @@ export default function Footer() {
             <h4 className="font-tosh text-sm font-semibold text-gray-400 mb-5">
               Support
             </h4>
-            <ul className="font-tosh space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">
+            <ul className="font-manrope space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">
               <li>
                 <a
                   href="https://address-patterns-jones-geometry.trycloudflare.com/hc/en-us"
@@ -186,7 +186,7 @@ export default function Footer() {
             <h4 className="font-tosh text-sm font-semibold text-gray-400 mb-5">
               Company
             </h4>
-            <ul className="font-tosh space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">
+            <ul className="font-manrope space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">
               <li>
                 <Link href="#" className="hover:opacity-80 transition-opacity">
                   Careers
@@ -215,7 +215,7 @@ export default function Footer() {
             <h4 className="font-tosh text-sm font-semibold text-gray-400 mb-5">
               Legal
             </h4>
-            <ul className="font-tosh space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">
+            <ul className="font-manrope space-y-3.5 sm:space-y-4 text-xs sm:text-sm text-white">
               <li>
                 <Link href="#" className="hover:opacity-80 transition-opacity">
                   Privacy Policy
@@ -251,7 +251,7 @@ export default function Footer() {
         )}
 
         {/* Copyright and Legal Line */}
-        <div className="font-tosh flex flex-col sm:flex-row items-center justify-between gap-4 py-8 text-xs text-white">
+        <div className="font-manrope flex flex-col sm:flex-row items-center justify-between gap-4 py-8 text-xs text-white">
           <p className="text-white">Copyright © Bitbundle 2026. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <Link href="#" className="text-white hover:opacity-80 transition-opacity">

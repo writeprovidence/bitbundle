@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Check, ChevronDown, Loader2, CheckCircle, XCircle } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Check, ChevronDown, Loader2, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { parseUnits } from "viem";
+import { checkNetworkMatch } from "@/lib/phoneValidation";
 
 const networks = [
   { id: "mtn", label: "MTN", color: "#ffcc00", textColor: "#1a1a00" },
@@ -72,7 +73,8 @@ export default function TopupCard() {
   const usdtAmount = (selectedAmount * USDT_PER_NGN).toFixed(4);
 
   const isPhoneValid = phone.length >= 10 && phone.length <= 11;
-  const canPay = isSignedIn && isPhoneValid && selectedAmount > 0 && selectedAmount <= 10000;
+  const networkMatch = useMemo(() => checkNetworkMatch(phone, network.id, "NG"), [phone, network.id]);
+  const canPay = isSignedIn && isPhoneValid && selectedAmount > 0 && selectedAmount <= 10000 && networkMatch.isMatch;
 
   async function handleSignIn() {
     try { await signIn(); } catch (err) { console.error(err); }
@@ -118,9 +120,16 @@ export default function TopupCard() {
       setOrderId(data.orderId);
       setTxStatus("success");
     } catch (err: unknown) {
-      console.error(err);
       const message = err instanceof Error ? err.message : "Something went wrong";
-      setErrorMsg(message.includes("User rejected") ? "Transaction cancelled." : message);
+      const isUserRejected =
+        message.includes("User rejected") ||
+        message.includes("denied transaction signature") ||
+        message.includes("User denied");
+
+      if (!isUserRejected) {
+        console.error(err);
+      }
+      setErrorMsg(isUserRejected ? "Transaction cancelled in wallet." : message);
       setTxStatus("error");
     }
   }
@@ -233,7 +242,13 @@ export default function TopupCard() {
         <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5 block">
           Phone number
         </label>
-        <div className="flex items-center rounded-xl border border-white/10 hover:border-white/20 focus-within:border-[#00d4ff]/50 transition-colors bg-white/5 overflow-hidden">
+        <div
+          className={`flex items-center rounded-xl border transition-colors bg-white/5 overflow-hidden ${
+            !networkMatch.isMatch
+              ? "border-amber-500/60 focus-within:border-amber-400"
+              : "border-white/10 hover:border-white/20 focus-within:border-[#00d4ff]/50"
+          }`}
+        >
           <span className="pl-4 pr-2 text-sm font-semibold text-gray-500 shrink-0">+234</span>
           <input
             id="phone-input"
@@ -246,6 +261,28 @@ export default function TopupCard() {
             className="flex-1 py-3 pr-4 text-sm text-white outline-none bg-transparent placeholder:text-gray-600"
           />
         </div>
+
+        {/* Network Mismatch Notice with One-Click Switch */}
+        {!networkMatch.isMatch && networkMatch.detectedOperator && (
+          <div className="mt-2 p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs flex items-start gap-2 animate-in fade-in duration-150">
+            <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+            <div className="flex-1 min-w-0">
+              <p>
+                This number belongs to <strong className="text-white font-bold">{networkMatch.detectedOperator.name}</strong>, not {network.label}.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  const target = networks.find((n) => n.id === networkMatch.detectedOperator?.id);
+                  if (target) setNetwork(target);
+                }}
+                className="mt-2 px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-black font-bold text-[11px] rounded transition-colors cursor-pointer"
+              >
+                Switch to {networkMatch.detectedOperator.name}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Amount grid */}

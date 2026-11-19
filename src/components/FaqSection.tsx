@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowUp, ArrowDown } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 
 interface Faq {
   q: string;
@@ -15,18 +15,18 @@ const faqs: Faq[] = [
   },
   {
     q: "Which cryptocurrencies do you support?",
-    a: "We support Celo Dollar (cUSD), GoodDollar (G$), and CELO, with more currencies coming soon.",
+    a: "We exclusively accept stablecoins across multiple chains (USDT, USDC, and cUSD) to guarantee zero price volatility during checkout.",
   },
   {
     q: "Which crypto wallets do you support?",
-    a: "We support any standard Web3 wallet including MetaMask, MiniPay, Valora, Trust Wallet, Coinbase Wallet, Rainbow, and any wallet compatible with WalletConnect.",
+    a: "We support any standard Web3 wallet including MetaMask, MiniPay, Valora, Trust Wallet, Coinbase Wallet, Rainbow, as well as social & email logins powered by Privy.",
   },
   {
     q: "How does the crypto payment process work?",
     a: "Connect your Web3 wallet, select your telecom network (MTN, Airtel, Glo, or 9mobile), enter the recipient phone number, and choose your top-up amount. Confirm the crypto payment in your wallet, and our automated backend processes and delivers your airtime within 30 seconds.",
   },
   {
-    q: "How quickly will my airtime arrive after I order it?",
+    q: "How quickly will my airtime arrive after I order?",
     a: "Airtime arrives in under 30 seconds! Once your blockchain transaction is confirmed, our automated telecom provider integration instantly dispatches the recharge directly to your line.",
   },
   {
@@ -46,7 +46,7 @@ const faqs: Faq[] = [
           href="https://address-patterns-jones-geometry.trycloudflare.com/hc/en-us"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#00A859] hover:text-[#00E599] font-semibold underline underline-offset-2 transition-colors"
+          className="text-[#00A859] hover:text-[#00c96a] font-semibold underline underline-offset-2 transition-colors"
         >
           our help center
         </a>{" "}
@@ -64,44 +64,79 @@ export default function FaqSection() {
   };
 
   return (
-    <section id="faq" className="py-24 lg:py-36 bg-[#FAFAFA] text-gray-900">
-      <div className="container-page max-w-6xl mx-auto">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          {/* Left Column: Heading (exact typography from reference, strictly 2 lines) */}
-          <div className="lg:col-span-5 sticky top-28">
-            <h2 className="font-tosh font-black text-3xl sm:text-4xl lg:text-[42px] xl:text-[46px] tracking-tight text-gray-950 leading-[1.08]">
-              <span className="block">Frequently</span>
-              <span className="block whitespace-nowrap">asked questions</span>
+    <section id="faq" className="py-20 lg:py-28 bg-[#F5F3F7] text-gray-900">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+
+          {/* ── Left Column: Heading + subtitle + help link ── */}
+          <div className="lg:col-span-5 lg:sticky lg:top-28">
+            <h2 className="font-tosh font-black text-5xl sm:text-6xl lg:text-[64px] xl:text-[72px] leading-[1.0] tracking-tight text-gray-950 mb-5">
+              Questions People{" "}
+              <span className="block mt-1">
+                Ask{" "}
+                <span className="text-[#00A859]">Before Buying.</span>
+              </span>
             </h2>
+
+            <p className="font-manrope text-base sm:text-lg text-gray-500 leading-relaxed mb-8">
+              Straight answers. No corporate hedging.
+            </p>
+
+            <a
+              href="https://address-patterns-jones-geometry.trycloudflare.com/hc/en-us"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm font-manrope font-medium text-gray-700 border border-gray-400 rounded-sm px-4 py-2 hover:border-[#00A859] hover:text-[#00A859] transition-colors duration-200"
+            >
+              See more in our Help Center
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </a>
           </div>
 
-          {/* Right Column: Accordion with full-width dark divider lines & circular arrows */}
-          <div className="lg:col-span-7 border-t border-gray-900">
+          {/* ── Right Column: Clean accordion ── */}
+          <div className="lg:col-span-7">
             {faqs.map((faq, index) => {
               const isOpen = openIndex === index;
               return (
-                <div key={faq.q} className="border-b border-gray-900 py-6 sm:py-7">
+                <div
+                  key={faq.q}
+                  className="border-b border-gray-200 first:border-t first:border-gray-200"
+                >
                   <button
                     type="button"
                     onClick={() => toggle(index)}
                     aria-expanded={isOpen}
-                    className="w-full flex items-center justify-between text-left gap-6 group cursor-pointer"
+                    className="w-full flex items-center justify-between text-left gap-6 py-7 sm:py-8 group cursor-pointer"
                   >
-                    <span className="font-tosh text-xl sm:text-2xl font-bold text-gray-950 tracking-tight group-hover:text-black leading-snug">
+                    <span className="font-manrope text-xl sm:text-2xl lg:text-[26px] font-semibold text-gray-900 group-hover:text-gray-950 leading-snug tracking-tight transition-colors">
                       {faq.q}
                     </span>
-                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 sm:border-[2.5px] border-black flex items-center justify-center shrink-0 transition-transform group-hover:scale-105">
+
+                    {/* Rounded square + / - button matching the reference */}
+                    <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl border border-gray-300 bg-white flex items-center justify-center shrink-0 group-hover:border-[#00A859] transition-colors duration-200">
                       {isOpen ? (
-                        <ArrowUp className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-black stroke-[3.5]" />
+                        <Minus className="w-4 h-4 text-gray-500 group-hover:text-[#00A859] transition-colors" strokeWidth={2} />
                       ) : (
-                        <ArrowDown className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-black stroke-[3.5]" />
+                        <Plus className="w-4 h-4 text-gray-500 group-hover:text-[#00A859] transition-colors" strokeWidth={2} />
                       )}
                     </div>
                   </button>
 
                   {isOpen && (
-                    <div className="mt-4 sm:mt-5 pr-4 sm:pr-8 animate-slide-down">
-                      <p className="font-mori text-[15px] sm:text-base text-gray-700 leading-relaxed font-normal">
+                    <div className="pb-7 sm:pb-8 pr-14 animate-slide-down">
+                      <p className="font-manrope text-base sm:text-[16px] text-gray-500 leading-relaxed">
                         {faq.a}
                       </p>
                     </div>
@@ -110,6 +145,7 @@ export default function FaqSection() {
               );
             })}
           </div>
+
         </div>
       </div>
     </section>

@@ -2,9 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ShoppingCart, Sparkles, MessageSquare } from "lucide-react";
-import { useCart } from "@/contexts/CartContext";
-import CartDropdown from "./CartDropdown";
+import { Sparkles } from "lucide-react";
 
 interface CategoryNavbarProps {
   activeCategory?: "gift-cards" | "esims" | "phone-refills";
@@ -17,9 +15,7 @@ export default function CategoryNavbar({
   activeCategory = "phone-refills",
   onSelectCategory,
   onOpenAssistant,
-  onCheckout,
 }: CategoryNavbarProps) {
-  const { itemCount, isCartOpen, setIsCartOpen } = useCart();
   const [currentTab, setCurrentTab] = useState<"gift-cards" | "esims" | "phone-refills">(activeCategory);
 
   const handleTabClick = (tab: "gift-cards" | "esims" | "phone-refills") => {
@@ -70,7 +66,7 @@ export default function CategoryNavbar({
             </button>
           </nav>
 
-          {/* Right actions: Ask Assistant & Cart Button with Popover */}
+          {/* Right actions */}
           <div className="relative flex items-center gap-3 shrink-0">
             {/* Ask Assistant button */}
             <button
@@ -81,26 +77,6 @@ export default function CategoryNavbar({
               <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
               <span>Ask Assistant</span>
             </button>
-
-            {/* Cart Button */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setIsCartOpen(!isCartOpen)}
-                className="relative p-2 text-gray-700 hover:text-gray-900 rounded-full hover:bg-gray-100 transition-colors cursor-pointer flex items-center justify-center"
-                aria-label="View shopping cart"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#DE1D35] text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-xs">
-                    {itemCount}
-                  </span>
-                )}
-              </button>
-
-              {/* Cart flyout dropdown */}
-              <CartDropdown onCheckout={onCheckout || (() => {})} />
-            </div>
           </div>
         </div>
       </div>

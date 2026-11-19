@@ -19,45 +19,25 @@ import {
   Star,
   Zap,
   ShoppingCart,
-  FileSpreadsheet,
+  ArrowRight,
 } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import PurchaseAsGiftModal from "./PurchaseAsGiftModal";
-import BulkUploadModal, { type BulkItem } from "./BulkUploadModal";
 import CheckoutModal from "./CheckoutModal";
 import CountryFlag from "./CountryFlag";
 import { OPERATORS, type RefillOperator } from "@/lib/operators";
+import { checkNetworkMatch, AFRICAN_NETWORKS_BY_COUNTRY } from "@/lib/phoneValidation";
 
 export { OPERATORS, type RefillOperator };
 
 const ACCEPTED_CRYPTO = [
   {
-    name: "Bitcoin",
+    name: "USDT",
     icon: (
       <svg className="w-5 h-5 shrink-0" viewBox="0 0 32 32" fill="none">
-        <circle cx="16" cy="16" r="16" fill="#F7931A" />
-        <path d="M22.5 13.5c.3-2-1.2-3.1-3.3-3.8l.7-2.7-1.7-.4-.7 2.6c-.4-.1-.9-.2-1.3-.3l.7-2.7-1.6-.4-.7 2.7c-.4-.1-.7-.2-1.1-.3l-2.3-.6-.4 1.8s1.2.3 1.2.3c.7.2.8.7.8 1.1l-.8 3.2c.1 0 .1 0 .2.1l-.2-.1-1.1 4.5c-.1.2-.3.6-.8.4 0 0-1.2-.3-1.2-.3l-.9 2 2.2.5c.4.1.8.2 1.2.3l-.7 2.8 1.7.4.7-2.7c.5.1.9.2 1.4.3l-.7 2.7 1.7.4.7-2.8c2.9.5 5.1.3 6-2.3.8-2.1 0-3.3-1.5-4.1 1.1-.3 1.9-1 2.1-2.6zm-3.8 5.6c-.5 2.1-4 1-5.1.7l.9-3.7c1.1.3 4.8.8 4.2 3zm.5-5.7c-.5 1.9-3.4.9-4.3.7l.8-3.3c.9.2 4 .7 3.5 2.6z" fill="#FFF" />
-      </svg>
-    ),
-  },
-  {
-    name: "Lightning",
-    icon: (
-      <svg className="w-5 h-5 shrink-0" viewBox="0 0 32 32" fill="none">
-        <circle cx="16" cy="16" r="16" fill="#FF9900" />
-        <path d="M17.5 7L10 17h6l-1.5 8 8.5-11h-6.5l1-7z" fill="#FFF" />
-      </svg>
-    ),
-  },
-  {
-    name: "Ethereum",
-    icon: (
-      <svg className="w-5 h-5 shrink-0" viewBox="0 0 32 32" fill="none">
-        <circle cx="16" cy="16" r="16" fill="#627EEA" />
-        <path d="M16 6l-6 10 6 3.5 6-3.5L16 6z" fill="#FFF" fillOpacity="0.8" />
-        <path d="M16 6v13.5l6-3.5L16 6z" fill="#FFF" />
-        <path d="M16 20.8l-6-3.6 6 8.8 6-8.8-6 3.6z" fill="#FFF" fillOpacity="0.8" />
-        <path d="M16 20.8V26l6-8.8-6 3.6z" fill="#FFF" />
+        <circle cx="16" cy="16" r="16" fill="#26A17B" />
+        <path d="M17.5 15.6v-.1c2.8-.2 4.9-.8 4.9-1.6s-2.1-1.4-4.9-1.6v1.9c-.5 0-1 0-1.5 0v-1.9c-2.8.2-4.9.8-4.9 1.6s2.1 1.4 4.9 1.6v4.7c-2.2-.1-4.3-.5-4.3-1.1v-1.1h-1.7v1.1c0 1.4 3 2.5 6 2.7v3.5h1.5v-3.5c3.1-.2 6-1.3 6-2.7v-1.1h-1.7v1.1c0 .6-2.1 1-4.3 1.1v-4.7z" fill="#FFF" />
+        <path d="M10 11h12v2H10z" fill="#FFF" />
       </svg>
     ),
   },
@@ -71,36 +51,20 @@ const ACCEPTED_CRYPTO = [
     ),
   },
   {
-    name: "USDT",
+    name: "cUSD",
     icon: (
       <svg className="w-5 h-5 shrink-0" viewBox="0 0 32 32" fill="none">
-        <circle cx="16" cy="16" r="16" fill="#26A17B" />
-        <path d="M17.5 15.6v-.1c2.8-.2 4.9-.8 4.9-1.6s-2.1-1.4-4.9-1.6v1.9c-.5 0-1 0-1.5 0v-1.9c-2.8.2-4.9.8-4.9 1.6s2.1 1.4 4.9 1.6v4.7c-2.2-.1-4.3-.5-4.3-1.1v-1.1h-1.7v1.1c0 1.4 3 2.5 6 2.7v3.5h1.5v-3.5c3.1-.2 6-1.3 6-2.7v-1.1h-1.7v1.1c0 .6-2.1 1-4.3 1.1v-4.7z" fill="#FFF" />
-        <path d="M10 11h12v2H10z" fill="#FFF" />
+        <circle cx="16" cy="16" r="16" fill="#35D07F" />
+        <path d="M16 9c-3.9 0-7 3.1-7 7s3.1 7 7 7 7-3.1 7-7-3.1-7-7-7zm0 12c-2.8 0-5-2.2-5-5s2.2-5 5-5c1.4 0 2.6.6 3.5 1.5l-1.4 1.4c-.6-.6-1.3-1-2.1-1-1.7 0-3 1.3-3 3.1s1.3 3.1 3 3.1c.8 0 1.5-.4 2.1-1l1.4 1.4c-.9.9-2.1 1.5-3.5 1.5z" fill="#FFF" />
       </svg>
     ),
   },
   {
-    name: "Solana",
+    name: "DAI",
     icon: (
       <svg className="w-5 h-5 shrink-0" viewBox="0 0 32 32" fill="none">
-        <circle cx="16" cy="16" r="16" fill="#000000" />
-        <path d="M9.5 21.5l2-2h11l-2 2h-11zm0-5l2-2h11l-2 2h-11zm2-5l-2-2h11l2 2h-11z" fill="url(#solGrad)" />
-        <defs>
-          <linearGradient id="solGrad" x1="9" y1="8" x2="23" y2="22" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#00FFA3" />
-            <stop offset="1" stopColor="#DC1FFF" />
-          </linearGradient>
-        </defs>
-      </svg>
-    ),
-  },
-  {
-    name: "Polygon",
-    icon: (
-      <svg className="w-5 h-5 shrink-0" viewBox="0 0 32 32" fill="none">
-        <circle cx="16" cy="16" r="16" fill="#8247E5" />
-        <path d="M20.5 13.5l-4.5-2.6-4.5 2.6v5.2l4.5 2.6 4.5-2.6v-5.2z" fill="#FFF" />
+        <circle cx="16" cy="16" r="16" fill="#F4B731" />
+        <path d="M11 10h4.5c3.6 0 6.5 2.7 6.5 6s-2.9 6-6.5 6H11V10zm2 2v2.5h5.5c.3 0 .5 0 .8-.1-.4-1.4-1.6-2.4-3.3-2.4H13zm0 3.5v1h7.8c0-.3.1-.7.1-1H13zm0 2v1h7.8c-.1.3-.2.7-.3 1H13zm0 2V20h3c1.7 0 2.9-1 3.3-2.4-.3 0-.5-.1-.8-.1H13z" fill="#FFF" />
       </svg>
     ),
   },
@@ -342,7 +306,7 @@ interface RefillDetailsViewProps {
 
 export default function RefillDetailsView({
   operatorId = "mtn",
-  initialPhone = "08062268255",
+  initialPhone = "",
   initialAmount,
   onBack,
   isModal = false,
@@ -355,7 +319,7 @@ export default function RefillDetailsView({
   onCountryChange,
 }: RefillDetailsViewProps) {
   const operator = OPERATORS[operatorId] || OPERATORS.mtn;
-  const { addItem, clearCart } = useCart();
+  const { items, addItem, clearCart, setIsCartOpen } = useCart();
 
   const initialResolved = resolveCountryProfile(countryCode, countryName);
   const [selectedCountryCode, setSelectedCountryCode] = useState<string>(
@@ -398,24 +362,34 @@ export default function RefillDetailsView({
   const [waitlistEmail, setWaitlistEmail] = useState("");
   const [waitlistSent, setWaitlistSent] = useState(false);
   const [amount, setAmount] = useState<number>(initialAmount ?? profile.defaultAmount);
-  const [phone, setPhone] = useState<string>(initialPhone || profile.placeholder);
-  // Additional phone numbers for bulk top-up
-  const [extraPhones, setExtraPhones] = useState<string[]>([]);
+  const [phone, setPhone] = useState<string>(initialPhone || "");
   const [isFavorite, setIsFavorite] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const [isGiftModalOpen, setIsGiftModalOpen] = useState(false);
-  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
 
-  // Sync initial phone and amounts when operator or country changes
+  // Check if entered phone number matches the selected operator
+  const networkMatch = useMemo(() => {
+    return checkNetworkMatch(phone, operator.id, profile.code);
+  }, [phone, operator.id, profile.code]);
+
+  // Dynamic carrier placeholder based on selected operator and country
+  const carrierPlaceholder = useMemo(() => {
+    const config = AFRICAN_NETWORKS_BY_COUNTRY[profile.code];
+    const net = config?.networks[operator.id];
+    if (net && net.prefixes.length > 0) {
+      return `e.g. ${net.prefixes[0]} 123 4567`;
+    }
+    return `e.g. ${profile.placeholder}`;
+  }, [profile.code, profile.placeholder, operator.id]);
+
+  // Sync initial phone when initialPhone changes (e.g. URL query params or modal trigger)
   useEffect(() => {
     if (initialPhone) {
       setPhone(initialPhone);
-    } else {
-      setPhone(profile.placeholder);
     }
-  }, [initialPhone, profile]);
+  }, [initialPhone]);
 
   useEffect(() => {
     if (initialAmount) {
@@ -482,22 +456,19 @@ export default function RefillDetailsView({
     if (digits.length < targetLength) {
       return { isValid: false, error: "The phone number is not complete." };
     }
+    // Network mismatch validation
+    if (!networkMatch.isMatch) {
+      return {
+        isValid: false,
+        error: networkMatch.errorMessage || "This number does not match the selected network.",
+      };
+    }
     return { isValid: true, error: null };
   }
 
-  const phoneValidation = useMemo(() => validatePhone(phone), [phone, profile]);
-  const extraPhoneValidations = useMemo(
-    () => extraPhones.map((p) => validatePhone(p)),
-    [extraPhones, profile]
-  );
-  const allPhonesValid =
-    phoneValidation.isValid && extraPhoneValidations.every((v) => v.isValid);
-
-  // Total USD across all phone numbers
-  const totalPhones = 1 + extraPhones.length;
-  const totalUsdAll = useMemo(
-    () => (amount * profile.usdRate * totalPhones).toFixed(2),
-    [amount, profile.usdRate, totalPhones]
+  const phoneValidation = useMemo(
+    () => validatePhone(phone),
+    [phone, profile, networkMatch]
   );
 
   const handleCopyLink = () => {
@@ -508,33 +479,31 @@ export default function RefillDetailsView({
     }
   };
 
+  const isAlreadyInCart = useMemo(() => {
+    return items.some((it) => it.networkId === operator.id);
+  }, [items, operator.id]);
+
   const handleBuyNow = () => {
-    if (amount > profile.maxAmount || amount < profile.minAmount || !allPhonesValid) return;
-    clearCart();
-    // Add primary phone as first cart item
-    const perItemUsd = Number((amount * profile.usdRate).toFixed(2));
+    if (amount > profile.maxAmount || amount < profile.minAmount || !phoneValidation.isValid) return;
+    if (isAlreadyInCart) {
+      setIsCartOpen(true);
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      return;
+    }
     addItem({
       networkId: operator.id,
       networkName: `${operator.name} ${profile.name}`,
-      phoneNumber: phone.trim() || profile.placeholder,
+      phoneNumber: phone.trim(),
       amountNgn: amount,
-      amountUsd: perItemUsd,
+      amountUsd: Number((amount * profile.usdRate).toFixed(2)),
       isGift: false,
     });
-    // Add extra phones as additional cart items
-    extraPhones.forEach((p) => {
-      if (p.trim()) {
-        addItem({
-          networkId: operator.id,
-          networkName: `${operator.name} ${profile.name}`,
-          phoneNumber: p.trim(),
-          amountNgn: amount,
-          amountUsd: perItemUsd,
-          isGift: false,
-        });
-      }
-    });
-    setIsCheckoutOpen(true);
+    setIsCartOpen(true);
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const handleGiftCheckout = (giftDetails: {
@@ -544,7 +513,14 @@ export default function RefillDetailsView({
     message?: string;
   }) => {
     if (amount > profile.maxAmount || !phoneValidation.isValid) return;
-    clearCart();
+    if (isAlreadyInCart) {
+      setIsGiftModalOpen(false);
+      setIsCartOpen(true);
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      return;
+    }
     addItem({
       networkId: operator.id,
       networkName: `${operator.name} ${profile.name}`,
@@ -555,23 +531,10 @@ export default function RefillDetailsView({
       giftDetails,
     });
     setIsGiftModalOpen(false);
-    setIsCheckoutOpen(true);
-  };
-
-  const handleBulkCheckout = (bulkItems: BulkItem[]) => {
-    clearCart();
-    bulkItems.forEach((b) => {
-      addItem({
-        networkId: operator.id,
-        networkName: `${operator.name} ${profile.name}`,
-        phoneNumber: b.phoneNumber.trim(),
-        amountNgn: b.amountNgn,
-        amountUsd: b.amountUsd,
-        isGift: false,
-      });
-    });
-    setIsBulkModalOpen(false);
-    setIsCheckoutOpen(true);
+    setIsCartOpen(true);
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const handleClose = () => {
@@ -587,12 +550,16 @@ export default function RefillDetailsView({
   const isDisabled =
     amount > profile.maxAmount ||
     amount < profile.minAmount ||
-    !allPhonesValid;
+    !phoneValidation.isValid;
 
   // Render operator logo tile
   const renderLogoTile = () => (
-    <div className="shrink-0 w-full md:w-[460px] lg:w-[500px] md:sticky md:top-28 self-start">
-      <div className="relative w-full aspect-square rounded-none bg-[#EBEBEB] flex items-center justify-center p-6 sm:p-10">
+    <div className="shrink-0 w-full md:w-[440px] lg:w-[480px] md:sticky md:top-28 self-start">
+      <div
+        className={`relative w-full aspect-square bg-[#EBEBEB] flex items-center justify-center p-6 sm:p-10 ${
+          !isModal ? "rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden" : "rounded-none"
+        }`}
+      >
         {/* Action icon buttons: copy link & favourite */}
         <div className="absolute top-5 right-5 flex gap-2.5 z-10">
           <button
@@ -662,7 +629,13 @@ export default function RefillDetailsView({
 
   // Render form content
   const renderFormContent = () => (
-    <div className="flex-1 min-w-0 max-w-[560px]">
+    <div
+      className={`flex-1 min-w-0 max-w-[560px] ${
+        !isModal
+          ? "bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-9 shadow-sm"
+          : ""
+      }`}
+    >
       {/* Dynamic Title */}
       <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 mb-2 tracking-tight">
         {dynamicTitle}
@@ -683,7 +656,7 @@ export default function RefillDetailsView({
           <button
             type="button"
             onClick={() => setIsCountryPickerOpen((v) => !v)}
-            className="inline-flex items-center gap-2 px-2.5 py-1 rounded-[2px] border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 text-xs sm:text-sm font-semibold text-slate-800 shadow-2xs transition-all cursor-pointer focus:outline-none select-none"
+            className="inline-flex items-center gap-2 px-2.5 py-1 rounded-[10px] border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 text-xs sm:text-sm font-semibold text-slate-800 shadow-2xs transition-all cursor-pointer focus:outline-none select-none"
             title="Change country"
             aria-expanded={isCountryPickerOpen}
           >
@@ -716,8 +689,8 @@ export default function RefillDetailsView({
                       }
                     }}
                     className={`w-full flex items-center justify-between px-3 py-2 text-xs sm:text-sm text-left transition-colors cursor-pointer ${isSelected
-                        ? "bg-emerald-50 text-emerald-900 font-bold"
-                        : "text-slate-700 hover:bg-slate-50 font-medium"
+                      ? "bg-emerald-50 text-emerald-900 font-bold"
+                      : "text-slate-700 hover:bg-slate-50 font-medium"
                       }`}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
@@ -787,7 +760,7 @@ export default function RefillDetailsView({
       )}
 
       {/* Amount input */}
-      <div className="mb-6 max-w-[420px]">
+      <div className="mb-6 w-full">
         <div className="flex items-center border border-slate-200 focus-within:border-slate-600 transition-colors py-2 px-3 bg-transparent rounded-[6px]">
           <input
             type="number"
@@ -811,138 +784,71 @@ export default function RefillDetailsView({
         )}
       </div>
 
-      {/* Phone numbers — primary + extras */}
-      <div className="mb-6 max-w-[420px]">
-        {totalPhones > 1 && (
-          <div className="mb-1 text-right">
-            <span className="text-xs text-emerald-600 font-semibold">
-              {totalPhones} numbers · ${totalUsdAll} total
-            </span>
-          </div>
-        )}
-
-        {/* Primary phone */}
-        <div className="mb-2">
-          <div className="flex items-center border border-slate-200 focus-within:border-slate-600 transition-colors rounded-[6px] px-3">
+      {/* Phone number */}
+      <div className="mb-6 w-full">
+        <div>
+          <div
+            className={`flex items-center border transition-colors rounded-[6px] px-3 ${
+              !networkMatch.isMatch
+                ? "border-rose-400 bg-rose-50/20 focus-within:border-rose-600"
+                : phoneValidation.error
+                ? "border-rose-400 focus-within:border-rose-600"
+                : "border-slate-200 focus-within:border-slate-600"
+            }`}
+          >
             <input
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="Phone number to top up"
-              className="flex-1 border-0 bg-transparent focus:outline-none py-2 px-0 text-sm sm:text-base text-slate-900 font-medium placeholder:text-slate-400"
+              placeholder={carrierPlaceholder}
+              className="w-full border-0 bg-transparent focus:outline-none py-2 px-0 text-sm sm:text-base text-slate-900 font-medium placeholder:text-slate-400"
             />
-            {extraPhones.length < 4 && (
-              <button
-                type="button"
-                onClick={() => setExtraPhones([...extraPhones, ""])}
-                title="Add another phone number (up to 5)"
-                className="w-7 h-7 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900 transition-colors cursor-pointer shrink-0 ml-1"
-              >
-                <Plus className="w-4 h-4" />
-              </button>
-            )}
           </div>
-          {phoneValidation.error && (
+
+          {/* Network Mismatch Notice with One-Click Switch */}
+          {!networkMatch.isMatch && networkMatch.detectedOperator ? (
+            <div className="mt-2.5 p-3 rounded-lg bg-rose-50/90 border border-rose-200 text-rose-950 text-xs shadow-xs animate-in fade-in duration-150">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-rose-900 leading-snug">
+                    This phone number belongs to{" "}
+                    <strong className="font-extrabold underline">{networkMatch.detectedOperator.name}</strong> ({profile.name}), but
+                    you are topping up <strong className="font-bold">{operator.name}</strong>.
+                  </p>
+                  <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                    {networkMatch.detectedOperator.isSupportedOperator ? (
+                      <Link
+                        href={`/products/${networkMatch.detectedOperator.id}?${
+                          profile.code !== "NG" ? `country=${profile.code}&` : ""
+                        }phone=${encodeURIComponent(phone.trim())}`}
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-[#DE1D35] hover:bg-[#c21429] text-white font-bold text-[11px] rounded-none transition-all cursor-pointer shadow-2xs active:scale-95"
+                      >
+                        <span>Switch to {networkMatch.detectedOperator.name}</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </Link>
+                    ) : (
+                      <span className="text-[11px] text-slate-500 font-medium">
+                        Carrier not supported on this page.
+                      </span>
+                    )}
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : phoneValidation.error ? (
             <p className="text-xs text-rose-500 mt-1.5 flex items-start gap-1.5 font-medium leading-relaxed">
               <AlertCircle className="w-4 h-4 shrink-0 text-rose-500 mt-0.5" />
               <span>{phoneValidation.error}</span>
             </p>
-          )}
-        </div>
-
-        {/* Extra phones */}
-        {extraPhones.map((p, i) => (
-          <div key={i} className="mb-2 animate-in fade-in duration-150">
-            <div className="flex items-center border border-slate-200 focus-within:border-slate-600 transition-colors rounded-[6px] px-3">
-              <input
-                type="tel"
-                value={p}
-                onChange={(e) => {
-                  const copy = [...extraPhones];
-                  copy[i] = e.target.value;
-                  setExtraPhones(copy);
-                }}
-                placeholder="Phone number to top up"
-                className="flex-1 border-0 bg-transparent focus:outline-none py-2 px-0 text-sm sm:text-base text-slate-900 font-medium placeholder:text-slate-400"
-              />
-              <button
-                type="button"
-                onClick={() => setExtraPhones(extraPhones.filter((_, j) => j !== i))}
-                title="Remove phone number"
-                className="w-7 h-7 rounded-full hover:bg-rose-50 hover:text-rose-600 flex items-center justify-center text-slate-400 transition-colors cursor-pointer shrink-0 ml-1"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            {extraPhoneValidations[i]?.error && (
-              <p className="text-xs text-rose-500 mt-1 flex items-start gap-1 font-medium leading-relaxed">
-                <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-500 mt-0.5" />
-                <span>{extraPhoneValidations[i].error}</span>
-              </p>
-            )}
-          </div>
-        ))}
-
-        {/* Bulk CSV Upload trigger */}
-        <div className="pt-1 flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => setIsBulkModalOpen(true)}
-            className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-900 font-semibold cursor-pointer transition-colors group select-none"
-          >
-            <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600 group-hover:scale-110 transition-transform" />
-            <span>Upload CSV for bulk top-up</span>
-          </button>
+          ) : null}
         </div>
       </div>
 
-      {/* CTA buttons */}
-      <div className="flex items-center gap-3 max-w-[420px] mt-10 mb-7">
-        <button
-          type="button"
-          onClick={handleBuyNow}
-          disabled={isDisabled || !hasService}
-          className={`flex-1 flex items-center justify-center gap-2 py-3.5 px-7 font-bold text-sm sm:text-base rounded-full transition-all cursor-pointer ${
-            !hasService
-              ? "bg-[#FF5A1F] text-white opacity-70 cursor-not-allowed"
-              : "bg-[#00F0A0] hover:bg-[#05e598] text-[#030A16] disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
-          }`}
-        >
-          {hasService && <Zap className="w-4 h-4 fill-current" />}
-          <span>{hasService ? "Buy airtime" : "Out of Stock"}</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setIsGiftModalOpen(true)}
-          disabled={isDisabled || !hasService}
-          className="flex items-center justify-center gap-2 py-3.5 px-5 bg-[#F0F2F5] hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed text-slate-800 font-bold text-sm rounded-full border border-slate-200/60 transition-all cursor-pointer active:scale-95 shrink-0"
-        >
-          <Gift className="w-4 h-4" />
-          <span>Purchase as gift</span>
-        </button>
-      </div>
-
-      {/* Thin divider + 3 Trust Badges */}
-      <div className="border-t border-slate-200 pt-16 pb-20 max-w-[420px]">
-        <div className="grid grid-cols-3 gap-2 text-center">
-          <div className="flex flex-col items-center gap-1.5">
-            <User className="w-5 h-5 text-[#DE1D35] stroke-[1.75]" />
-            <span className="text-xs font-semibold text-slate-700">No Account Required</span>
-          </div>
-          <div className="flex flex-col items-center gap-1.5">
-            <Mail className="w-5 h-5 text-[#DE1D35] stroke-[1.75]" />
-            <span className="text-xs font-semibold text-slate-700">Instant Delivery</span>
-          </div>
-          <div className="flex flex-col items-center gap-1.5">
-            <Shield className="w-5 h-5 text-[#DE1D35] stroke-[1.75]" />
-            <span className="text-xs font-semibold text-slate-700">Private and Safe</span>
-          </div>
-        </div>
-      </div>
 
       {/* Accordions */}
-      <div className="border-t border-slate-200 max-w-[420px]">
+      <div className="border-t border-slate-200 w-full">
         {/* Terms and Conditions Accordion */}
         <div className="border-b border-slate-200">
           <button
@@ -967,6 +873,70 @@ export default function RefillDetailsView({
 
 
       </div>
+
+      {/* CTA buttons */}
+      <div className="grid grid-cols-2 gap-3 w-full mt-8 mb-4">
+        <button
+          type="button"
+          onClick={handleBuyNow}
+          disabled={isDisabled || !hasService}
+          className={`w-full h-[50px] flex items-center justify-center gap-2 px-3 font-bold text-xs sm:text-sm rounded-none border border-transparent transition-all cursor-pointer ${!hasService
+              ? "bg-[#DE1D35] text-white opacity-70 cursor-not-allowed"
+              : isAlreadyInCart
+                ? "bg-[#045F40] hover:bg-[#034932] text-white active:scale-95"
+                : "bg-[#DE1D35] hover:bg-[#c21429] text-white disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
+            }`}
+        >
+          {isAlreadyInCart ? (
+            <Check className="w-4 h-4 shrink-0" />
+          ) : (
+            hasService && <Zap className="w-4 h-4 fill-current shrink-0" />
+          )}
+          <span className="truncate">
+            {!hasService ? "Out of Stock" : isAlreadyInCart ? "In Cart (View)" : "Buy airtime"}
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            if (isAlreadyInCart) {
+              setIsCartOpen(true);
+              if (typeof window !== "undefined") {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            } else {
+              setIsGiftModalOpen(true);
+            }
+          }}
+          disabled={isDisabled || !hasService}
+          className={`w-full h-[50px] flex items-center justify-center gap-2 px-3 font-bold text-xs sm:text-sm rounded-none border transition-all cursor-pointer active:scale-95 ${isAlreadyInCart
+              ? "bg-slate-100 text-slate-500 border-slate-200"
+              : "bg-[#F0F2F5] hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed text-slate-800 border-slate-200/60"
+            }`}
+        >
+          <Gift className="w-4 h-4 shrink-0" />
+          <span className="truncate">{isAlreadyInCart ? "In Cart (View)" : "Purchase as gift"}</span>
+        </button>
+      </div>
+
+      {isAlreadyInCart && (
+        <div className="w-full mb-8 p-2.5 bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center justify-between">
+          <span>{operator.name} is already in your cart (one number per network).</span>
+          <button
+            type="button"
+            onClick={() => {
+              setIsCartOpen(true);
+              if (typeof window !== "undefined") {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }}
+            className="font-bold underline text-amber-900 hover:text-black cursor-pointer shrink-0 ml-2"
+          >
+            View Cart
+          </button>
+        </div>
+      )}
     </div>
   );
 
@@ -1005,10 +975,10 @@ export default function RefillDetailsView({
         </div>
       ) : (
         /* ── STANDALONE PAGE MODE ── */
-        <div className="w-full bg-white pb-24 text-slate-900">
-          <div className="max-w-[1080px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10">
-            {/* Main Content Layout directly on full white page */}
-            <div className="flex flex-col md:flex-row gap-10 lg:gap-14 items-start">
+        <div className="w-full bg-[#F8FAFC] pb-24 text-slate-900">
+          <div className="max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12">
+            {/* Main Content Layout */}
+            <div className="flex flex-col md:flex-row gap-8 lg:gap-12 items-start justify-center">
               {renderLogoTile()}
               {renderFormContent()}
             </div>
@@ -1028,24 +998,6 @@ export default function RefillDetailsView({
           phoneNumber: phone,
         }}
         onAddToCart={handleGiftCheckout}
-      />
-      <BulkUploadModal
-        isOpen={isBulkModalOpen}
-        onClose={() => setIsBulkModalOpen(false)}
-        operator={operator}
-        countryProfile={{
-          code: profile.code,
-          name: profile.name,
-          currencySymbol: profile.currencySymbol,
-          minAmount: profile.minAmount,
-          maxAmount: profile.maxAmount,
-          defaultAmount: profile.defaultAmount,
-          usdRate: profile.usdRate,
-          dialCode: profile.dialCode,
-          localPhoneLength: profile.localPhoneLength,
-          intlPhoneLength: profile.intlPhoneLength,
-        }}
-        onProceedToCheckout={handleBulkCheckout}
       />
       <CheckoutModal
         isOpen={isCheckoutOpen}

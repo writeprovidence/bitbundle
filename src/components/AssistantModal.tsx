@@ -42,8 +42,8 @@ export default function AssistantModal({
         botResponse = "MTN top-ups start from 5 NGN up to 50,000 NGN. Average delivery time is under 30 seconds!";
       } else if (lower.includes("gift")) {
         botResponse = "Yes! You can click 'Purchase as gift' to send airtime directly to a loved one with a personalized note and email notification.";
-      } else if (lower.includes("crypto") || lower.includes("pay") || lower.includes("wallet")) {
-        botResponse = "We support Web3 wallets (MetaMask, Rabby, Coinbase Wallet) as well as direct QR deposits with USDT, CELO, cUSD, BTC, and ETH.";
+      } else if (lower.includes("crypto") || lower.includes("pay") || lower.includes("wallet") || lower.includes("token")) {
+        botResponse = "We exclusively accept stablecoins across chains (USDT, USDC, and cUSD) via Web3 wallets (MetaMask, Rabby, Coinbase) or embedded email/social login.";
       } else if (lower.includes("airtel") || lower.includes("glo") || lower.includes("9mobile")) {
         botResponse = "All Nigerian networks (MTN, Airtel, Glo, 9mobile) are supported 24/7 with instant automated top-ups.";
       }

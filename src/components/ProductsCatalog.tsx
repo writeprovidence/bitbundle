@@ -24,6 +24,7 @@ import RefillDetailsView, { OPERATORS } from "./RefillDetailsView";
 import AssistantModal from "./AssistantModal";
 import CheckoutModal from "./CheckoutModal";
 import { useCart } from "@/contexts/CartContext";
+import { detectAfricanOperator } from "@/lib/phoneValidation";
 
 export interface ProductItem {
   id: string;
@@ -199,20 +200,12 @@ const PRODUCTS: ProductItem[] = [
   },
 ];
 
-// Helper to guess Nigerian operator by phone prefix
-function detectOperator(phone: string): "mtn" | "airtel" | "glo" | "9mobile" | null {
-  const clean = phone.replace(/\D/g, "");
-  const prefix = clean.startsWith("234") ? "0" + clean.slice(3, 6) : clean.slice(0, 4);
-  
-  const mtnPrefixes = ["0803", "0806", "0703", "0706", "0813", "0816", "0810", "0814", "0903", "0906", "0913", "0916"];
-  const airtelPrefixes = ["0802", "0808", "0708", "0812", "0701", "0902", "0901", "0904", "0907", "0912"];
-  const gloPrefixes = ["0805", "0807", "0705", "0815", "0811", "0905", "0915"];
-  const nineMobilePrefixes = ["0809", "0817", "0818", "0909", "0908"];
-
-  if (mtnPrefixes.includes(prefix)) return "mtn";
-  if (airtelPrefixes.includes(prefix)) return "airtel";
-  if (gloPrefixes.includes(prefix)) return "glo";
-  if (nineMobilePrefixes.includes(prefix)) return "9mobile";
+// Helper to guess African operator by phone prefix in selected country
+function detectOperator(phone: string, countryCode: string = "NG"): "mtn" | "airtel" | "glo" | "9mobile" | null {
+  const result = detectAfricanOperator(phone, countryCode);
+  if (result && ["mtn", "airtel", "glo", "9mobile"].includes(result.id)) {
+    return result.id as "mtn" | "airtel" | "glo" | "9mobile";
+  }
   return null;
 }
 
@@ -418,7 +411,7 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
     e.preventDefault();
     if (!phoneNumber.trim()) return;
 
-    const detected = detectOperator(phoneNumber);
+    const detected = detectOperator(phoneNumber, selectedCountry.code);
     const countryProducts = filteredProducts;
     const matchedProduct =
       countryProducts.find((p) => p.networkId === detected) ||
@@ -480,7 +473,7 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
 
             <div className="relative max-w-4xl mx-auto text-center z-10">
           <h1 className="font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-[42px] leading-tight text-white tracking-tight mb-10 sm:mb-14 max-w-3xl mx-auto">
-            Top up prepaid mobile phones with USDT and other cryptocurrencies from anywhere in the world
+            Top up prepaid mobile phones with stablecoins like USDT and USDC from anywhere in the world.
           </h1>
 
           {/* Hand-drawn style note with curved arrow */}
@@ -777,12 +770,13 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
               <div className="w-full bg-gradient-to-br from-blue-50/60 via-gray-50 to-slate-100/80 rounded-2xl p-5 border border-blue-100/50 flex flex-col items-center justify-center gap-3 min-h-[170px] shadow-inner relative overflow-hidden">
                 <div className="absolute -top-10 -right-10 w-24 h-24 bg-blue-300/20 rounded-full blur-xl pointer-events-none" />
 
-                {/* Floating Token Icons Row */}
+                {/* Floating Token Icons Row (Stablecoins Only) */}
                 <div className="flex items-center justify-center -space-x-2">
-                  <Image src="/assets/token icons/cusd.png" alt="cUSD" width={32} height={32} className="w-8 h-8 rounded-full border-2 border-white shadow-sm" />
-                  <Image src="/assets/token icons/gooddollar_logo.jfif" alt="GoodDollar" width={32} height={32} className="w-8 h-8 rounded-full border-2 border-white shadow-sm" />
                   <Image src="/assets/token icons/usdt.png" alt="USDT" width={32} height={32} className="w-8 h-8 rounded-full border-2 border-white shadow-sm" />
-                  <Image src="/assets/token icons/celo.png" alt="CELO" width={32} height={32} className="w-8 h-8 rounded-full border-2 border-white shadow-sm" />
+                  <div className="w-8 h-8 rounded-full bg-[#2775CA] border-2 border-white shadow-sm flex items-center justify-center text-white font-bold text-xs">
+                    $
+                  </div>
+                  <Image src="/assets/token icons/cusd.png" alt="cUSD" width={32} height={32} className="w-8 h-8 rounded-full border-2 border-white shadow-sm" />
                 </div>
 
                 {/* Simulated Payment Confirmation Chip */}
@@ -799,7 +793,7 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
                   Pay with crypto or wallet
                 </h3>
                 <p className="text-xs sm:text-sm text-gray-600 mt-2 leading-relaxed">
-                  Connect your Web3 wallet to pay using cUSD, Gooddollar, USDT, or CELO in seconds.
+                  Connect your Web3 wallet to pay using stablecoins (USDT, USDC, or cUSD) across chains in seconds.
                 </p>
               </div>
             </div>

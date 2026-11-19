@@ -29,7 +29,7 @@ export default async function ProductDetailPage(props: any) {
   const operator = OPERATORS[normalized] || OPERATORS.mtn;
 
   return (
-    <div className="min-h-screen bg-white flex flex-col justify-between">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-between">
       {/* Dark navy strip behind the transparent header — matches landing page */}
       <div className="fixed top-0 inset-x-0 h-20 bg-[#010C24] z-40 pointer-events-none" />
       <Header />

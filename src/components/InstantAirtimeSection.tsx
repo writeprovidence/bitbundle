@@ -20,7 +20,7 @@ export default function InstantAirtimeSection() {
         </h2>
 
         {/* Subtitle text - 2 lines, color white and size 18 */}
-        <p className="font-mori text-white text-[18px] font-normal leading-relaxed max-w-2xl mx-auto mt-4 sm:mt-5 opacity-90">
+        <p className="font-manrope text-white text-[18px] font-normal leading-relaxed max-w-2xl mx-auto mt-4 sm:mt-5 opacity-90">
           <span className="block">The easiest and fastest way to recharge your mobile phone with crypto.</span>
           <span className="block">Pay with USDT or cUSD and get airtime instantly.</span>
         </p>

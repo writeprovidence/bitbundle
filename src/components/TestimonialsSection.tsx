@@ -1,192 +1,153 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
-interface Testimonial {
+interface CommunityTestimonial {
   id: string;
-  name: string;
-  date: string;
-  text: string;
-  network: string;
-  badgeType: "mtn" | "airtel" | "glo" | "9mobile";
-  reviews: string;
+  quote: string;
+  author: string;
+  role: string;
+  avatar: string;
 }
 
-const testimonials: Testimonial[] = [
+const testimonials: CommunityTestimonial[] = [
   {
     id: "1",
-    name: "08145446766yes",
-    date: "Nov 2026",
-    text: "This app is highly recommendable for any transactions because it doesn't take minutes to respond.That's why I gave a five star ratings 🤩🤩🤩🤩🤩",
-    network: "MTN",
-    badgeType: "mtn",
-    reviews: "12 reviews",
+    quote:
+      "I never have to off-ramp USDT to a local bank just to buy data bundles. Bitbundle dispatches the recharge directly to my line before I even close the tab.",
+    author: "Amina Bello",
+    role: "Freelance Product Designer, Lagos",
+    avatar: "/testimonials/amina-bello.jpg",
   },
   {
     id: "2",
-    name: "@theparabolicguy",
-    date: "Nov 2026",
-    text: "Very fast and reliable! Instant top-up with zero slippage. This is the future of utility payments. Credited before I even refreshed the wallet. Highly recommend!",
-    network: "Airtel",
-    badgeType: "airtel",
-    reviews: "8 reviews",
+    quote:
+      "Fast, zero slippage, and no tedious KYC steps just to top up a phone number. This is what everyday crypto utility is actually supposed to feel like.",
+    author: "David Kiprop",
+    role: "DeFi Researcher & Trader, Nairobi",
+    avatar: "/testimonials/david-kiprop.jpg",
   },
   {
     id: "3",
-    name: "@amina_tech99",
-    date: "Nov 2026",
-    text: "Everything fast and successful! Never had to stress looking for naira to buy recharge card again. Direct swap from crypto to airtime without delay.",
-    network: "Glo",
-    badgeType: "glo",
-    reviews: "15 reviews",
+    quote:
+      "The stablecoin checkout on Base is ultra-fast and gas fees are practically pennies. One click in my wallet and my line is instantly credited.",
+    author: "Sipho Dlamini",
+    role: "Software Engineer, Johannesburg",
+    avatar: "/testimonials/sipho-dlamini.jpg",
   },
   {
     id: "4",
-    name: "@david_crypto",
-    date: "Nov 2026",
-    text: "I've tried so many crypto off-ramps, but Bitbundle is by far the simplest. Sent crypto, received airtime in 15 seconds. Top notch service! ❤️",
-    network: "9mobile",
-    badgeType: "9mobile",
-    reviews: "6 reviews",
+    quote:
+      "Bitbundle has completely transformed how our creative team handles airtime and connectivity across borders. Smooth, instant, and reliable.",
+    author: "Kyle Weznick",
+    role: "Media Director, Turn Around Music Group",
+    avatar: "/testimonials/kyle-weznick.jpg",
   },
 ];
 
-const telecomLogos: Record<
-  Testimonial["badgeType"],
-  { src: string; alt: string; width: number; height: number; rotate: string; scale?: string }
-> = {
-  mtn: {
-    src: "/assets/mtn-card.png",
-    alt: "MTN",
-    width: 1160,
-    height: 760,
-    rotate: "rotate(8.8deg)",
-    scale: "scale(1.05)",
-  },
-  airtel: {
-    src: "/assets/airtel-logo.png",
-    alt: "Airtel",
-    width: 896,
-    height: 648,
-    rotate: "rotate(-6.5deg)",
-    scale: "scale(1.05)",
-  },
-  glo: {
-    src: "/assets/glo-card.png",
-    alt: "Glo",
-    width: 1272,
-    height: 980,
-    rotate: "rotate(14deg)",
-    scale: "scale(1.08)",
-  },
-  "9mobile": {
-    src: "/assets/9mobile-card.png",
-    alt: "9mobile",
-    width: 1264,
-    height: 800,
-    rotate: "rotate(-5.8deg)",
-    scale: "scale(1.05)",
-  },
-};
-
-function TelecomLogo({ type }: { type: Testimonial["badgeType"] }) {
-  const logo = telecomLogos[type];
-  return (
-    <div className="w-13 h-9 sm:w-14 sm:h-9.5 flex items-center justify-center shrink-0">
-      <div
-        className="w-full h-full flex items-center justify-center"
-        style={{
-          transform: `${logo.rotate} ${logo.scale || ""}`,
-        }}
-      >
-        <Image
-          src={logo.src}
-          alt={logo.alt}
-          width={logo.width}
-          height={logo.height}
-          unoptimized
-          className="w-full h-full object-contain [image-rendering:-webkit-optimize-contrast]"
-        />
-      </div>
-    </div>
-  );
-}
-
 export default function TestimonialsSection() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
+  };
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
+  };
+
+  const current = testimonials[currentIndex];
+
   return (
-    <section id="reviews" className="py-28 sm:py-36 lg:py-40 bg-white text-gray-900">
-      <div className="container-page max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-18 sm:mb-20">
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">
-            CLIENT TESTIMONIALS
-          </p>
-          <h2 className="font-tosh font-black text-3xl sm:text-4xl md:text-5xl tracking-tight text-gray-950">
-            What Our Clients Say
-          </h2>
-        </div>
+    <section
+      id="community"
+      aria-label="Community Testimonials"
+      className="py-24 sm:py-32 lg:py-40 bg-white text-slate-900 border-t border-slate-100 overflow-hidden"
+    >
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          {/* Left Column: Heading, Subtitle & Arrow Controls */}
+          <div className="lg:col-span-5 flex flex-col justify-between min-h-[260px]">
+            <div>
+              <h2 className="text-4xl sm:text-5xl lg:text-[56px] font-extrabold tracking-tight text-slate-950 leading-[1.08]">
+                From our <br className="hidden sm:inline" />
+                community.
+              </h2>
+              <p className="mt-5 sm:mt-6 text-base sm:text-lg text-slate-600 font-normal leading-relaxed max-w-sm">
+                Here&apos;s what other subscribers had to say about Bitbundle.
+              </p>
+            </div>
 
-        {/* Carousel / Grid container */}
-        <div className="relative">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
-            {testimonials.map((item) => (
-              <div
-                key={item.id}
-                className="bg-white border border-gray-200 rounded-[10px] p-4.5 sm:p-5 flex flex-col justify-between shadow-none min-h-[225px]"
+            {/* Circular Carousel Arrow Navigation */}
+            <div className="flex items-center gap-3.5 mt-8 lg:mt-16">
+              <button
+                type="button"
+                onClick={prevSlide}
+                aria-label="Previous testimonial"
+                className="w-12 h-12 rounded-full border border-slate-300 hover:border-slate-900 hover:bg-slate-900 hover:text-white text-slate-800 flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95 shadow-2xs"
               >
-                <div>
-                  {/* Top: Avatar + Name */}
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-[#555E67] flex items-center justify-center shrink-0">
-                      <svg
-                        className="w-6 h-6 text-white"
-                        viewBox="0 0 36 36"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        {/* Doodle hair */}
-                        <path d="M12 12c.8-2 2.6-3 4.5-2 1.2-.8 3.2-.8 4.4.4 1.2-.8 3.2-.4 3.8 1.6" />
-                        {/* Eyes */}
-                        <circle cx="14.5" cy="16" r="1.2" fill="currentColor" />
-                        <circle cx="21.5" cy="16" r="1.2" fill="currentColor" />
-                        {/* Nose */}
-                        <path d="M18 17v2" />
-                        {/* Smile */}
-                        <path d="M13.5 21.5c2 2.5 7 2.5 9 0" />
-                      </svg>
-                    </div>
+                <ArrowLeft className="w-5 h-5 stroke-[1.8]" />
+              </button>
+              <button
+                type="button"
+                onClick={nextSlide}
+                aria-label="Next testimonial"
+                className="w-12 h-12 rounded-full border border-slate-300 hover:border-slate-900 hover:bg-slate-900 hover:text-white text-slate-800 flex items-center justify-center transition-all duration-200 cursor-pointer active:scale-95 shadow-2xs"
+              >
+                <ArrowRight className="w-5 h-5 stroke-[1.8]" />
+              </button>
+            </div>
+          </div>
 
-                    <p className="text-sm sm:text-[14.5px] font-bold text-gray-900 leading-tight truncate">
-                      {item.name}
-                    </p>
-                  </div>
+          {/* Right Column: Navy Quote Mark, Large Editorial Quote & User Card */}
+          <div className="lg:col-span-7 flex flex-col justify-between min-h-[300px]">
+            {/* Deep Navy/Blue Quotation Mark */}
+            <div className="mb-4 sm:mb-6 text-[#1A2E68] select-none" aria-hidden="true">
+              <svg
+                className="w-12 h-9 sm:w-14 sm:h-10 fill-current"
+                viewBox="0 0 48 40"
+                fill="none"
+              >
+                <path d="M0 24C0 10.7452 8.9543 0 20 0V8C13.3726 8 8 13.3726 8 20H20V40H0V24ZM28 24C28 10.7452 36.9543 0 48 0V8C41.3726 8 36 13.3726 36 20H48V40H28V24Z" />
+              </svg>
+            </div>
 
-                  {/* Middle: Review text */}
-                  <p className="text-[13.5px] sm:text-sm text-gray-700 leading-relaxed font-normal">
-                    {item.text}
-                  </p>
-                </div>
+            {/* Large Statement Quote */}
+            <div className="min-h-[160px] sm:min-h-[180px] flex items-center">
+              <blockquote
+                key={current.id}
+                className="text-2xl sm:text-3xl md:text-4xl lg:text-[38px] font-medium tracking-tight text-slate-900 leading-[1.3] animate-in fade-in duration-300"
+              >
+                &ldquo;{current.quote}&rdquo;
+              </blockquote>
+            </div>
 
-                {/* Bottom: Divider + Telecom Logo Badge & Reviews */}
-                <div>
-                  <hr className="border-t border-gray-100 my-3.5" />
-                  <div className="flex items-center gap-3">
-                    <TelecomLogo type={item.badgeType} />
-                    <div>
-                      <p className="text-sm font-bold text-gray-900 leading-tight">
-                        {item.network}
-                      </p>
-                      <p className="text-xs text-gray-500 font-normal leading-tight mt-0.5">
-                        {item.reviews}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+            {/* Author Profile */}
+            <div
+              key={`author-${current.id}`}
+              className="mt-8 sm:mt-12 flex items-center gap-4 animate-in fade-in duration-200"
+            >
+              <div className="relative w-13 h-13 sm:w-14 sm:h-14 rounded-full overflow-hidden shrink-0 border border-slate-200 shadow-xs">
+                <Image
+                  src={current.avatar}
+                  alt={current.author}
+                  width={56}
+                  height={56}
+                  unoptimized
+                  className="w-full h-full object-cover"
+                />
               </div>
-            ))}
+              <div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-950 leading-snug">
+                  {current.author}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 font-medium leading-normal mt-0.5">
+                  {current.role}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

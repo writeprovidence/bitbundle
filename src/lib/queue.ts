@@ -1,6 +1,6 @@
 import { Queue, Worker, type Job } from "bullmq";
 import { Redis } from "ioredis";
-import { airtimeSupplier } from "./airtime/vtpass";
+import { airtimeSupplier } from "./airtime/supplier";
 import { sendReceiptEmail } from "./resend";
 
 let _connection: Redis | null = null;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Gift, X, ShoppingCart } from "lucide-react";
+import { Gift, X, Zap } from "lucide-react";
 import Image from "next/image";
 
 export interface GiftModalData {
@@ -206,14 +206,14 @@ export default function PurchaseAsGiftModal({
             </div>
           </div>
 
-          {/* Add to cart button (Matches Bitrefill Image 5) */}
+          {/* Buy airtime button */}
           <div className="pt-2">
             <button
               type="submit"
-              className="w-full py-3.5 px-6 bg-[#DE1D35] hover:bg-[#c21429] active:scale-[0.99] text-white font-extrabold text-sm sm:text-base rounded-full shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3.5 px-6 bg-[#DE1D35] hover:bg-[#c21429] active:scale-[0.99] text-white font-extrabold text-sm sm:text-base rounded-none shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <ShoppingCart className="w-4 h-4" />
-              <span>Add to cart</span>
+              <Zap className="w-4 h-4 fill-current" />
+              <span>Buy airtime</span>
             </button>
           </div>
         </form>

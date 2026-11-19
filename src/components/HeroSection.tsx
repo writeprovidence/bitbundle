@@ -25,9 +25,9 @@ export default function HeroSection() {
     >
       {/* ── Extreme Left Cards (Sharp, High-Resolution, Tilted & Fanned like the design) ── */}
 
-      {/* 1. Airtel Card - Upper Left (moved down away from header ornaments) */}
-      <div className="hidden lg:block absolute -left-8 lg:-left-10 xl:-left-12 top-[285px] lg:top-[310px] xl:top-[330px] z-20 pointer-events-auto">
-        <div className="w-48 lg:w-56 xl:w-68 2xl:w-76 h-32 lg:h-36 xl:h-44 2xl:h-48 rotate-6 hover:rotate-0 hover:scale-105 transition-all duration-300 [will-change:transform] [backface-visibility:hidden] [transform:translateZ(0)] [outline:1px_solid_transparent]">
+      {/* 1. Airtel Card - Upper Left */}
+      <div className="hidden lg:block absolute -left-6 lg:-left-10 xl:-left-12 top-[245px] lg:top-[265px] xl:top-[285px] z-20 pointer-events-auto">
+        <div className="w-48 lg:w-56 xl:w-68 2xl:w-76 h-32 lg:h-38 xl:h-44 2xl:h-50 rotate-6 hover:rotate-0 hover:scale-105 transition-all duration-300 [will-change:transform] [backface-visibility:hidden] [transform:translateZ(0)] [outline:1px_solid_transparent]">
           <Image
             src="/assets/airtel-logo.png"
             alt="Airtel card"
@@ -40,9 +40,9 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* 2. Glo Card - Lower Left */}
-      <div className="hidden lg:block absolute -left-8 lg:-left-10 xl:-left-12 top-[485px] lg:top-[515px] xl:top-[535px] z-30 pointer-events-auto">
-        <div className="w-56 lg:w-64 xl:w-76 2xl:w-84 h-36 lg:h-40 xl:h-48 2xl:h-52 -rotate-6 hover:rotate-0 hover:scale-105 transition-all duration-300 [will-change:transform] [backface-visibility:hidden] [transform:translateZ(0)] [outline:1px_solid_transparent]">
+      {/* 2. Glo Card - Lower Left (Tilted to the right) */}
+      <div className="hidden lg:block absolute -left-8 lg:-left-12 xl:-left-16 top-[395px] lg:top-[425px] xl:top-[445px] z-30 pointer-events-auto">
+        <div className="w-60 lg:w-72 xl:w-88 2xl:w-[400px] h-38 lg:h-46 xl:h-56 2xl:h-64 rotate-4 hover:rotate-0 hover:scale-105 transition-all duration-300 [will-change:transform] [backface-visibility:hidden] [transform:translateZ(0)] [outline:1px_solid_transparent]">
           <Image
             src="/assets/glo-card.png"
             alt="Glo card"
@@ -73,8 +73,8 @@ export default function HeroSection() {
       </div>
 
       {/* 4. 9mobile Card - Lower Right */}
-      <div className="hidden lg:block absolute right-0 top-[480px] lg:top-[510px] xl:top-[530px] z-30 pointer-events-auto">
-        <div className="w-48 lg:w-56 xl:w-68 2xl:w-76 h-32 lg:h-36 xl:h-44 2xl:h-48 rotate-6 hover:rotate-0 hover:scale-105 transition-all duration-300 [will-change:transform] [backface-visibility:hidden] [transform:translateZ(0)] [outline:1px_solid_transparent]">
+      <div className="hidden lg:block absolute right-4 lg:right-8 xl:right-14 2xl:right-20 top-[460px] lg:top-[485px] xl:top-[505px] z-30 pointer-events-auto">
+        <div className="w-56 lg:w-64 xl:w-80 2xl:w-92 h-36 lg:h-42 xl:h-52 2xl:h-60 rotate-6 hover:rotate-0 hover:scale-105 transition-all duration-300 [will-change:transform] [backface-visibility:hidden] [transform:translateZ(0)] [outline:1px_solid_transparent]">
           <Image
             src="/assets/9mobile-card.png"
             alt="9mobile card"
@@ -136,9 +136,8 @@ export default function HeroSection() {
           </div>
 
           {/* Subheading */}
-          <p className="font-mori text-base sm:text-lg md:text-xl text-white max-w-2xl mx-auto leading-relaxed mb-10 font-normal">
-            Top up MTN, Airtel, Glo or 9mobile with crypto – for yourself
-            <br className="hidden sm:inline" /> or someone you love.
+          <p className="font-manrope text-base sm:text-lg md:text-xl text-white max-w-2xl mx-auto leading-relaxed mb-10 font-normal">
+            Top up MTN, Airtel, Glo &amp; 9mobile with stablecoin – for yourself or someone you love.
           </p>
 
           {/* Center CTA Button */}
@@ -146,7 +145,7 @@ export default function HeroSection() {
             <Link
               href="/products"
               id="hero-cta-btn"
-              className="font-mori group inline-flex items-center gap-3.5 bg-[#00F0A0] hover:bg-[#05e598] text-[#030A16] font-semibold text-lg sm:text-xl px-10 py-4 rounded-full shadow-[0_4px_18px_rgba(0,240,160,0.28)] hover:shadow-[0_4px_24px_rgba(0,240,160,0.45)] cursor-pointer transition-all duration-200"
+              className="font-manrope group inline-flex items-center gap-3.5 bg-[#00F0A0] hover:bg-[#05e598] text-[#030A16] font-semibold text-lg sm:text-xl px-10 py-4 rounded-full shadow-[0_4px_18px_rgba(0,240,160,0.28)] hover:shadow-[0_4px_24px_rgba(0,240,160,0.45)] cursor-pointer transition-all duration-200"
             >
               <span>Buy airtime</span>
               <span className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center transition-transform duration-200 group-hover:translate-x-2">
@@ -201,6 +200,16 @@ export default function HeroSection() {
 
         </div>
       </div>
+
+      {/* Reloadly-style atmospheric light blue radial glow directly centered behind the hero content */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] sm:w-[1250px] lg:w-[1550px] h-[520px] sm:h-[650px] lg:h-[750px] pointer-events-none z-10"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 55% at 50% 50%, rgba(56, 189, 248, 0.34) 0%, rgba(59, 130, 246, 0.25) 30%, rgba(30, 58, 138, 0.16) 55%, transparent 75%)",
+          filter: "blur(80px)",
+        }}
+      />
     </section>
   );
 }

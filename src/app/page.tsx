@@ -1,6 +1,5 @@
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
-import InstantAirtimeSection from "@/components/InstantAirtimeSection";
 import HowItWorks from "@/components/HowItWorks";
 import MobileNetworksSection from "@/components/MobileNetworksSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
@@ -15,7 +14,6 @@ export default function HomePage() {
         {/* Solid dark navy background matching reference - seamless with no dividing line or gradients */}
         <div className="relative bg-[#010C24]">
           <HeroSection />
-          <InstantAirtimeSection />
           <HowItWorks />
         </div>
 

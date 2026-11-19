@@ -35,7 +35,7 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const LOCAL_STORAGE_KEY = "bitbundle_cart_v1";
+const LOCAL_STORAGE_KEY = "bitbundle_cart_v2";
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -66,6 +66,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items, isMounted]);
 
   const addItem = (item: Omit<CartItem, "id" | "addedAt">) => {
+    // Users can add more than one network to cart, but only one number per network
+    const alreadyHasNetwork = items.some((it) => it.networkId === item.networkId);
+    if (alreadyHasNetwork) {
+      setIsCartOpen(true);
+      return;
+    }
     const newItem: CartItem = {
       ...item,
       id: `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
@@ -76,7 +82,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const removeItem = (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+    setItems((prev) => {
+      const next = prev.filter((item) => String(item.id) !== String(id));
+      try {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(next));
+      } catch (e) {
+        console.error("Failed to save cart to localStorage", e);
+      }
+      return next;
+    });
   };
 
   const clearCart = () => {

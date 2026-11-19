@@ -29,7 +29,7 @@ import { detectAfricanOperator } from "@/lib/phoneValidation";
 export interface ProductItem {
   id: string;
   name: string;
-  networkId: "mtn" | "airtel" | "glo" | "9mobile" | "spectranet";
+  networkId: string;
   category: "Airtime" | "Data" | "PIN" | "Bundles" | "Internet";
   range: string;
   rating?: number;
@@ -38,7 +38,7 @@ export interface ProductItem {
   badgeType?: "discount" | "outofstock";
   cardBg: string;
   cardBorder?: string;
-  logoType: "mtn" | "airtel" | "glo" | "9mobile" | "spectranet";
+  logoType: string;
 }
 
 export interface CountryOption {
@@ -47,7 +47,7 @@ export interface CountryOption {
   flag: string;
   dialCode: string;
   placeholder: string;
-  networks: ("mtn" | "airtel" | "glo" | "9mobile" | "spectranet")[];
+  networks: string[];
 }
 
 export const COUNTRIES: CountryOption[] = [
@@ -65,7 +65,7 @@ export const COUNTRIES: CountryOption[] = [
     flag: "🇬🇭",
     dialCode: "+233",
     placeholder: "024 123 4567",
-    networks: ["mtn", "airtel", "glo"],
+    networks: ["mtn", "airtel", "telecel"],
   },
   {
     code: "ZA",
@@ -73,7 +73,7 @@ export const COUNTRIES: CountryOption[] = [
     flag: "🇿🇦",
     dialCode: "+27",
     placeholder: "083 123 4567",
-    networks: ["mtn"],
+    networks: ["mtn", "vodacom", "cellc", "telkom"],
   },
   {
     code: "UG",
@@ -89,47 +89,7 @@ export const COUNTRIES: CountryOption[] = [
     flag: "🇰🇪",
     dialCode: "+254",
     placeholder: "071 234 5678",
-    networks: ["airtel"],
-  },
-  {
-    code: "RW",
-    name: "Rwanda",
-    flag: "🇷🇼",
-    dialCode: "+250",
-    placeholder: "078 123 4567",
-    networks: ["mtn", "airtel"],
-  },
-  {
-    code: "ZM",
-    name: "Zambia",
-    flag: "🇿🇲",
-    dialCode: "+260",
-    placeholder: "096 123 4567",
-    networks: ["mtn", "airtel"],
-  },
-  {
-    code: "CM",
-    name: "Cameroon",
-    flag: "🇨🇲",
-    dialCode: "+237",
-    placeholder: "067 123 4567",
-    networks: ["mtn"],
-  },
-  {
-    code: "BJ",
-    name: "Benin",
-    flag: "🇧🇯",
-    dialCode: "+229",
-    placeholder: "097 123 456",
-    networks: ["mtn", "glo"],
-  },
-  {
-    code: "CI",
-    name: "Côte d'Ivoire",
-    flag: "🇨🇮",
-    dialCode: "+225",
-    placeholder: "05 1234 5678",
-    networks: ["mtn"],
+    networks: ["safaricom", "airtel"],
   },
   {
     code: "TZ",
@@ -137,15 +97,7 @@ export const COUNTRIES: CountryOption[] = [
     flag: "🇹🇿",
     dialCode: "+255",
     placeholder: "078 123 4567",
-    networks: ["airtel"],
-  },
-  {
-    code: "CD",
-    name: "DR Congo",
-    flag: "🇨🇩",
-    dialCode: "+243",
-    placeholder: "099 123 4567",
-    networks: ["airtel"],
+    networks: ["vodacom", "airtel", "tigo", "halotel"],
   },
 ];
 
@@ -198,13 +150,90 @@ const PRODUCTS: ProductItem[] = [
     cardBg: "bg-[#045F40]",
     logoType: "9mobile",
   },
+  {
+    id: "telecel-airtime",
+    name: "Telecel / Vodafone",
+    networkId: "telecel",
+    category: "Airtime",
+    range: "5 GHS - 500 GHS",
+    rating: 4.7,
+    inStock: true,
+    cardBg: "bg-[#E40000]",
+    logoType: "telecel",
+  },
+  {
+    id: "safaricom-airtime",
+    name: "Safaricom",
+    networkId: "safaricom",
+    category: "Airtime",
+    range: "50 KES - 10000 KES",
+    rating: 4.9,
+    inStock: true,
+    cardBg: "bg-[#009E49]",
+    logoType: "safaricom",
+  },
+  {
+    id: "vodacom-airtime",
+    name: "Vodacom",
+    networkId: "vodacom",
+    category: "Airtime",
+    range: "10 ZAR - 2000 ZAR",
+    rating: 4.8,
+    inStock: true,
+    cardBg: "bg-[#E60000]",
+    logoType: "vodacom",
+  },
+  {
+    id: "cellc-airtime",
+    name: "Cell C",
+    networkId: "cellc",
+    category: "Airtime",
+    range: "10 ZAR - 2000 ZAR",
+    rating: 4.5,
+    inStock: true,
+    cardBg: "bg-black",
+    logoType: "cellc",
+  },
+  {
+    id: "telkom-airtime",
+    name: "Telkom",
+    networkId: "telkom",
+    category: "Airtime",
+    range: "10 ZAR - 2000 ZAR",
+    rating: 4.6,
+    inStock: true,
+    cardBg: "bg-[#0089CF]",
+    logoType: "telkom",
+  },
+  {
+    id: "tigo-airtime",
+    name: "Tigo",
+    networkId: "tigo",
+    category: "Airtime",
+    range: "1000 TZS - 100000 TZS",
+    rating: 4.7,
+    inStock: true,
+    cardBg: "bg-[#0033A0]",
+    logoType: "tigo",
+  },
+  {
+    id: "halotel-airtime",
+    name: "Halotel",
+    networkId: "halotel",
+    category: "Airtime",
+    range: "1000 TZS - 100000 TZS",
+    rating: 4.6,
+    inStock: true,
+    cardBg: "bg-[#FF6600]",
+    logoType: "halotel",
+  },
 ];
 
 // Helper to guess African operator by phone prefix in selected country
-function detectOperator(phone: string, countryCode: string = "NG"): "mtn" | "airtel" | "glo" | "9mobile" | null {
+function detectOperator(phone: string, countryCode: string = "NG"): string | null {
   const result = detectAfricanOperator(phone, countryCode);
-  if (result && ["mtn", "airtel", "glo", "9mobile"].includes(result.id)) {
-    return result.id as "mtn" | "airtel" | "glo" | "9mobile";
+  if (result) {
+    return result.id;
   }
   return null;
 }
@@ -665,6 +694,71 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
                       />
                     </div>
                   )}
+
+                  {product.logoType === "telecel" && (
+                    <div className="flex flex-col items-center justify-center w-full px-4 select-none">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">telecel</span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-white" />
+                      </div>
+                      <span className="text-[11px] font-semibold text-white/80 tracking-wide uppercase mt-1">Vodafone Ghana</span>
+                    </div>
+                  )}
+
+                  {product.logoType === "vodacom" && (
+                    <div className="flex flex-col items-center justify-center w-full px-4 select-none">
+                      <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center mb-1 shadow-sm">
+                        <div className="w-7 h-7 rounded-full bg-[#E60000] flex items-center justify-center">
+                          <div className="w-3.5 h-3.5 rounded-full bg-white -translate-y-0.5 -translate-x-0.5" />
+                        </div>
+                      </div>
+                      <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">vodacom</span>
+                    </div>
+                  )}
+
+                  {product.logoType === "cellc" && (
+                    <div className="flex flex-col items-center justify-center w-full px-4 select-none">
+                      <div className="w-12 h-12 rounded-full border-[4px] border-white flex items-center justify-center mb-1">
+                        <span className="text-xl font-black text-white">C</span>
+                      </div>
+                      <span className="text-xl sm:text-2xl font-black tracking-widest text-white">CELL C</span>
+                    </div>
+                  )}
+
+                  {product.logoType === "telkom" && (
+                    <div className="flex flex-col items-center justify-center w-full px-4 select-none">
+                      <div className="w-10 h-10 border-3 border-white rounded-md rotate-45 flex items-center justify-center mb-1">
+                        <div className="w-3 h-3 bg-white -rotate-45" />
+                      </div>
+                      <span className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Telkom</span>
+                    </div>
+                  )}
+
+                  {product.logoType === "safaricom" && (
+                    <div className="flex flex-col items-center justify-center w-full px-4 select-none">
+                      <div className="w-9 h-9 rounded-full border-[3.5px] border-[#E40000] bg-white flex items-center justify-center mb-1 shadow-xs">
+                        <div className="w-3.5 h-3.5 rounded-full bg-[#009E49]" />
+                      </div>
+                      <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">Safaricom</span>
+                    </div>
+                  )}
+
+                  {product.logoType === "tigo" && (
+                    <div className="flex flex-col items-center justify-center w-full px-4 select-none">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-3xl sm:text-4xl font-black text-white tracking-tight lowercase">tigo</span>
+                        <span className="w-3 h-3 rounded-full bg-[#FFD700]" />
+                      </div>
+                      <span className="text-[10px] font-bold text-[#FFD700] tracking-widest uppercase mt-0.5">Tanzania</span>
+                    </div>
+                  )}
+
+                  {product.logoType === "halotel" && (
+                    <div className="flex flex-col items-center justify-center w-full px-4 select-none">
+                      <span className="text-2xl sm:text-3xl font-black text-white tracking-tight lowercase">halotel</span>
+                      <div className="w-12 h-1 bg-white/70 rounded-full mt-1.5" />
+                    </div>
+                  )}
                 </div>
 
                 {/* Card Meta below */}
@@ -899,6 +993,70 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
                   Out Of Stock
                 </span>
                 <Image src="/assets/9mobile-brand-logo.png" alt="9mobile" width={120} height={60} className="w-auto h-14 object-contain brightness-0 invert" />
+              </div>
+            )}
+
+            {outOfStockModal.logoType === "telecel" && (
+              <div className="relative w-full h-32 bg-[#E40000] rounded-2xl flex flex-col items-center justify-center mb-6 shadow-sm overflow-hidden p-4 select-none">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                  Out Of Stock
+                </span>
+                <span className="text-3xl font-black text-white">telecel</span>
+                <span className="text-[10px] text-white/80 uppercase">Vodafone Ghana</span>
+              </div>
+            )}
+
+            {outOfStockModal.logoType === "vodacom" && (
+              <div className="relative w-full h-32 bg-[#E60000] rounded-2xl flex flex-col items-center justify-center mb-6 shadow-sm overflow-hidden p-4 select-none">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                  Out Of Stock
+                </span>
+                <span className="text-3xl font-black text-white">vodacom</span>
+              </div>
+            )}
+
+            {outOfStockModal.logoType === "cellc" && (
+              <div className="relative w-full h-32 bg-black rounded-2xl flex flex-col items-center justify-center mb-6 shadow-sm overflow-hidden p-4 select-none">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                  Out Of Stock
+                </span>
+                <span className="text-2xl font-black text-white tracking-widest">CELL C</span>
+              </div>
+            )}
+
+            {outOfStockModal.logoType === "telkom" && (
+              <div className="relative w-full h-32 bg-[#0089CF] rounded-2xl flex flex-col items-center justify-center mb-6 shadow-sm overflow-hidden p-4 select-none">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                  Out Of Stock
+                </span>
+                <span className="text-3xl font-black text-white">Telkom</span>
+              </div>
+            )}
+
+            {outOfStockModal.logoType === "safaricom" && (
+              <div className="relative w-full h-32 bg-[#009E49] rounded-2xl flex flex-col items-center justify-center mb-6 shadow-sm overflow-hidden p-4 select-none">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                  Out Of Stock
+                </span>
+                <span className="text-3xl font-black text-white">Safaricom</span>
+              </div>
+            )}
+
+            {outOfStockModal.logoType === "tigo" && (
+              <div className="relative w-full h-32 bg-[#0033A0] rounded-2xl flex flex-col items-center justify-center mb-6 shadow-sm overflow-hidden p-4 select-none">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                  Out Of Stock
+                </span>
+                <span className="text-3xl font-black text-white lowercase">tigo</span>
+              </div>
+            )}
+
+            {outOfStockModal.logoType === "halotel" && (
+              <div className="relative w-full h-32 bg-[#FF6600] rounded-2xl flex flex-col items-center justify-center mb-6 shadow-sm overflow-hidden p-4 select-none">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                  Out Of Stock
+                </span>
+                <span className="text-3xl font-black text-white lowercase">halotel</span>
               </div>
             )}
 

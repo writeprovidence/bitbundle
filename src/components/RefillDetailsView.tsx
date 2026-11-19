@@ -115,7 +115,7 @@ const COUNTRY_PROFILES: Record<string, CountryProfile> = {
     localPhoneLength: 10,
     intlPhoneLength: 12,
     placeholder: "024 123 4567",
-    supportedNetworks: ["mtn", "airtel", "glo"],
+    supportedNetworks: ["mtn", "airtel", "telecel"],
   },
   ZA: {
     code: "ZA",
@@ -130,7 +130,7 @@ const COUNTRY_PROFILES: Record<string, CountryProfile> = {
     localPhoneLength: 10,
     intlPhoneLength: 11,
     placeholder: "083 123 4567",
-    supportedNetworks: ["mtn"],
+    supportedNetworks: ["mtn", "vodacom", "cellc", "telkom"],
   },
   KE: {
     code: "KE",
@@ -145,7 +145,7 @@ const COUNTRY_PROFILES: Record<string, CountryProfile> = {
     localPhoneLength: 10,
     intlPhoneLength: 12,
     placeholder: "071 234 5678",
-    supportedNetworks: ["airtel"],
+    supportedNetworks: ["safaricom", "airtel"],
   },
   UG: {
     code: "UG",
@@ -162,81 +162,6 @@ const COUNTRY_PROFILES: Record<string, CountryProfile> = {
     placeholder: "077 123 4567",
     supportedNetworks: ["mtn", "airtel"],
   },
-  RW: {
-    code: "RW",
-    name: "Rwanda",
-    currency: "RWF",
-    currencySymbol: "FRw",
-    minAmount: 500,
-    maxAmount: 50000,
-    defaultAmount: 2000,
-    usdRate: 0.00072,
-    dialCode: "+250",
-    localPhoneLength: 10,
-    intlPhoneLength: 12,
-    placeholder: "078 123 4567",
-    supportedNetworks: ["mtn", "airtel"],
-  },
-  ZM: {
-    code: "ZM",
-    name: "Zambia",
-    currency: "ZMW",
-    currencySymbol: "ZK",
-    minAmount: 10,
-    maxAmount: 1000,
-    defaultAmount: 50,
-    usdRate: 0.036,
-    dialCode: "+260",
-    localPhoneLength: 10,
-    intlPhoneLength: 12,
-    placeholder: "096 123 4567",
-    supportedNetworks: ["mtn", "airtel"],
-  },
-  CM: {
-    code: "CM",
-    name: "Cameroon",
-    currency: "XAF",
-    currencySymbol: "FCFA",
-    minAmount: 500,
-    maxAmount: 50000,
-    defaultAmount: 2000,
-    usdRate: 0.0016,
-    dialCode: "+237",
-    localPhoneLength: 9,
-    intlPhoneLength: 12,
-    placeholder: "067 123 4567",
-    supportedNetworks: ["mtn"],
-  },
-  BJ: {
-    code: "BJ",
-    name: "Benin",
-    currency: "XOF",
-    currencySymbol: "CFA",
-    minAmount: 500,
-    maxAmount: 50000,
-    defaultAmount: 2000,
-    usdRate: 0.0016,
-    dialCode: "+229",
-    localPhoneLength: 8,
-    intlPhoneLength: 11,
-    placeholder: "097 123 456",
-    supportedNetworks: ["mtn", "glo"],
-  },
-  CI: {
-    code: "CI",
-    name: "Côte d'Ivoire",
-    currency: "XOF",
-    currencySymbol: "CFA",
-    minAmount: 500,
-    maxAmount: 50000,
-    defaultAmount: 2000,
-    usdRate: 0.0016,
-    dialCode: "+225",
-    localPhoneLength: 10,
-    intlPhoneLength: 12,
-    placeholder: "05 1234 5678",
-    supportedNetworks: ["mtn"],
-  },
   TZ: {
     code: "TZ",
     name: "Tanzania",
@@ -250,22 +175,7 @@ const COUNTRY_PROFILES: Record<string, CountryProfile> = {
     localPhoneLength: 10,
     intlPhoneLength: 12,
     placeholder: "078 123 4567",
-    supportedNetworks: ["airtel"],
-  },
-  CD: {
-    code: "CD",
-    name: "DR Congo",
-    currency: "USD",
-    currencySymbol: "$",
-    minAmount: 1,
-    maxAmount: 100,
-    defaultAmount: 5,
-    usdRate: 1.0,
-    dialCode: "+243",
-    localPhoneLength: 9,
-    intlPhoneLength: 12,
-    placeholder: "099 123 4567",
-    supportedNetworks: ["airtel"],
+    supportedNetworks: ["vodacom", "airtel", "tigo", "halotel"],
   },
 };
 
@@ -278,13 +188,7 @@ function resolveCountryProfile(code?: string, name?: string): CountryProfile {
   if (cleanName.includes("south africa")) return COUNTRY_PROFILES.ZA;
   if (cleanName.includes("kenya")) return COUNTRY_PROFILES.KE;
   if (cleanName.includes("uganda")) return COUNTRY_PROFILES.UG;
-  if (cleanName.includes("rwanda")) return COUNTRY_PROFILES.RW;
-  if (cleanName.includes("zambia")) return COUNTRY_PROFILES.ZM;
-  if (cleanName.includes("cameroon")) return COUNTRY_PROFILES.CM;
-  if (cleanName.includes("benin")) return COUNTRY_PROFILES.BJ;
-  if (cleanName.includes("ivoire") || cleanName.includes("ivory")) return COUNTRY_PROFILES.CI;
   if (cleanName.includes("tanzania")) return COUNTRY_PROFILES.TZ;
-  if (cleanName.includes("congo")) return COUNTRY_PROFILES.CD;
   return COUNTRY_PROFILES.NG;
 }
 
@@ -556,9 +460,8 @@ export default function RefillDetailsView({
   const renderLogoTile = () => (
     <div className="shrink-0 w-full md:w-[440px] lg:w-[480px] md:sticky md:top-28 self-start">
       <div
-        className={`relative w-full aspect-square bg-[#EBEBEB] flex items-center justify-center p-6 sm:p-10 ${
-          !isModal ? "rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden" : "rounded-none"
-        }`}
+        className={`relative w-full aspect-square bg-[#EBEBEB] flex items-center justify-center p-6 sm:p-10 ${!isModal ? "rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden" : "rounded-none"
+          }`}
       >
         {/* Action icon buttons: copy link & favourite */}
         <div className="absolute top-5 right-5 flex gap-2.5 z-10">
@@ -623,6 +526,99 @@ export default function RefillDetailsView({
             <Image src="/assets/9mobile-brand-logo.png" alt="9mobile" width={260} height={140} className="w-auto h-26 sm:h-30 md:h-34 object-contain brightness-0 invert" />
           </div>
         )}
+        {operator.logoType === "telecel" && (
+          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] bg-[#E40000] rounded-[18px] flex flex-col items-center justify-center p-6 shadow-xs select-none">
+            {!hasService && (
+              <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                Out Of Stock
+              </span>
+            )}
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">telecel</span>
+              <span className="w-3.5 h-3.5 rounded-full bg-white" />
+            </div>
+            <span className="text-xs font-semibold text-white/80 tracking-wide uppercase">Vodafone Ghana</span>
+          </div>
+        )}
+        {operator.logoType === "vodacom" && (
+          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] bg-[#E60000] rounded-[18px] flex flex-col items-center justify-center p-6 shadow-xs select-none">
+            {!hasService && (
+              <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                Out Of Stock
+              </span>
+            )}
+            <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center mb-2 shadow-sm">
+              <div className="w-8 h-8 rounded-full bg-[#E60000] flex items-center justify-center">
+                <div className="w-4 h-4 rounded-full bg-white -translate-y-0.5 -translate-x-0.5" />
+              </div>
+            </div>
+            <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">vodacom</span>
+          </div>
+        )}
+        {operator.logoType === "cellc" && (
+          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] bg-black rounded-[18px] flex flex-col items-center justify-center p-6 shadow-xs select-none">
+            {!hasService && (
+              <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                Out Of Stock
+              </span>
+            )}
+            <div className="w-14 h-14 rounded-full border-[5px] border-white flex items-center justify-center mb-2">
+              <span className="text-2xl font-black text-white">C</span>
+            </div>
+            <span className="text-2xl sm:text-3xl font-black tracking-widest text-white">CELL C</span>
+          </div>
+        )}
+        {operator.logoType === "telkom" && (
+          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] bg-[#0089CF] rounded-[18px] flex flex-col items-center justify-center p-6 shadow-xs select-none">
+            {!hasService && (
+              <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                Out Of Stock
+              </span>
+            )}
+            <div className="w-12 h-12 border-4 border-white rounded-lg rotate-45 flex items-center justify-center mb-2">
+              <div className="w-4 h-4 bg-white -rotate-45" />
+            </div>
+            <span className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Telkom</span>
+          </div>
+        )}
+        {operator.logoType === "safaricom" && (
+          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] bg-[#009E49] rounded-[18px] flex flex-col items-center justify-center p-6 shadow-xs select-none">
+            {!hasService && (
+              <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                Out Of Stock
+              </span>
+            )}
+            <div className="w-10 h-10 rounded-full border-4 border-[#E40000] bg-white flex items-center justify-center mb-2">
+              <div className="w-4 h-4 rounded-full bg-[#009E49]" />
+            </div>
+            <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">Safaricom</span>
+          </div>
+        )}
+        {operator.logoType === "tigo" && (
+          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] bg-[#0033A0] rounded-[18px] flex flex-col items-center justify-center p-6 shadow-xs select-none">
+            {!hasService && (
+              <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                Out Of Stock
+              </span>
+            )}
+            <div className="flex items-baseline gap-1">
+              <span className="text-4xl sm:text-5xl font-black text-white tracking-tight lowercase">tigo</span>
+              <span className="w-3.5 h-3.5 rounded-full bg-[#FFD700]" />
+            </div>
+            <span className="text-xs font-bold text-[#FFD700] tracking-widest uppercase mt-1">Tanzania</span>
+          </div>
+        )}
+        {operator.logoType === "halotel" && (
+          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] bg-[#FF6600] rounded-[18px] flex flex-col items-center justify-center p-6 shadow-xs select-none">
+            {!hasService && (
+              <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                Out Of Stock
+              </span>
+            )}
+            <span className="text-3xl sm:text-4xl font-black text-white tracking-tight lowercase">halotel</span>
+            <div className="w-16 h-1 bg-white/70 rounded-full mt-2" />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -630,11 +626,10 @@ export default function RefillDetailsView({
   // Render form content
   const renderFormContent = () => (
     <div
-      className={`flex-1 min-w-0 max-w-[560px] ${
-        !isModal
+      className={`flex-1 min-w-0 max-w-[560px] ${!isModal
           ? "bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-9 shadow-sm"
           : ""
-      }`}
+        }`}
     >
       {/* Dynamic Title */}
       <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 mb-2 tracking-tight">
@@ -788,13 +783,12 @@ export default function RefillDetailsView({
       <div className="mb-6 w-full">
         <div>
           <div
-            className={`flex items-center border transition-colors rounded-[6px] px-3 ${
-              !networkMatch.isMatch
+            className={`flex items-center border transition-colors rounded-[6px] px-3 ${!networkMatch.isMatch
                 ? "border-rose-400 bg-rose-50/20 focus-within:border-rose-600"
                 : phoneValidation.error
-                ? "border-rose-400 focus-within:border-rose-600"
-                : "border-slate-200 focus-within:border-slate-600"
-            }`}
+                  ? "border-rose-400 focus-within:border-rose-600"
+                  : "border-slate-200 focus-within:border-slate-600"
+              }`}
           >
             <input
               type="tel"
@@ -819,9 +813,8 @@ export default function RefillDetailsView({
                   <div className="mt-2.5 flex flex-wrap items-center gap-2">
                     {networkMatch.detectedOperator.isSupportedOperator ? (
                       <Link
-                        href={`/products/${networkMatch.detectedOperator.id}?${
-                          profile.code !== "NG" ? `country=${profile.code}&` : ""
-                        }phone=${encodeURIComponent(phone.trim())}`}
+                        href={`/products/${networkMatch.detectedOperator.id}?${profile.code !== "NG" ? `country=${profile.code}&` : ""
+                          }phone=${encodeURIComponent(phone.trim())}`}
                         className="inline-flex items-center gap-1 px-3 py-1 bg-[#DE1D35] hover:bg-[#c21429] text-white font-bold text-[11px] rounded-none transition-all cursor-pointer shadow-2xs active:scale-95"
                       >
                         <span>Switch to {networkMatch.detectedOperator.name}</span>
@@ -881,10 +874,10 @@ export default function RefillDetailsView({
           onClick={handleBuyNow}
           disabled={isDisabled || !hasService}
           className={`w-full h-[50px] flex items-center justify-center gap-2 px-3 font-bold text-xs sm:text-sm rounded-none border border-transparent transition-all cursor-pointer ${!hasService
-              ? "bg-[#DE1D35] text-white opacity-70 cursor-not-allowed"
-              : isAlreadyInCart
-                ? "bg-[#045F40] hover:bg-[#034932] text-white active:scale-95"
-                : "bg-[#DE1D35] hover:bg-[#c21429] text-white disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
+            ? "bg-[#DE1D35] text-white opacity-70 cursor-not-allowed"
+            : isAlreadyInCart
+              ? "bg-[#045F40] hover:bg-[#034932] text-white active:scale-95"
+              : "bg-[#DE1D35] hover:bg-[#c21429] text-white disabled:opacity-40 disabled:cursor-not-allowed active:scale-95"
             }`}
         >
           {isAlreadyInCart ? (
@@ -911,8 +904,8 @@ export default function RefillDetailsView({
           }}
           disabled={isDisabled || !hasService}
           className={`w-full h-[50px] flex items-center justify-center gap-2 px-3 font-bold text-xs sm:text-sm rounded-none border transition-all cursor-pointer active:scale-95 ${isAlreadyInCart
-              ? "bg-slate-100 text-slate-500 border-slate-200"
-              : "bg-[#F0F2F5] hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed text-slate-800 border-slate-200/60"
+            ? "bg-slate-100 text-slate-500 border-slate-200"
+            : "bg-[#F0F2F5] hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed text-slate-800 border-slate-200/60"
             }`}
         >
           <Gift className="w-4 h-4 shrink-0" />

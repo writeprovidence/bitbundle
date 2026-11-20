@@ -21,6 +21,8 @@ import {
   Wifi,
   ShoppingCart,
   ArrowRight,
+  ArrowDown,
+  Bell,
 } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import PurchaseAsGiftModal from "./PurchaseAsGiftModal";
@@ -291,6 +293,7 @@ export default function RefillDetailsView({
 
   const [waitlistEmail, setWaitlistEmail] = useState("");
   const [waitlistSent, setWaitlistSent] = useState(false);
+  const [showNotifyInput, setShowNotifyInput] = useState(false);
   const [amount, setAmount] = useState<number>(
     initialAmount ?? (topupType === "data" && selectedBundle ? selectedBundle.priceLocal : profile.defaultAmount)
   );
@@ -742,86 +745,108 @@ export default function RefillDetailsView({
           {/* Country Selection Dropdown */}
           {isCountryPickerOpen && (
             <div className="absolute top-full left-0 mt-1.5 w-64 max-h-64 overflow-y-auto bg-white border border-slate-200 rounded-2xl shadow-xl z-50 py-1.5 animate-in fade-in zoom-in-95 duration-150">
-              {Object.values(COUNTRY_PROFILES).map((c) => {
-                const isSelected = c.code === profile.code;
-                const worksForThisOperator = c.supportedNetworks.includes(operator.id);
-                return (
-                  <button
-                    key={c.code}
-                    type="button"
-                    onClick={() => {
-                      setSelectedCountryCode(c.code);
-                      setIsCountryPickerOpen(false);
-                      if (onCountryChange) {
-                        onCountryChange(c.code, c.name);
-                      }
-                    }}
-                    className={`w-full flex items-center justify-between px-3 py-2 text-xs sm:text-sm text-left transition-colors cursor-pointer ${isSelected
-                      ? "bg-emerald-50 text-emerald-900 font-bold"
-                      : "text-slate-700 hover:bg-slate-50 font-medium"
+              {Object.values(COUNTRY_PROFILES)
+                .filter((c) => c.supportedNetworks.includes(operator.id))
+                .map((c) => {
+                  const isSelected = c.code === profile.code;
+                  return (
+                    <button
+                      key={c.code}
+                      type="button"
+                      onClick={() => {
+                        setSelectedCountryCode(c.code);
+                        setIsCountryPickerOpen(false);
+                        if (onCountryChange) {
+                          onCountryChange(c.code, c.name);
+                        }
+                      }}
+                      className={`w-full flex items-center justify-between px-3 py-2 text-xs sm:text-sm text-left transition-colors cursor-pointer ${
+                        isSelected
+                          ? "bg-emerald-50 text-emerald-900 font-bold"
+                          : "text-slate-700 hover:bg-slate-50 font-medium"
                       }`}
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <CountryFlag
-                        countryCode={c.code}
-                        countryName={c.name}
-                        width={20}
-                        height={14}
-                        className="w-5 h-3.5 rounded-[2px] shadow-2xs border border-black/10 shrink-0"
-                      />
-                      <span className="truncate">{c.name}</span>
-                    </div>
-                    {!worksForThisOperator && (
-                      <span className="text-[10px] text-[#FF5A1F] bg-orange-50 px-1.5 py-0.5 rounded-md shrink-0 font-semibold">
-                        Out of stock
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <CountryFlag
+                          countryCode={c.code}
+                          countryName={c.name}
+                          width={20}
+                          height={14}
+                          className="w-5 h-3.5 rounded-[2px] shadow-2xs border border-black/10 shrink-0"
+                        />
+                        <span className="truncate">{c.name}</span>
+                      </div>
+                    </button>
+                  );
+                })}
             </div>
           )}
         </div>
-
-
       </div>
 
+      {/* Out of Stock Card Matching Exact Reference Design */}
       {!hasService && (
-        <div className="mb-6 max-w-[420px] p-4 bg-orange-50/80 border border-orange-200 rounded-2xl text-orange-950">
-          <div className="flex items-start gap-2.5">
-            <AlertCircle className="w-5 h-5 text-[#FF5A1F] shrink-0 mt-0.5" />
-            <div className="text-xs sm:text-sm">
-              <p className="font-bold">
-                {operator.name} is currently unavailable in {profile.name}
-              </p>
-              <p className="text-orange-800 text-xs mt-0.5 leading-relaxed">
-                This operator is out of stock or does not operate in {profile.name}. Enter your email to be notified when service launches.
-              </p>
+        <div className="mb-6 max-w-[500px] p-4 sm:p-5 bg-[#ECEEF0] rounded-2xl shadow-2xs">
+          <div className="flex items-center gap-2.5 mb-3.5">
+            <div className="w-6 h-6 rounded-full bg-[#02332B] text-white flex items-center justify-center shrink-0">
+              <span className="font-serif font-black text-xs leading-none">i</span>
             </div>
+            <h3 className="font-bold text-sm sm:text-base text-[#02332B] tracking-tight">
+              We are currently out of stock on this product
+            </h3>
           </div>
-          {waitlistSent ? (
-            <div className="mt-3 p-2.5 bg-emerald-100/70 border border-emerald-300 rounded-xl text-emerald-800 text-xs font-semibold flex items-center gap-2">
-              <Check className="w-4 h-4 text-emerald-600" />
-              <span>You&apos;re on the waitlist! We&apos;ll notify you when service arrives.</span>
-            </div>
-          ) : (
-            <div className="mt-3 flex gap-2">
-              <input
-                type="email"
-                value={waitlistEmail}
-                onChange={(e) => setWaitlistEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="flex-1 px-3 py-1.5 bg-white border border-orange-300 rounded-xl text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-orange-500"
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  if (waitlistEmail.trim()) setWaitlistSent(true);
-                }}
-                className="px-3.5 py-1.5 bg-[#FF5A1F] hover:bg-[#e04e19] text-white text-xs font-bold rounded-xl transition-colors cursor-pointer"
-              >
-                Notify Me
-              </button>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setShowNotifyInput((v) => !v)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#02332B] hover:bg-[#034439] text-white text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-2xs"
+            >
+              <Bell className="w-3.5 h-3.5" />
+              <span>Notify me when it&apos;s back</span>
+            </button>
+
+            <Link
+              href={`/products?country=${profile.code}`}
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#02332B] underline hover:text-[#034439] transition-colors cursor-pointer"
+            >
+              <ArrowDown className="w-3.5 h-3.5" />
+              <span>Similar products</span>
+            </Link>
+          </div>
+
+          {/* Inline Email Input for Stock Notification */}
+          {showNotifyInput && (
+            <div className="mt-3.5 pt-3.5 border-t border-slate-300/60 animate-in fade-in duration-150">
+              {waitlistSent ? (
+                <div className="p-2.5 bg-emerald-100/90 border border-emerald-300 rounded-xl text-emerald-950 text-xs font-semibold flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-700 shrink-0" />
+                  <span>We will notify you immediately once this service is restocked.</span>
+                </div>
+              ) : (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (waitlistEmail.trim()) setWaitlistSent(true);
+                  }}
+                  className="flex gap-2"
+                >
+                  <input
+                    type="email"
+                    required
+                    value={waitlistEmail}
+                    onChange={(e) => setWaitlistEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="flex-1 px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#02332B]"
+                  />
+                  <button
+                    type="submit"
+                    className="px-4 py-1.5 bg-[#02332B] hover:bg-[#034439] text-white text-xs font-bold rounded-xl transition-colors cursor-pointer"
+                  >
+                    Submit
+                  </button>
+                </form>
+              )}
             </div>
           )}
         </div>

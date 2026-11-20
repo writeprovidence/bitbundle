@@ -415,23 +415,16 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
     );
   }, [countrySearch]);
 
-  // Products list with dynamic inStock / out-of-stock badge per country
+  // Products list strictly filtered to operators that operate in the selected country
   const filteredProducts = useMemo(() => {
-    const list = PRODUCTS.map((product) => {
-      const isSupportedInCountry = selectedCountry.networks?.includes(product.networkId) ?? true;
-      const isActuallyInStock = product.inStock && isSupportedInCountry;
+    // Only show products operating in the selected country
+    const countryProducts = PRODUCTS.filter((product) =>
+      selectedCountry.networks?.includes(product.networkId)
+    );
 
-      return {
-        ...product,
-        inStock: isActuallyInStock,
-        badge: !isActuallyInStock ? "Out Of Stock" : product.badge,
-        badgeType: !isActuallyInStock ? ("outofstock" as const) : product.badgeType,
-      };
-    });
-
-    if (!searchQuery.trim()) return list;
+    if (!searchQuery.trim()) return countryProducts;
     const query = searchQuery.toLowerCase();
-    return list.filter(
+    return countryProducts.filter(
       (p) =>
         p.name.toLowerCase().includes(query) ||
         p.category.toLowerCase().includes(query) ||
@@ -819,21 +812,13 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
 
                 {/* Card Meta below */}
                 <div className="mt-3 px-1">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-sm font-bold text-gray-900 group-hover:text-black">
-                        {product.name}
-                      </span>
-                      <p className="text-[11px] font-semibold text-gray-400 mt-0.5">
-                        {activeCategory === "data" ? "Data Bundles" : activeCategory === "airtime" ? "Airtime Top-up" : "Airtime & Data"}
-                      </p>
-                    </div>
-                    {product.rating && (
-                      <div className="flex items-center gap-1 text-xs font-semibold text-gray-800">
-                        <span>{product.rating.toFixed(1)}</span>
-                        <Star className="w-3 h-3 fill-black text-black" />
-                      </div>
-                    )}
+                  <div>
+                    <span className="text-sm font-bold text-gray-900 group-hover:text-black">
+                      {product.name}
+                    </span>
+                    <p className="text-[11px] font-semibold text-gray-400 mt-0.5">
+                      {activeCategory === "data" ? "Data Bundles" : activeCategory === "airtime" ? "Airtime Top-up" : "Airtime & Data"}
+                    </p>
                   </div>
                 </div>
               </div>

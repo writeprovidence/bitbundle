@@ -289,16 +289,10 @@ export default function MobileNetworksSection() {
 
                 {/* Card Meta below card canvas */}
                 <div className="mt-3.5 px-0.5">
-                  <div className="flex items-center justify-between">
+                  <div>
                     <span className="text-base font-bold text-gray-900 group-hover:text-black transition-colors">
                       {network.name}
                     </span>
-                    {network.rating && (
-                      <div className="flex items-center gap-1 text-sm font-semibold text-gray-900">
-                        <span>{network.rating.toFixed(1)}</span>
-                        <Star className="w-3.5 h-3.5 fill-black text-black" />
-                      </div>
-                    )}
                   </div>
                   <div className="flex items-center justify-between text-xs sm:text-sm text-gray-500 font-medium mt-1">
                     <span>{network.range}</span>

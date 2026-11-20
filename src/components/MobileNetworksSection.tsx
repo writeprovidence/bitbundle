@@ -294,11 +294,8 @@ export default function MobileNetworksSection() {
                       {network.name}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-xs sm:text-sm text-gray-500 font-medium mt-1">
-                    <span>{network.range}</span>
-                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
-                      Airtime &amp; Data
-                    </span>
+                  <div className="text-xs sm:text-sm text-gray-500 font-medium mt-1">
+                    {network.range}
                   </div>
                 </div>
               </Link>

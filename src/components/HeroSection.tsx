@@ -137,7 +137,7 @@ export default function HeroSection() {
 
           {/* Subheading */}
           <p className="font-manrope text-base sm:text-lg md:text-xl text-white max-w-2xl mx-auto leading-relaxed mb-10 font-normal">
-            Top up African mobile airtime &amp; data bundles with stablecoin – for yourself or someone you love.
+            Top up mobile airtime &amp; data bundles with stablecoin – for yourself or someone you love.
           </p>
 
           {/* Center CTA Button */}

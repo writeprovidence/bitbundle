@@ -175,7 +175,7 @@ export default function Header() {
                 id="header-buy-airtime-btn"
                 className="text-base font-semibold bg-[#00F0A0] hover:bg-[#05e598] text-[#030A16] px-10 py-3 min-w-[170px] text-center rounded-full shadow-[0_2px_12px_rgba(0,240,160,0.25)] hover:shadow-[0_2px_18px_rgba(0,240,160,0.4)] cursor-pointer transition-all duration-200"
               >
-                Buy airtime
+                Buy now
               </Link>
             ) : null}
           </div>
@@ -280,7 +280,7 @@ export default function Header() {
                   onClick={() => setIsOpen(false)}
                   className="text-base font-semibold bg-[#00F0A0] hover:bg-[#05e598] text-[#030A16] py-3.5 px-8 rounded-full text-center shadow-[0_2px_12px_rgba(0,240,160,0.25)] hover:shadow-[0_2px_18px_rgba(0,240,160,0.4)] cursor-pointer transition-all duration-200"
                 >
-                  Buy airtime
+                  Buy now
                 </Link>
               ) : null}
             </div>

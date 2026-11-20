@@ -1117,9 +1117,7 @@ export default function RefillDetailsView({
               ? "Out of Stock"
               : isAlreadyInCart
               ? "In Cart (View)"
-              : topupType === "data"
-              ? `Buy Data (${selectedBundle?.dataAmount || "Bundle"})`
-              : "Buy airtime"}
+              : "Buy now"}
           </span>
         </button>
 

@@ -18,6 +18,8 @@ import {
   CreditCard,
   ChevronDown,
   ShoppingCart,
+  Wifi,
+  Zap,
 } from "lucide-react";
 import TopupCard from "./TopupCard";
 import RefillDetailsView, { OPERATORS } from "./RefillDetailsView";
@@ -368,6 +370,7 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
   const [countrySearch, setCountrySearch] = useState("");
   const countryDropdownRef = useRef<HTMLDivElement>(null);
 
+  const [activeCategory, setActiveCategory] = useState<"all" | "airtime" | "data">("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
@@ -453,6 +456,9 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
     if (selectedCountry.code) {
       params.set("country", selectedCountry.code);
     }
+    if (activeCategory === "data") {
+      params.set("type", "data");
+    }
     router.push(`/products/${matchedProduct.networkId}?${params.toString()}`);
   };
 
@@ -463,6 +469,9 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
     }
     if (selectedCountry.code) {
       params.set("country", selectedCountry.code);
+    }
+    if (activeCategory === "data") {
+      params.set("type", "data");
     }
     const query = params.toString() ? `?${params.toString()}` : "";
     router.push(`/products/${product.networkId}${query}`);
@@ -502,7 +511,7 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
 
             <div className="relative max-w-4xl mx-auto text-center z-10">
           <h1 className="font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-[42px] leading-tight text-white tracking-tight mb-10 sm:mb-14 max-w-3xl mx-auto">
-            Top up prepaid mobile phones with stablecoins like USDT and USDC from anywhere in the world.
+            Top up prepaid mobile airtime &amp; data bundles with stablecoins like USDT and USDC.
           </h1>
 
           {/* Hand-drawn style note with curved arrow */}
@@ -600,21 +609,68 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
           2. POPULAR TOP-UP PRODUCTS IN NIGERIA (Catalog Grid)
       ────────────────────────────────────────────────────────── */}
       <section className="pt-16 pb-16 sm:pt-20 sm:pb-20 lg:pt-24 lg:pb-28 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto">
-        {/* Section Header + Search Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 tracking-tight">
-            Top-up products in {selectedCountry.name}
-          </h2>
+        {/* Section Header + Category Tabs + Search Bar */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 sm:mb-12">
+          <div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 tracking-tight">
+              Top-up products in {selectedCountry.name}
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-500 mt-1 font-medium">
+              Instant prepaid airtime and data bundles powered by stablecoins
+            </p>
+          </div>
 
-          <div className="relative w-full sm:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search for operators..."
-              className="w-full pl-9 pr-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-400 transition-all shadow-sm"
-            />
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            {/* Category Filter Tabs */}
+            <div className="flex items-center p-1 bg-white border border-gray-200 rounded-xl shadow-2xs">
+              <button
+                type="button"
+                onClick={() => setActiveCategory("all")}
+                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                  activeCategory === "all"
+                    ? "bg-[#010C24] text-white shadow-2xs"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                All
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveCategory("airtime")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                  activeCategory === "airtime"
+                    ? "bg-[#010C24] text-white shadow-2xs"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                Airtime
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveCategory("data")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                  activeCategory === "data"
+                    ? "bg-[#010C24] text-white shadow-2xs"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                <Wifi className="w-3.5 h-3.5 text-emerald-600" />
+                Data Bundles
+              </button>
+            </div>
+
+            {/* Search Input */}
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search operators..."
+                className="w-full pl-9 pr-3 py-2 bg-white border border-gray-300 rounded-xl text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-400 transition-all shadow-2xs"
+              />
+            </div>
           </div>
         </div>
 
@@ -764,9 +820,14 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
                 {/* Card Meta below */}
                 <div className="mt-3 px-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold text-gray-900 group-hover:text-black">
-                      {product.name}
-                    </span>
+                    <div>
+                      <span className="text-sm font-bold text-gray-900 group-hover:text-black">
+                        {product.name}
+                      </span>
+                      <p className="text-[11px] font-semibold text-gray-400 mt-0.5">
+                        {activeCategory === "data" ? "Data Bundles" : activeCategory === "airtime" ? "Airtime Top-up" : "Airtime & Data"}
+                      </p>
+                    </div>
                     {product.rating && (
                       <div className="flex items-center gap-1 text-xs font-semibold text-gray-800">
                         <span>{product.rating.toFixed(1)}</span>

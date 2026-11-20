@@ -19,6 +19,13 @@ export interface CartItem {
   isGift: boolean;
   giftDetails?: GiftDetails;
   addedAt: number;
+  topupType?: "airtime" | "data";
+  dataPlan?: {
+    id: string;
+    name: string;
+    validity: string;
+    dataAmount: string;
+  };
 }
 
 interface CartContextType {
@@ -66,8 +73,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items, isMounted]);
 
   const addItem = (item: Omit<CartItem, "id" | "addedAt">) => {
-    // Users can add more than one network to cart, but only one number per network
-    const alreadyHasNetwork = items.some((it) => it.networkId === item.networkId);
+    // Users can add more than one network or product type to cart
+    const alreadyHasNetwork = items.some(
+      (it) => it.networkId === item.networkId && (it.topupType || "airtime") === (item.topupType || "airtime")
+    );
     if (alreadyHasNetwork) {
       setIsCartOpen(true);
       return;

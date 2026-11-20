@@ -6,9 +6,9 @@ import Image from "next/image";
 const steps = [
   {
     number: "01",
-    title: "Choose Airtime",
+    title: "Choose Airtime or Data",
     description:
-      "Select your network provider and enter recipient cell number and amount.",
+      "Select your network provider, choose airtime or a data plan, and enter your recipient phone number.",
     image: "/landing-page-image/pic1.png",
   },
   {
@@ -22,7 +22,7 @@ const steps = [
     number: "03",
     title: "Receive Your Recharge",
     description:
-      "Once your payment is confirmed, airtime hits your mobile phone line within seconds.",
+      "Once your payment is confirmed, airtime or data hits your mobile phone line within seconds.",
     image: "/landing-page-image/pic3.png",
   },
 ];

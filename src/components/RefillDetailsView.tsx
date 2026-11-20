@@ -18,6 +18,7 @@ import {
   ChevronDown,
   Star,
   Zap,
+  Wifi,
   ShoppingCart,
   ArrowRight,
 } from "lucide-react";
@@ -27,6 +28,7 @@ import CheckoutModal from "./CheckoutModal";
 import CountryFlag from "./CountryFlag";
 import { OPERATORS, type RefillOperator } from "@/lib/operators";
 import { checkNetworkMatch, AFRICAN_NETWORKS_BY_COUNTRY } from "@/lib/phoneValidation";
+import { getDataBundles, type DataBundlePlan } from "@/lib/dataBundles";
 
 export { OPERATORS, type RefillOperator };
 
@@ -196,6 +198,7 @@ interface RefillDetailsViewProps {
   operatorId?: "mtn" | "airtel" | "glo" | "9mobile";
   initialPhone?: string;
   initialAmount?: number;
+  initialTopupType?: "airtime" | "data";
   onBack?: () => void;
   isModal?: boolean;
   isOpen?: boolean;
@@ -212,6 +215,7 @@ export default function RefillDetailsView({
   operatorId = "mtn",
   initialPhone = "",
   initialAmount,
+  initialTopupType = "airtime",
   onBack,
   isModal = false,
   isOpen = true,
@@ -224,6 +228,8 @@ export default function RefillDetailsView({
 }: RefillDetailsViewProps) {
   const operator = OPERATORS[operatorId] || OPERATORS.mtn;
   const { items, addItem, clearCart, setIsCartOpen } = useCart();
+
+  const [topupType, setTopupType] = useState<"airtime" | "data">(initialTopupType);
 
   const initialResolved = resolveCountryProfile(countryCode, countryName);
   const [selectedCountryCode, setSelectedCountryCode] = useState<string>(
@@ -263,15 +269,49 @@ export default function RefillDetailsView({
   const activeNetworks = profile.supportedNetworks || ["mtn", "airtel", "glo", "9mobile"];
   const hasService = activeNetworks.includes(operator.id);
 
+  // Data bundle state
+  const availableBundles = useMemo(
+    () => getDataBundles(profile.code, operator.id),
+    [profile.code, operator.id]
+  );
+  const [selectedBundleId, setSelectedBundleId] = useState<string>(availableBundles[0]?.id || "");
+  const [bundleCategoryFilter, setBundleCategoryFilter] = useState<"all" | "daily" | "weekly" | "monthly">("all");
+
+  useEffect(() => {
+    if (availableBundles.length > 0) {
+      if (!availableBundles.some((b) => b.id === selectedBundleId)) {
+        setSelectedBundleId(availableBundles[0].id);
+      }
+    }
+  }, [availableBundles, selectedBundleId]);
+
+  const selectedBundle = useMemo(() => {
+    return availableBundles.find((b) => b.id === selectedBundleId) || availableBundles[0];
+  }, [availableBundles, selectedBundleId]);
+
   const [waitlistEmail, setWaitlistEmail] = useState("");
   const [waitlistSent, setWaitlistSent] = useState(false);
-  const [amount, setAmount] = useState<number>(initialAmount ?? profile.defaultAmount);
+  const [amount, setAmount] = useState<number>(
+    initialAmount ?? (topupType === "data" && selectedBundle ? selectedBundle.priceLocal : profile.defaultAmount)
+  );
   const [phone, setPhone] = useState<string>(initialPhone || "");
   const [isFavorite, setIsFavorite] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const [isGiftModalOpen, setIsGiftModalOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+
+  // When switching to data or changing selected data bundle, sync the amount
+  useEffect(() => {
+    if (topupType === "data" && selectedBundle) {
+      setAmount(selectedBundle.priceLocal);
+    }
+  }, [topupType, selectedBundle]);
+
+  const filteredBundles = useMemo(() => {
+    if (bundleCategoryFilter === "all") return availableBundles;
+    return availableBundles.filter((b) => b.category === bundleCategoryFilter);
+  }, [availableBundles, bundleCategoryFilter]);
 
   // Check if entered phone number matches the selected operator
   const networkMatch = useMemo(() => {
@@ -329,10 +369,13 @@ export default function RefillDetailsView({
   const usdAmount = useMemo(() => (amount * profile.usdRate).toFixed(2), [amount, profile.usdRate]);
 
   const dynamicTitle = useMemo(() => {
-    return `${operator.name} Top-up`;
-  }, [operator]);
+    return topupType === "data" ? `${operator.name} Data Bundle` : `${operator.name} Airtime Top-up`;
+  }, [operator, topupType]);
 
   const dynamicDescription = useMemo(() => {
+    if (topupType === "data") {
+      return `Buy ${operator.name} ${profile.name} high-speed mobile data bundles with cryptocurrency. Instant digital activation directly to your line in seconds.`;
+    }
     if (operator.id === "mtn") {
       return `MTN formerly M-Cell, is one of ${profile.name}'s premier mobile service providers. With Bitbundle's MTN top-up, you can top-up mobile minutes and data from MTN with cryptocurrency.`;
     }
@@ -346,7 +389,7 @@ export default function RefillDetailsView({
       return `9mobile provides high-speed mobile network services across ${profile.name}. Top up mobile balance or send minutes to family securely with cryptocurrency.`;
     }
     return `${operator.name} ${profile.name} is a leading mobile service provider. Easily top-up airtime and mobile data instantly with cryptocurrency.`;
-  }, [operator, profile]);
+  }, [operator, profile, topupType]);
 
   function validatePhone(raw: string) {
     if (!raw.trim()) return { isValid: false, error: null };
@@ -384,11 +427,17 @@ export default function RefillDetailsView({
   };
 
   const isAlreadyInCart = useMemo(() => {
-    return items.some((it) => it.networkId === operator.id);
-  }, [items, operator.id]);
+    return items.some(
+      (it) => it.networkId === operator.id && (it.topupType || "airtime") === topupType
+    );
+  }, [items, operator.id, topupType]);
 
   const handleBuyNow = () => {
-    if (amount > profile.maxAmount || amount < profile.minAmount || !phoneValidation.isValid) return;
+    if (topupType === "airtime") {
+      if (amount > profile.maxAmount || amount < profile.minAmount || !phoneValidation.isValid) return;
+    } else {
+      if (!selectedBundle || !phoneValidation.isValid) return;
+    }
     if (isAlreadyInCart) {
       setIsCartOpen(true);
       if (typeof window !== "undefined") {
@@ -403,6 +452,16 @@ export default function RefillDetailsView({
       amountNgn: amount,
       amountUsd: Number((amount * profile.usdRate).toFixed(2)),
       isGift: false,
+      topupType: topupType,
+      dataPlan:
+        topupType === "data" && selectedBundle
+          ? {
+              id: selectedBundle.id,
+              name: selectedBundle.name,
+              validity: selectedBundle.validity,
+              dataAmount: selectedBundle.dataAmount,
+            }
+          : undefined,
     });
     setIsCartOpen(true);
     if (typeof window !== "undefined") {
@@ -416,7 +475,11 @@ export default function RefillDetailsView({
     senderName: string;
     message?: string;
   }) => {
-    if (amount > profile.maxAmount || !phoneValidation.isValid) return;
+    if (topupType === "airtime") {
+      if (amount > profile.maxAmount || !phoneValidation.isValid) return;
+    } else {
+      if (!selectedBundle || !phoneValidation.isValid) return;
+    }
     if (isAlreadyInCart) {
       setIsGiftModalOpen(false);
       setIsCartOpen(true);
@@ -433,6 +496,16 @@ export default function RefillDetailsView({
       amountUsd: Number((amount * profile.usdRate).toFixed(2)),
       isGift: true,
       giftDetails,
+      topupType: topupType,
+      dataPlan:
+        topupType === "data" && selectedBundle
+          ? {
+              id: selectedBundle.id,
+              name: selectedBundle.name,
+              validity: selectedBundle.validity,
+              dataAmount: selectedBundle.dataAmount,
+            }
+          : undefined,
     });
     setIsGiftModalOpen(false);
     setIsCartOpen(true);
@@ -452,9 +525,9 @@ export default function RefillDetailsView({
   if (!isOpen) return null;
 
   const isDisabled =
-    amount > profile.maxAmount ||
-    amount < profile.minAmount ||
-    !phoneValidation.isValid;
+    topupType === "airtime"
+      ? amount > profile.maxAmount || amount < profile.minAmount || !phoneValidation.isValid
+      : !selectedBundle || !phoneValidation.isValid;
 
   // Render operator logo tile
   const renderLogoTile = () => (
@@ -754,30 +827,178 @@ export default function RefillDetailsView({
         </div>
       )}
 
-      {/* Amount input */}
-      <div className="mb-6 w-full">
-        <div className="flex items-center border border-slate-200 focus-within:border-slate-600 transition-colors py-2 px-3 bg-transparent rounded-[6px]">
-          <input
-            type="number"
-            min={profile.minAmount}
-            max={profile.maxAmount}
-            value={amount || ""}
-            onChange={(e) => setAmount(Number(e.target.value))}
-            placeholder="Enter amount"
-            className="flex-1 py-1 bg-transparent text-sm sm:text-base text-slate-900 font-semibold focus:outline-none placeholder:text-slate-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none min-w-0"
-          />
-          {amount > 0 && (
-            <span className="pl-2 text-xs sm:text-sm font-semibold text-slate-500 shrink-0">
-              ${usdAmount}
-            </span>
+      {/* Product Type Switcher (Airtime vs Data Bundle) */}
+      <div className="flex items-center gap-2 mb-6 p-1 bg-slate-100 rounded-xl border border-slate-200">
+        <button
+          type="button"
+          onClick={() => {
+            setTopupType("airtime");
+            setAmount(profile.defaultAmount);
+          }}
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer select-none ${
+            topupType === "airtime"
+              ? "bg-white text-slate-900 shadow-xs"
+              : "text-slate-600 hover:text-slate-900"
+          }`}
+        >
+          <Zap className={`w-4 h-4 ${topupType === "airtime" ? "text-amber-500 fill-amber-500" : ""}`} />
+          <span>Airtime</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setTopupType("data");
+            if (selectedBundle) {
+              setAmount(selectedBundle.priceLocal);
+            }
+          }}
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer select-none ${
+            topupType === "data"
+              ? "bg-white text-slate-900 shadow-xs"
+              : "text-slate-600 hover:text-slate-900"
+          }`}
+        >
+          <Wifi className={`w-4 h-4 ${topupType === "data" ? "text-emerald-600" : ""}`} />
+          <span>Data Bundle</span>
+        </button>
+      </div>
+
+      {/* Airtime Mode: Amount input & Quick selectors */}
+      {topupType === "airtime" ? (
+        <div className="mb-6 w-full">
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+            Select Amount ({profile.currency})
+          </label>
+
+          {/* Quick Amount Chips */}
+          <div className="grid grid-cols-4 gap-2 mb-3">
+            {[
+              profile.defaultAmount,
+              profile.defaultAmount * 2.5,
+              profile.defaultAmount * 5,
+              profile.defaultAmount * 10,
+            ]
+              .map((val) => Math.round(val))
+              .filter((v) => v >= profile.minAmount && v <= profile.maxAmount)
+              .map((quickVal) => (
+                <button
+                  key={quickVal}
+                  type="button"
+                  onClick={() => setAmount(quickVal)}
+                  className={`py-2 px-1 text-center rounded-lg text-xs font-bold border transition-all cursor-pointer ${
+                    amount === quickVal
+                      ? "border-emerald-600 bg-emerald-50 text-emerald-900 shadow-2xs"
+                      : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                  }`}
+                >
+                  {profile.currencySymbol}{quickVal.toLocaleString()}
+                </button>
+              ))}
+          </div>
+
+          {/* Custom amount input */}
+          <div className="flex items-center border border-slate-200 focus-within:border-slate-600 transition-colors py-2 px-3 bg-white rounded-lg">
+            <input
+              type="number"
+              min={profile.minAmount}
+              max={profile.maxAmount}
+              value={amount || ""}
+              onChange={(e) => setAmount(Number(e.target.value))}
+              placeholder={`Custom amount (${profile.minAmount} - ${profile.maxAmount.toLocaleString()})`}
+              className="flex-1 py-1 bg-transparent text-sm sm:text-base text-slate-900 font-semibold focus:outline-none placeholder:text-slate-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none min-w-0"
+            />
+            {amount > 0 && (
+              <span className="pl-2 text-xs sm:text-sm font-semibold text-slate-500 shrink-0">
+                ≈ ${usdAmount}
+              </span>
+            )}
+          </div>
+          {amount > profile.maxAmount && (
+            <p className="text-xs text-red-500 mt-1.5">
+              Maximum is {profile.currencySymbol}{profile.maxAmount.toLocaleString()}.
+            </p>
           )}
         </div>
-        {amount > profile.maxAmount && (
-          <p className="text-xs text-red-500 mt-1.5">
-            Maximum is {profile.currencySymbol}{profile.maxAmount.toLocaleString()}.
-          </p>
-        )}
-      </div>
+      ) : (
+        /* Data Bundle Mode: Plans Grid */
+        <div className="mb-6 w-full">
+          <div className="flex items-center justify-between mb-2.5">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              Choose Data Plan
+            </label>
+            <div className="flex items-center gap-1">
+              {(["all", "daily", "weekly", "monthly"] as const).map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setBundleCategoryFilter(cat)}
+                  className={`text-[11px] font-bold px-2 py-0.5 rounded-md capitalize transition-colors cursor-pointer ${
+                    bundleCategoryFilter === cat
+                      ? "bg-slate-900 text-white"
+                      : "text-slate-500 hover:text-slate-800 bg-slate-100"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Data Plans Grid */}
+          <div className="grid grid-cols-2 gap-2.5 max-h-[300px] overflow-y-auto pr-1">
+            {filteredBundles.map((plan) => {
+              const isSelected = selectedBundleId === plan.id;
+              const planUsd = (plan.priceLocal * profile.usdRate).toFixed(2);
+              return (
+                <button
+                  key={plan.id}
+                  type="button"
+                  onClick={() => {
+                    setSelectedBundleId(plan.id);
+                    setAmount(plan.priceLocal);
+                  }}
+                  className={`relative text-left p-3 rounded-xl border-2 transition-all cursor-pointer flex flex-col justify-between ${
+                    isSelected
+                      ? "border-emerald-600 bg-emerald-50/70 shadow-xs"
+                      : "border-slate-200 bg-white hover:border-slate-300"
+                  }`}
+                >
+                  {plan.badge && (
+                    <span
+                      className={`absolute -top-2 right-2 text-[9px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-wider ${
+                        plan.badge === "Popular"
+                          ? "bg-emerald-600 text-white"
+                          : plan.badge === "Hot"
+                          ? "bg-[#DE1D35] text-white"
+                          : "bg-amber-500 text-black"
+                      }`}
+                    >
+                      {plan.badge}
+                    </span>
+                  )}
+                  <div>
+                    <div className="text-base font-black text-slate-900 leading-tight">
+                      {plan.dataAmount}
+                    </div>
+                    <div className="text-[11px] font-medium text-slate-500 mt-0.5">
+                      {plan.validity}
+                    </div>
+                  </div>
+                  <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-baseline justify-between">
+                    <span className="text-xs font-bold text-slate-900">
+                      {profile.currencySymbol}{plan.priceLocal.toLocaleString()}
+                    </span>
+                    <span className="text-[11px] font-semibold text-slate-400">
+                      ≈ ${planUsd}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Phone number */}
       <div className="mb-6 w-full">
@@ -883,10 +1104,22 @@ export default function RefillDetailsView({
           {isAlreadyInCart ? (
             <Check className="w-4 h-4 shrink-0" />
           ) : (
-            hasService && <Zap className="w-4 h-4 fill-current shrink-0" />
+            hasService && (
+              topupType === "data" ? (
+                <Wifi className="w-4 h-4 shrink-0" />
+              ) : (
+                <Zap className="w-4 h-4 fill-current shrink-0" />
+              )
+            )
           )}
           <span className="truncate">
-            {!hasService ? "Out of Stock" : isAlreadyInCart ? "In Cart (View)" : "Buy airtime"}
+            {!hasService
+              ? "Out of Stock"
+              : isAlreadyInCart
+              ? "In Cart (View)"
+              : topupType === "data"
+              ? `Buy Data (${selectedBundle?.dataAmount || "Bundle"})`
+              : "Buy airtime"}
           </span>
         </button>
 
@@ -909,13 +1142,15 @@ export default function RefillDetailsView({
             }`}
         >
           <Gift className="w-4 h-4 shrink-0" />
-          <span className="truncate">{isAlreadyInCart ? "In Cart (View)" : "Purchase as gift"}</span>
+          <span className="truncate">
+            {isAlreadyInCart ? "In Cart (View)" : topupType === "data" ? "Gift Data Bundle" : "Purchase as gift"}
+          </span>
         </button>
       </div>
 
       {isAlreadyInCart && (
         <div className="w-full mb-8 p-2.5 bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center justify-between">
-          <span>{operator.name} is already in your cart (one number per network).</span>
+          <span>{operator.name} {topupType === "data" ? "data bundle" : "airtime"} is already in your cart.</span>
           <button
             type="button"
             onClick={() => {

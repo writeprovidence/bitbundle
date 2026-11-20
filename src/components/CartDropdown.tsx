@@ -126,13 +126,17 @@ export default function CartDropdown({ onCheckout }: CartDropdownProps) {
                   <div className="min-w-0">
                     <h4 className="text-sm sm:text-base font-bold text-[#042825] truncate">
                       {displayName}
+                      <span className="ml-1.5 text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                        {item.topupType === "data" ? "Data" : "Airtime"}
+                      </span>
                     </h4>
                     <p className="text-xs text-gray-500 font-normal mt-0.5">
+                      {item.dataPlan && <span className="font-semibold text-emerald-700 mr-1">{item.dataPlan.dataAmount} ({item.dataPlan.validity}) •</span>}
                       {item.amountNgn.toLocaleString("en-US", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                       })}{" "}
-                      NGN value
+                      value
                     </p>
                     <p className="text-xs text-[#042825] font-medium mt-0.5">
                       {item.phoneNumber}

@@ -40,6 +40,7 @@ export default async function ProductDetailPage(props: any) {
           operatorId={operator.id as any}
           initialPhone={searchParams?.phone}
           countryCode={searchParams?.country}
+          initialTopupType={searchParams?.type === "data" ? "data" : "airtime"}
         />
       </main>
       <Footer />

@@ -137,7 +137,7 @@ export default function HeroSection() {
 
           {/* Subheading */}
           <p className="font-manrope text-base sm:text-lg md:text-xl text-white max-w-2xl mx-auto leading-relaxed mb-10 font-normal">
-            Top up MTN, Airtel, Glo &amp; 9mobile with stablecoin – for yourself or someone you love.
+            Top up African mobile airtime &amp; data bundles with stablecoin – for yourself or someone you love.
           </p>
 
           {/* Center CTA Button */}
@@ -147,7 +147,7 @@ export default function HeroSection() {
               id="hero-cta-btn"
               className="font-manrope group inline-flex items-center gap-3.5 bg-[#00F0A0] hover:bg-[#05e598] text-[#030A16] font-semibold text-lg sm:text-xl px-10 py-4 rounded-full shadow-[0_4px_18px_rgba(0,240,160,0.28)] hover:shadow-[0_4px_24px_rgba(0,240,160,0.45)] cursor-pointer transition-all duration-200"
             >
-              <span>Buy airtime</span>
+              <span>Buy airtime &amp; data</span>
               <span className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center transition-transform duration-200 group-hover:translate-x-2">
                 <ArrowRight className="w-5 h-5" strokeWidth={2.5} />
               </span>

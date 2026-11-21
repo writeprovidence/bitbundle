@@ -5,8 +5,8 @@ import RefillDetailsView from "@/components/RefillDetailsView";
 import { OPERATORS } from "@/lib/operators";
 
 type PageProps = {
-  params: Promise<{ network: string }> | { network: string };
-  searchParams?: Promise<{ phone?: string; country?: string }> | { phone?: string; country?: string };
+  params: Promise<{ network: string }>;
+  searchParams?: Promise<{ phone?: string; country?: string; type?: string }>;
 };
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
@@ -21,9 +21,9 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   };
 }
 
-export default async function ProductDetailPage(props: any) {
-  const params = await Promise.resolve(props.params);
-  const searchParams = props.searchParams ? await Promise.resolve(props.searchParams) : undefined;
+export default async function ProductDetailPage(props: PageProps) {
+  const params = await props.params;
+  const searchParams = props.searchParams ? await props.searchParams : undefined;
   const network = params?.network;
   const normalized = (network || "").toLowerCase();
   const operator = OPERATORS[normalized] || OPERATORS.mtn;

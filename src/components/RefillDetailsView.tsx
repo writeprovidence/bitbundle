@@ -999,8 +999,8 @@ export default function RefillDetailsView({
             </div>
           </div>
 
-          {/* Data Plans Grid */}
-          <div className="grid grid-cols-2 gap-2.5 max-h-[300px] overflow-y-auto pr-1">
+          {/* Data Plans List (List layout instead of box grid) */}
+          <div className="flex flex-col gap-2 max-h-[320px] overflow-y-auto pr-1">
             {filteredBundles.map((plan) => {
               const isSelected = selectedBundleId === plan.id;
               const planUsd = (plan.priceLocal * profile.usdRate).toFixed(2);
@@ -1012,38 +1012,58 @@ export default function RefillDetailsView({
                     setSelectedBundleId(plan.id);
                     setAmount(plan.priceLocal);
                   }}
-                  className={`relative text-left p-3 rounded-xl border-2 transition-all cursor-pointer flex flex-col justify-between ${isSelected
-                      ? "border-emerald-600 bg-emerald-50/70 shadow-xs"
-                      : "border-slate-200 bg-white hover:border-slate-300"
+                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl border text-left transition-all cursor-pointer ${isSelected
+                      ? "border-[#02332B] bg-emerald-50/70 shadow-2xs ring-1 ring-[#02332B]"
+                      : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/60"
                     }`}
                 >
-                  {plan.badge && (
-                    <span
-                      className={`absolute -top-2 right-2 text-[9px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-wider ${plan.badge === "Popular"
-                          ? "bg-emerald-600 text-white"
-                          : plan.badge === "Hot"
-                            ? "bg-[#DE1D35] text-white"
-                            : "bg-amber-500 text-black"
+                  {/* Left: Radio circle + Data Amount & Validity + Badge */}
+                  <div className="flex items-center gap-3 min-w-0">
+                    {/* Radio indicator */}
+                    <div
+                      className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 transition-all ${isSelected
+                          ? "border-[#02332B] bg-[#02332B]"
+                          : "border-slate-300 bg-white"
                         }`}
                     >
-                      {plan.badge}
-                    </span>
-                  )}
-                  <div>
-                    <div className="text-base font-black text-slate-900 leading-tight">
-                      {plan.dataAmount}
+                      {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                     </div>
-                    <div className="text-[11px] font-medium text-slate-500 mt-0.5">
-                      {plan.validity}
+
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm sm:text-base font-extrabold text-slate-900 leading-tight">
+                          {plan.dataAmount}
+                        </span>
+                        <span className="text-xs text-slate-500 font-medium">
+                          • {plan.validity}
+                        </span>
+                        {plan.badge && (
+                          <span
+                            className={`text-[10px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-wider ${plan.badge === "Popular"
+                                ? "bg-emerald-600 text-white"
+                                : plan.badge === "Hot"
+                                  ? "bg-[#DE1D35] text-white"
+                                  : "bg-amber-500 text-black"
+                              }`}
+                          >
+                            {plan.badge}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-[11px] text-slate-500 font-medium mt-0.5 capitalize">
+                        {plan.name}
+                      </div>
                     </div>
                   </div>
-                  <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-baseline justify-between">
-                    <span className="text-xs font-bold text-slate-900">
+
+                  {/* Right: Price */}
+                  <div className="text-right shrink-0 ml-3">
+                    <div className="text-sm sm:text-base font-extrabold text-slate-900 leading-tight">
                       {profile.currencySymbol}{plan.priceLocal.toLocaleString()}
-                    </span>
-                    <span className="text-[11px] font-semibold text-slate-400">
+                    </div>
+                    <div className="text-[11px] font-semibold text-slate-400 mt-0.5">
                       ≈ ${planUsd}
-                    </span>
+                    </div>
                   </div>
                 </button>
               );

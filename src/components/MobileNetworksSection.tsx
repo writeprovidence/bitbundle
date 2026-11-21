@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useUserCountry, COUNTRY_DATA } from "@/lib/geo";
+import CountryFlag from "./CountryFlag";
 
 interface NetworkCard {
   id: string;
@@ -136,8 +137,14 @@ export default function MobileNetworksSection() {
             </h2>
             <div className="flex items-center gap-2 mb-4">
               <span className="text-xs sm:text-sm text-gray-500 font-medium">Operators in</span>
-              <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gray-800 bg-gray-100 px-2.5 py-0.5 rounded-full border border-gray-200/80">
-                <span>{currentCountry.flag}</span>
+              <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gray-800 bg-gray-100 px-2.5 py-1 rounded-full border border-gray-200/80">
+                <CountryFlag
+                  countryCode={currentCountry.code}
+                  countryName={currentCountry.name}
+                  width={20}
+                  height={14}
+                  className="w-5 h-3.5 rounded-[2px] shadow-2xs border border-black/10 shrink-0"
+                />
                 <span>{currentCountry.name}</span>
               </span>
             </div>

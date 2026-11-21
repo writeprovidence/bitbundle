@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ProductsPage(props: {
-  searchParams?: Promise<{ network?: string }>;
+  searchParams?: Promise<{ network?: string; country?: string }>;
 }) {
   const searchParams = await props.searchParams;
   return (
@@ -19,7 +19,10 @@ export default async function ProductsPage(props: {
       <div className="fixed top-0 inset-x-0 h-20 bg-[#010C24] z-40 pointer-events-none" />
       <Header />
       <main id="main-content" className="flex-1">
-        <ProductsCatalog initialNetwork={searchParams?.network} />
+        <ProductsCatalog
+          initialNetwork={searchParams?.network}
+          initialCountry={searchParams?.country}
+        />
       </main>
       <Footer />
     </div>

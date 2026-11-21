@@ -7,7 +7,8 @@ import { useRouter } from "next/navigation";
 import {
   Search,
   ArrowRight,
-  Star,
+  ArrowDown,
+  Bell,
   Check,
   Clock,
   Landmark,
@@ -27,6 +28,7 @@ import AssistantModal from "./AssistantModal";
 import CheckoutModal from "./CheckoutModal";
 import { useCart } from "@/contexts/CartContext";
 import { detectAfricanOperator } from "@/lib/phoneValidation";
+import { useUserCountry, saveUserCountry, getQuickDetectedCountry } from "@/lib/geo";
 
 export interface ProductItem {
   id: string;
@@ -229,6 +231,132 @@ const PRODUCTS: ProductItem[] = [
     cardBg: "bg-[#FF6600]",
     logoType: "halotel",
   },
+  // Data Bundles for Supported Networks
+  {
+    id: "mtn-data",
+    name: "MTN",
+    networkId: "mtn",
+    category: "Data",
+    range: "1 GB - 40 GB",
+    rating: 4.8,
+    inStock: true,
+    cardBg: "bg-[#FFCC00]",
+    logoType: "mtn",
+  },
+  {
+    id: "airtel-data",
+    name: "Airtel",
+    networkId: "airtel",
+    category: "Data",
+    range: "1 GB - 40 GB",
+    rating: 4.9,
+    inStock: true,
+    cardBg: "bg-white",
+    cardBorder: "border border-gray-100",
+    logoType: "airtel",
+  },
+  {
+    id: "glo-data",
+    name: "GLO",
+    networkId: "glo",
+    category: "Data",
+    range: "1 GB - 36 GB",
+    rating: 4.8,
+    inStock: true,
+    cardBg: "bg-white",
+    cardBorder: "border border-gray-100",
+    logoType: "glo",
+  },
+  {
+    id: "9mobile-data",
+    name: "9Mobile",
+    networkId: "9mobile",
+    category: "Data",
+    range: "1 GB - 20 GB",
+    rating: 4.5,
+    inStock: true,
+    badge: "⚡ -2%",
+    badgeType: "discount",
+    cardBg: "bg-[#045F40]",
+    logoType: "9mobile",
+  },
+  {
+    id: "telecel-data",
+    name: "Telecel / Vodafone",
+    networkId: "telecel",
+    category: "Data",
+    range: "1 GB - 10 GB",
+    rating: 4.7,
+    inStock: true,
+    cardBg: "bg-[#E40000]",
+    logoType: "telecel",
+  },
+  {
+    id: "safaricom-data",
+    name: "Safaricom",
+    networkId: "safaricom",
+    category: "Data",
+    range: "1 GB - 25 GB",
+    rating: 4.9,
+    inStock: true,
+    cardBg: "bg-[#009E49]",
+    logoType: "safaricom",
+  },
+  {
+    id: "vodacom-data",
+    name: "Vodacom",
+    networkId: "vodacom",
+    category: "Data",
+    range: "1 GB - 20 GB",
+    rating: 4.8,
+    inStock: true,
+    cardBg: "bg-[#E60000]",
+    logoType: "vodacom",
+  },
+  {
+    id: "cellc-data",
+    name: "Cell C",
+    networkId: "cellc",
+    category: "Data",
+    range: "1 GB - 10 GB",
+    rating: 4.5,
+    inStock: true,
+    cardBg: "bg-black",
+    logoType: "cellc",
+  },
+  {
+    id: "telkom-data",
+    name: "Telkom",
+    networkId: "telkom",
+    category: "Data",
+    range: "1 GB - 20 GB",
+    rating: 4.6,
+    inStock: true,
+    cardBg: "bg-[#0089CF]",
+    logoType: "telkom",
+  },
+  {
+    id: "tigo-data",
+    name: "Tigo",
+    networkId: "tigo",
+    category: "Data",
+    range: "1 GB - 20 GB",
+    rating: 4.7,
+    inStock: true,
+    cardBg: "bg-[#0033A0]",
+    logoType: "tigo",
+  },
+  {
+    id: "halotel-data",
+    name: "Halotel",
+    networkId: "halotel",
+    category: "Data",
+    range: "1 GB - 20 GB",
+    rating: 4.6,
+    inStock: true,
+    cardBg: "bg-[#FF6600]",
+    logoType: "halotel",
+  },
 ];
 
 // Helper to guess African operator by phone prefix in selected country
@@ -363,9 +491,35 @@ function CountryFlag({ code, className = "w-5 h-3.5" }: { code: string; classNam
   }
 }
 
-export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: string }) {
+export default function ProductsCatalog({
+  initialNetwork,
+  initialCountry,
+}: {
+  initialNetwork?: string;
+  initialCountry?: string;
+}) {
   const router = useRouter();
-  const [selectedCountry, setSelectedCountry] = useState<CountryOption>(COUNTRIES[0]);
+  const { countryCode, setCountryCode } = useUserCountry();
+
+  const [selectedCountry, setSelectedCountry] = useState<CountryOption>(() => {
+    if (initialCountry) {
+      const match = COUNTRIES.find((c) => c.code.toLowerCase() === initialCountry.toLowerCase());
+      if (match) return match;
+    }
+    const quick = getQuickDetectedCountry();
+    return COUNTRIES.find((c) => c.code === quick) || COUNTRIES[0];
+  });
+
+  // Automatically sync when user location is detected
+  useEffect(() => {
+    if (!initialCountry && countryCode) {
+      const match = COUNTRIES.find((c) => c.code === countryCode);
+      if (match && match.code !== selectedCountry.code) {
+        setSelectedCountry(match);
+      }
+    }
+  }, [countryCode, initialCountry]);
+
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const [countrySearch, setCountrySearch] = useState("");
   const countryDropdownRef = useRef<HTMLDivElement>(null);
@@ -418,19 +572,33 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
   // Products list strictly filtered to operators that operate in the selected country
   const filteredProducts = useMemo(() => {
     // Only show products operating in the selected country
-    const countryProducts = PRODUCTS.filter((product) =>
+    let list = PRODUCTS.filter((product) =>
       selectedCountry.networks?.includes(product.networkId)
     );
 
-    if (!searchQuery.trim()) return countryProducts;
-    const query = searchQuery.toLowerCase();
-    return countryProducts.filter(
+    if (activeCategory === "airtime") {
+      list = list.filter((p) => p.category === "Airtime");
+    } else if (activeCategory === "data") {
+      list = list.filter((p) => p.category === "Data");
+    } else {
+      // In "all", deduplicate by networkId so each operator is shown cleanly
+      const seen = new Set<string>();
+      list = list.filter((p) => {
+        if (seen.has(p.networkId)) return false;
+        seen.add(p.networkId);
+        return true;
+      });
+    }
+
+    if (!searchQuery.trim()) return list;
+    const query = searchQuery.toLowerCase().trim();
+    return list.filter(
       (p) =>
         p.name.toLowerCase().includes(query) ||
         p.category.toLowerCase().includes(query) ||
         p.range.toLowerCase().includes(query)
     );
-  }, [searchQuery, selectedCountry]);
+  }, [searchQuery, selectedCountry, activeCategory]);
 
   const handlePhoneSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -463,8 +631,10 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
     if (selectedCountry.code) {
       params.set("country", selectedCountry.code);
     }
-    if (activeCategory === "data") {
+    if (product.category === "Data" || activeCategory === "data") {
       params.set("type", "data");
+    } else {
+      params.set("type", "airtime");
     }
     const query = params.toString() ? `?${params.toString()}` : "";
     router.push(`/products/${product.networkId}${query}`);
@@ -558,6 +728,7 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
                         type="button"
                         onClick={() => {
                           setSelectedCountry(c);
+                          setCountryCode(c.code);
                           setIsCountryDropdownOpen(false);
                         }}
                         className={`w-full flex items-baseline gap-1.5 px-3 py-2 text-sm text-left cursor-pointer transition-colors ${selectedCountry.code === c.code
@@ -1095,54 +1266,69 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
               </div>
             )}
 
-            <h3 className="text-xl font-bold text-gray-900">
-              {outOfStockModal.name} is currently out of stock in {selectedCountry.name}
-            </h3>
-            <p className="text-sm text-gray-600 mt-2 leading-relaxed">
-              We are currently expanding coverage and restocking {outOfStockModal.name} in {selectedCountry.name}. Leave your email to be notified instantly when stock arrives.
-            </p>
-
-            {waitlistSuccess ? (
-              <div className="mt-5 p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-3 text-emerald-800">
-                <Check className="w-5 h-5 text-emerald-600 shrink-0" />
-                <span className="text-sm font-semibold">
-                  You&apos;re on the waitlist! We&apos;ll email you when restocked.
-                </span>
+            {/* Out of Stock Card Matching Exact Reference Design */}
+            <div className="p-4 sm:p-5 bg-[#ECEEF0] rounded-2xl shadow-2xs mb-4">
+              <div className="flex items-center gap-2.5 mb-3.5">
+                <div className="w-6 h-6 rounded-full bg-[#02332B] text-white flex items-center justify-center shrink-0">
+                  <span className="font-serif font-black text-xs leading-none">i</span>
+                </div>
+                <h3 className="font-bold text-sm sm:text-base text-[#02332B] tracking-tight">
+                  We are currently out of stock on this product
+                </h3>
               </div>
-            ) : (
-              <form onSubmit={handleJoinWaitlist} className="mt-5 flex gap-2">
-                <input
-                  type="email"
-                  required
-                  value={waitlistEmail}
-                  onChange={(e) => setWaitlistEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
-                <button
-                  type="submit"
-                  className="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-xl text-sm font-bold transition-colors cursor-pointer"
-                >
-                  Notify Me
-                </button>
-              </form>
-            )}
 
-            <div className="mt-6 pt-5 border-t border-gray-200 flex items-center justify-between">
-              <span className="text-xs text-gray-500">Need airtime right away?</span>
-              <button
-                type="button"
-                onClick={() => {
-                  const fallback = PRODUCTS.find((p) =>
-                    selectedCountry.networks.includes(p.networkId)
-                  ) || PRODUCTS[0];
-                  setOutOfStockModal(null);
-                  setSelectedProduct(fallback);
-                }}
-                className="text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline"
-              >
-                Choose {selectedCountry.networks.map(n => n.toUpperCase()).join(" or ")} →
-              </button>
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setWaitlistSuccess(false)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#02332B] hover:bg-[#034439] text-white text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-2xs"
+                >
+                  <Bell className="w-3.5 h-3.5" />
+                  <span>Notify me when it&apos;s back</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const fallback = PRODUCTS.find((p) =>
+                      p.inStock && selectedCountry.networks.includes(p.networkId) && p.id !== outOfStockModal.id
+                    ) || PRODUCTS[0];
+                    setOutOfStockModal(null);
+                    handleCardClick(fallback);
+                  }}
+                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#02332B] underline hover:text-[#034439] transition-colors cursor-pointer"
+                >
+                  <ArrowDown className="w-3.5 h-3.5" />
+                  <span>Similar products</span>
+                </button>
+              </div>
+
+              {/* Waitlist Form */}
+              <div className="mt-4 pt-3.5 border-t border-slate-300/70">
+                {waitlistSuccess ? (
+                  <div className="p-2.5 bg-emerald-100/90 border border-emerald-300 rounded-xl text-emerald-950 text-xs font-semibold flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-700 shrink-0" />
+                    <span>We will notify you immediately once this product is restocked.</span>
+                  </div>
+                ) : (
+                  <form onSubmit={handleJoinWaitlist} className="flex gap-2">
+                    <input
+                      type="email"
+                      required
+                      value={waitlistEmail}
+                      onChange={(e) => setWaitlistEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      className="flex-1 px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#02332B]"
+                    />
+                    <button
+                      type="submit"
+                      className="px-4 py-1.5 bg-[#02332B] hover:bg-[#034439] text-white text-xs font-bold rounded-xl transition-colors cursor-pointer"
+                    >
+                      Submit
+                    </button>
+                  </form>
+                )}
+              </div>
             </div>
           </div>
         </div>

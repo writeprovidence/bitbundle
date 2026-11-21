@@ -270,6 +270,7 @@ export default function RefillDetailsView({
   const activeCurrency = profile.currency;
   const activeNetworks = profile.supportedNetworks || ["mtn", "airtel", "glo", "9mobile"];
   const hasService = activeNetworks.includes(operator.id);
+  const isOutOfStock = (operator as any)?.inStock === false;
 
   // Data bundle state
   const availableBundles = useMemo(
@@ -783,8 +784,41 @@ export default function RefillDetailsView({
         </div>
       </div>
 
-      {/* Out of Stock Card Matching Exact Reference Design */}
+      {/* If operator does NOT operate in the selected country */}
       {!hasService && (
+        <div className="mb-6 max-w-[500px] p-4 sm:p-5 bg-amber-50/80 border border-amber-200/90 rounded-2xl shadow-2xs">
+          <div className="flex items-center gap-2.5 mb-2">
+            <div className="w-6 h-6 rounded-full bg-amber-600 text-white flex items-center justify-center shrink-0">
+              <span className="font-serif font-black text-xs leading-none">!</span>
+            </div>
+            <h3 className="font-bold text-sm sm:text-base text-amber-950 tracking-tight">
+              {operator.name} does not operate in {profile.name}
+            </h3>
+          </div>
+          <p className="text-xs sm:text-sm text-amber-900/80 mb-3 leading-relaxed">
+            Please choose an operator that operates in {profile.name}:
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {activeNetworks.map((netId) => {
+              const op = OPERATORS[netId];
+              if (!op) return null;
+              return (
+                <Link
+                  key={netId}
+                  href={`/products/${netId}?country=${profile.code}`}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-amber-300 text-amber-950 text-xs font-bold hover:bg-amber-100 transition-colors shadow-2xs"
+                >
+                  <span>{op.name}</span>
+                  <span>→</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Out of Stock Card Matching Exact Reference Design (only when operator operates in country but is temporarily out of stock) */}
+      {hasService && isOutOfStock && (
         <div className="mb-6 max-w-[500px] p-4 sm:p-5 bg-[#ECEEF0] rounded-2xl shadow-2xs">
           <div className="flex items-center gap-2.5 mb-3.5">
             <div className="w-6 h-6 rounded-full bg-[#02332B] text-white flex items-center justify-center shrink-0">
@@ -1132,10 +1166,12 @@ export default function RefillDetailsView({
           )}
           <span className="truncate">
             {!hasService
-              ? "Out of Stock"
-              : isAlreadyInCart
-                ? "In Cart (View)"
-                : "Buy now"}
+              ? `Unavailable in ${profile.name}`
+              : isOutOfStock
+                ? "Out of Stock"
+                : isAlreadyInCart
+                  ? "In Cart (View)"
+                  : "Buy now"}
           </span>
         </button>
 

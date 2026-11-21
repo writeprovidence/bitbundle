@@ -1,8 +1,9 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Star } from "lucide-react";
+import { useUserCountry, COUNTRY_DATA } from "@/lib/geo";
 
 interface NetworkCard {
   id: string;
@@ -112,6 +113,15 @@ const NETWORKS: NetworkCard[] = [
 ];
 
 export default function MobileNetworksSection() {
+  const { countryCode } = useUserCountry();
+  const currentCountry = COUNTRY_DATA[countryCode] || COUNTRY_DATA.NG;
+
+  // Filter networks strictly to those that operate in the user's detected country
+  const displayedNetworks = useMemo(() => {
+    const list = NETWORKS.filter((net) => currentCountry.networks.includes(net.networkId));
+    return list.length > 0 ? list : NETWORKS.slice(0, 4);
+  }, [currentCountry]);
+
   return (
     <section className="bg-[#FAFAFA] text-gray-900 pt-28 pb-32 sm:pt-36 sm:pb-40 lg:pt-44 lg:pb-48 min-h-[750px] lg:min-h-[850px] flex flex-col justify-center">
       <div className="container-page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
@@ -121,11 +131,18 @@ export default function MobileNetworksSection() {
           
           {/* Left: Heading and See all link */}
           <div className="md:col-span-6 lg:col-span-6 flex flex-col justify-center">
-            <h2 className="font-tosh font-extrabold text-3xl sm:text-4xl lg:text-[44px] tracking-tight text-[#071F18] leading-[1.15] mb-4">
+            <h2 className="font-tosh font-extrabold text-3xl sm:text-4xl lg:text-[44px] tracking-tight text-[#071F18] leading-[1.15] mb-2">
               For Your Mobile Needs
             </h2>
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-xs sm:text-sm text-gray-500 font-medium">Operators in</span>
+              <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gray-800 bg-gray-100 px-2.5 py-0.5 rounded-full border border-gray-200/80">
+                <span>{currentCountry.flag}</span>
+                <span>{currentCountry.name}</span>
+              </span>
+            </div>
             <Link
-              href="/products"
+              href={`/products?country=${currentCountry.code}`}
               className="inline-block text-sm sm:text-base font-bold text-[#071F18] hover:text-[#00A859] underline underline-offset-4 transition-colors w-fit"
             >
               See all
@@ -147,13 +164,13 @@ export default function MobileNetworksSection() {
           </div>
         </div>
 
-        {/* 4 Mobile Networks Grid */}
+        {/* Dynamic Mobile Networks Grid matching detected country */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-7 lg:gap-8">
-          {NETWORKS.map((network) => {
+          {displayedNetworks.map((network) => {
             return (
               <Link
                 key={network.id}
-                href={`/products?network=${network.networkId}`}
+                href={`/products/${network.networkId}?country=${currentCountry.code}`}
                 className="group flex flex-col cursor-pointer transition-all duration-200"
               >
                 {/* Visual Card Canvas with rounded corners & shadow */}

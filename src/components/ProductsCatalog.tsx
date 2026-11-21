@@ -494,15 +494,15 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
           1. HERO BANNER (Dark Pine / Emerald Background with Input)
       ────────────────────────────────────────────────────────── */}
       <section className="relative bg-[#010C24] text-white pt-16 pb-16 sm:pt-20 sm:pb-24 lg:pt-24 lg:pb-28 px-4 sm:px-6 lg:px-8 overflow-visible">
-            {/* Subtle radial ambient glow */}
-            <div
-              className="absolute inset-0 pointer-events-none opacity-40"
-              style={{
-                background: "radial-gradient(circle at 50% 25%, rgba(0, 229, 153, 0.18) 0%, transparent 70%)",
-              }}
-            />
+        {/* Subtle radial ambient glow */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-40"
+          style={{
+            background: "radial-gradient(circle at 50% 25%, rgba(0, 229, 153, 0.18) 0%, transparent 70%)",
+          }}
+        />
 
-            <div className="relative max-w-4xl mx-auto text-center z-10">
+        <div className="relative max-w-4xl mx-auto text-center z-10">
           <h1 className="font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-[42px] leading-tight text-white tracking-tight mb-10 sm:mb-14 max-w-3xl mx-auto">
             Top up prepaid mobile airtime &amp; data bundles with stablecoins like USDT and USDC.
           </h1>
@@ -544,9 +544,8 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
                   <CountryFlag code={selectedCountry.code} className="w-5 h-3.5" />
                   <span className="text-sm font-bold tracking-wide text-gray-900">{selectedCountry.code}</span>
                   <ChevronDown
-                    className={`w-3.5 h-3.5 text-gray-500 transition-transform duration-200 ${
-                      isCountryDropdownOpen ? "rotate-180" : ""
-                    }`}
+                    className={`w-3.5 h-3.5 text-gray-500 transition-transform duration-200 ${isCountryDropdownOpen ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
 
@@ -561,11 +560,10 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
                           setSelectedCountry(c);
                           setIsCountryDropdownOpen(false);
                         }}
-                        className={`w-full flex items-baseline gap-1.5 px-3 py-2 text-sm text-left cursor-pointer transition-colors ${
-                          selectedCountry.code === c.code
+                        className={`w-full flex items-baseline gap-1.5 px-3 py-2 text-sm text-left cursor-pointer transition-colors ${selectedCountry.code === c.code
                             ? "bg-[#1a73e8] text-white"
                             : "text-gray-800 hover:bg-gray-100"
-                        }`}
+                          }`}
                       >
                         <span className="font-normal">{c.name}</span>
                         <span className={`font-normal ${selectedCountry.code === c.code ? "text-white" : "text-gray-500"}`}>({c.dialCode})</span>
@@ -619,22 +617,20 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
               <button
                 type="button"
                 onClick={() => setActiveCategory("all")}
-                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                  activeCategory === "all"
+                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${activeCategory === "all"
                     ? "bg-[#010C24] text-white shadow-2xs"
                     : "text-gray-600 hover:text-gray-900"
-                }`}
+                  }`}
               >
                 All
               </button>
               <button
                 type="button"
                 onClick={() => setActiveCategory("airtime")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                  activeCategory === "airtime"
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${activeCategory === "airtime"
                     ? "bg-[#010C24] text-white shadow-2xs"
                     : "text-gray-600 hover:text-gray-900"
-                }`}
+                  }`}
               >
                 <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                 Airtime
@@ -642,11 +638,10 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
               <button
                 type="button"
                 onClick={() => setActiveCategory("data")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                  activeCategory === "data"
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${activeCategory === "data"
                     ? "bg-[#010C24] text-white shadow-2xs"
                     : "text-gray-600 hover:text-gray-900"
-                }`}
+                  }`}
               >
                 <Wifi className="w-3.5 h-3.5 text-emerald-600" />
                 Data Bundles
@@ -678,9 +673,8 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
               >
                 {/* Visual Card Canvas */}
                 <div
-                  className={`relative w-full aspect-[16/10] sm:aspect-[4/3] rounded-2xl flex items-center justify-center ${
-                    product.logoType === "mtn" ? "p-0 overflow-hidden" : "p-6"
-                  } transition-all duration-200 group-hover:shadow-xl group-hover:-translate-y-1 ${product.cardBg} ${product.cardBorder || ""}`}
+                  className={`relative w-full aspect-[16/10] sm:aspect-[4/3] rounded-2xl flex items-center justify-center ${product.logoType === "mtn" ? "p-0 overflow-hidden" : "p-6"
+                    } transition-all duration-200 group-hover:shadow-xl group-hover:-translate-y-1 ${product.cardBg} ${product.cardBorder || ""}`}
                 >
                   {/* Top-left badge */}
                   {product.badge && (
@@ -812,14 +806,9 @@ export default function ProductsCatalog({ initialNetwork }: { initialNetwork?: s
 
                 {/* Card Meta below */}
                 <div className="mt-3 px-1">
-                  <div>
-                    <span className="text-sm font-bold text-gray-900 group-hover:text-black">
-                      {product.name}
-                    </span>
-                    <p className="text-[11px] font-semibold text-gray-400 mt-0.5">
-                      {activeCategory === "data" ? "Data Bundles" : activeCategory === "airtime" ? "Airtime Top-up" : "Airtime & Data"}
-                    </p>
-                  </div>
+                  <span className="text-sm font-bold text-gray-900 group-hover:text-black">
+                    {product.name}
+                  </span>
                 </div>
               </div>
             );

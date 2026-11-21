@@ -459,11 +459,11 @@ export default function RefillDetailsView({
       dataPlan:
         topupType === "data" && selectedBundle
           ? {
-              id: selectedBundle.id,
-              name: selectedBundle.name,
-              validity: selectedBundle.validity,
-              dataAmount: selectedBundle.dataAmount,
-            }
+            id: selectedBundle.id,
+            name: selectedBundle.name,
+            validity: selectedBundle.validity,
+            dataAmount: selectedBundle.dataAmount,
+          }
           : undefined,
     });
     setIsCartOpen(true);
@@ -503,11 +503,11 @@ export default function RefillDetailsView({
       dataPlan:
         topupType === "data" && selectedBundle
           ? {
-              id: selectedBundle.id,
-              name: selectedBundle.name,
-              validity: selectedBundle.validity,
-              dataAmount: selectedBundle.dataAmount,
-            }
+            id: selectedBundle.id,
+            name: selectedBundle.name,
+            validity: selectedBundle.validity,
+            dataAmount: selectedBundle.dataAmount,
+          }
           : undefined,
     });
     setIsGiftModalOpen(false);
@@ -703,8 +703,8 @@ export default function RefillDetailsView({
   const renderFormContent = () => (
     <div
       className={`flex-1 min-w-0 max-w-[560px] ${!isModal
-          ? "bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-9 shadow-sm"
-          : ""
+        ? "bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-9 shadow-sm"
+        : ""
         }`}
     >
       {/* Dynamic Title */}
@@ -760,11 +760,10 @@ export default function RefillDetailsView({
                           onCountryChange(c.code, c.name);
                         }
                       }}
-                      className={`w-full flex items-center justify-between px-3 py-2 text-xs sm:text-sm text-left transition-colors cursor-pointer ${
-                        isSelected
+                      className={`w-full flex items-center justify-between px-3 py-2 text-xs sm:text-sm text-left transition-colors cursor-pointer ${isSelected
                           ? "bg-emerald-50 text-emerald-900 font-bold"
                           : "text-slate-700 hover:bg-slate-50 font-medium"
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
                         <CountryFlag
@@ -860,11 +859,10 @@ export default function RefillDetailsView({
             setTopupType("airtime");
             setAmount(profile.defaultAmount);
           }}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer select-none ${
-            topupType === "airtime"
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer select-none ${topupType === "airtime"
               ? "bg-white text-slate-900 shadow-xs"
               : "text-slate-600 hover:text-slate-900"
-          }`}
+            }`}
         >
           <Zap className={`w-4 h-4 ${topupType === "airtime" ? "text-amber-500 fill-amber-500" : ""}`} />
           <span>Airtime</span>
@@ -878,11 +876,10 @@ export default function RefillDetailsView({
               setAmount(selectedBundle.priceLocal);
             }
           }}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer select-none ${
-            topupType === "data"
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer select-none ${topupType === "data"
               ? "bg-white text-slate-900 shadow-xs"
               : "text-slate-600 hover:text-slate-900"
-          }`}
+            }`}
         >
           <Wifi className={`w-4 h-4 ${topupType === "data" ? "text-emerald-600" : ""}`} />
           <span>Data Bundle</span>
@@ -911,11 +908,10 @@ export default function RefillDetailsView({
                   key={quickVal}
                   type="button"
                   onClick={() => setAmount(quickVal)}
-                  className={`py-2 px-1 text-center rounded-lg text-xs font-bold border transition-all cursor-pointer ${
-                    amount === quickVal
+                  className={`py-2 px-1 text-center rounded-lg text-xs font-bold border transition-all cursor-pointer ${amount === quickVal
                       ? "border-emerald-600 bg-emerald-50 text-emerald-900 shadow-2xs"
                       : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-                  }`}
+                    }`}
                 >
                   {profile.currencySymbol}{quickVal.toLocaleString()}
                 </button>
@@ -958,11 +954,10 @@ export default function RefillDetailsView({
                   key={cat}
                   type="button"
                   onClick={() => setBundleCategoryFilter(cat)}
-                  className={`text-[11px] font-bold px-2 py-0.5 rounded-md capitalize transition-colors cursor-pointer ${
-                    bundleCategoryFilter === cat
+                  className={`text-[11px] font-bold px-2 py-0.5 rounded-md capitalize transition-colors cursor-pointer ${bundleCategoryFilter === cat
                       ? "bg-slate-900 text-white"
                       : "text-slate-500 hover:text-slate-800 bg-slate-100"
-                  }`}
+                    }`}
                 >
                   {cat}
                 </button>
@@ -983,21 +978,19 @@ export default function RefillDetailsView({
                     setSelectedBundleId(plan.id);
                     setAmount(plan.priceLocal);
                   }}
-                  className={`relative text-left p-3 rounded-xl border-2 transition-all cursor-pointer flex flex-col justify-between ${
-                    isSelected
+                  className={`relative text-left p-3 rounded-xl border-2 transition-all cursor-pointer flex flex-col justify-between ${isSelected
                       ? "border-emerald-600 bg-emerald-50/70 shadow-xs"
                       : "border-slate-200 bg-white hover:border-slate-300"
-                  }`}
+                    }`}
                 >
                   {plan.badge && (
                     <span
-                      className={`absolute -top-2 right-2 text-[9px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-wider ${
-                        plan.badge === "Popular"
+                      className={`absolute -top-2 right-2 text-[9px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-wider ${plan.badge === "Popular"
                           ? "bg-emerald-600 text-white"
                           : plan.badge === "Hot"
-                          ? "bg-[#DE1D35] text-white"
-                          : "bg-amber-500 text-black"
-                      }`}
+                            ? "bg-[#DE1D35] text-white"
+                            : "bg-amber-500 text-black"
+                        }`}
                     >
                       {plan.badge}
                     </span>
@@ -1030,10 +1023,10 @@ export default function RefillDetailsView({
         <div>
           <div
             className={`flex items-center border transition-colors rounded-[6px] px-3 ${!networkMatch.isMatch
-                ? "border-rose-400 bg-rose-50/20 focus-within:border-rose-600"
-                : phoneValidation.error
-                  ? "border-rose-400 focus-within:border-rose-600"
-                  : "border-slate-200 focus-within:border-slate-600"
+              ? "border-rose-400 bg-rose-50/20 focus-within:border-rose-600"
+              : phoneValidation.error
+                ? "border-rose-400 focus-within:border-rose-600"
+                : "border-slate-200 focus-within:border-slate-600"
               }`}
           >
             <input
@@ -1141,8 +1134,8 @@ export default function RefillDetailsView({
             {!hasService
               ? "Out of Stock"
               : isAlreadyInCart
-              ? "In Cart (View)"
-              : "Buy now"}
+                ? "In Cart (View)"
+                : "Buy now"}
           </span>
         </button>
 

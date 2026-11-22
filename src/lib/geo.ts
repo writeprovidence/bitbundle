@@ -116,10 +116,14 @@ export function saveUserCountry(code: string) {
 
 /**
  * Hook to automatically determine user country based on IP and location.
+ * Always initializes with "NG" on both server and initial client hydration
+ * to guarantee 100% hydration consistency, then immediately resolves local
+ * heuristics and server headers in useEffect.
  */
 export function useUserCountry() {
-  const [countryCode, setCountryCodeState] = useState<SupportedCountryCode>(() => getQuickDetectedCountry());
+  const [countryCode, setCountryCodeState] = useState<SupportedCountryCode>("NG");
   const [hasResolved, setHasResolved] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   const setCountryCode = (code: SupportedCountryCode | string) => {
     const upper = code.toUpperCase() as SupportedCountryCode;
@@ -130,6 +134,12 @@ export function useUserCountry() {
   };
 
   useEffect(() => {
+    setIsMounted(true);
+
+    // Apply client heuristic immediately on mount without SSR mismatch
+    const quick = getQuickDetectedCountry();
+    setCountryCodeState(quick);
+
     // If user already explicitly saved a preference, respect it and don't override
     try {
       const saved = localStorage.getItem("bitbundle_selected_country");
@@ -140,7 +150,7 @@ export function useUserCountry() {
       }
     } catch {}
 
-    let isMounted = true;
+    let isSubscribed = true;
 
     // Asynchronous verification via our internal geo route (reads edge headers)
     async function resolveLocation() {
@@ -149,7 +159,7 @@ export function useUserCountry() {
         if (res.ok) {
           const data = await res.json();
           if (data?.country && SUPPORTED_GEO_COUNTRIES.includes(data.country.toUpperCase() as SupportedCountryCode)) {
-            if (isMounted) {
+            if (isSubscribed) {
               const detected = data.country.toUpperCase() as SupportedCountryCode;
               setCountryCodeState(detected);
               setHasResolved(true);
@@ -165,7 +175,7 @@ export function useUserCountry() {
         if (res2.ok) {
           const data2 = await res2.json();
           if (data2?.country && SUPPORTED_GEO_COUNTRIES.includes(data2.country.toUpperCase() as SupportedCountryCode)) {
-            if (isMounted) {
+            if (isSubscribed) {
               const detected = data2.country.toUpperCase() as SupportedCountryCode;
               setCountryCodeState(detected);
               setHasResolved(true);
@@ -175,7 +185,7 @@ export function useUserCountry() {
         }
       } catch {}
 
-      if (isMounted) {
+      if (isSubscribed) {
         setHasResolved(true);
       }
     }
@@ -183,9 +193,9 @@ export function useUserCountry() {
     resolveLocation();
 
     return () => {
-      isMounted = false;
+      isSubscribed = false;
     };
   }, []);
 
-  return { countryCode, hasResolved, setCountryCode };
+  return { countryCode, hasResolved, setCountryCode, isMounted };
 }

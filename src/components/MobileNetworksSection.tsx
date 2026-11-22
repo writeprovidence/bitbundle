@@ -137,7 +137,7 @@ export default function MobileNetworksSection() {
             </h2>
             <div className="flex items-center gap-2 mb-4">
               <span className="text-xs sm:text-sm text-gray-500 font-medium">Operators in</span>
-              <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gray-800 bg-gray-100 px-2.5 py-1 rounded-full border border-gray-200/80">
+              <span suppressHydrationWarning className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gray-800 bg-gray-100 px-2.5 py-1 rounded-full border border-gray-200/80">
                 <CountryFlag
                   countryCode={currentCountry.code}
                   countryName={currentCountry.name}

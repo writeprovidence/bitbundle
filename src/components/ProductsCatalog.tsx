@@ -506,8 +506,7 @@ export default function ProductsCatalog({
       const match = COUNTRIES.find((c) => c.code.toLowerCase() === initialCountry.toLowerCase());
       if (match) return match;
     }
-    const quick = getQuickDetectedCountry();
-    return COUNTRIES.find((c) => c.code === quick) || COUNTRIES[0];
+    return COUNTRIES[0];
   });
 
   // Automatically sync when user location is detected

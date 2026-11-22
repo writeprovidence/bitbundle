@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useUserCountry, COUNTRY_DATA } from "@/lib/geo";
-import CountryFlag from "./CountryFlag";
 
 interface NetworkCard {
   id: string;
@@ -132,22 +131,9 @@ export default function MobileNetworksSection() {
           
           {/* Left: Heading and See all link */}
           <div className="md:col-span-6 lg:col-span-6 flex flex-col justify-center">
-            <h2 className="font-tosh font-extrabold text-3xl sm:text-4xl lg:text-[44px] tracking-tight text-[#071F18] leading-[1.15] mb-2">
+            <h2 className="font-tosh font-extrabold text-3xl sm:text-4xl lg:text-[44px] tracking-tight text-[#071F18] leading-[1.15] mb-4">
               For Your Mobile Needs
             </h2>
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-xs sm:text-sm text-gray-500 font-medium">Operators in</span>
-              <span suppressHydrationWarning className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gray-800 bg-gray-100 px-2.5 py-1 rounded-full border border-gray-200/80">
-                <CountryFlag
-                  countryCode={currentCountry.code}
-                  countryName={currentCountry.name}
-                  width={20}
-                  height={14}
-                  className="w-5 h-3.5 rounded-[2px] shadow-2xs border border-black/10 shrink-0"
-                />
-                <span>{currentCountry.name}</span>
-              </span>
-            </div>
             <Link
               href={`/products?country=${currentCountry.code}`}
               className="inline-block text-sm sm:text-base font-bold text-[#071F18] hover:text-[#00A859] underline underline-offset-4 transition-colors w-fit"

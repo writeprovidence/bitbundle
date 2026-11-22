@@ -116,10 +116,11 @@ export default function MobileNetworksSection() {
   const { countryCode } = useUserCountry();
   const currentCountry = COUNTRY_DATA[countryCode] || COUNTRY_DATA.NG;
 
-  // Filter networks strictly to those that operate in the user's detected country
+  // Show all telecom operators across all countries, with user's detected local operators first
   const displayedNetworks = useMemo(() => {
-    const list = NETWORKS.filter((net) => currentCountry.networks.includes(net.networkId));
-    return list.length > 0 ? list : NETWORKS.slice(0, 4);
+    const domestic = NETWORKS.filter((net) => currentCountry.networks.includes(net.networkId));
+    const international = NETWORKS.filter((net) => !currentCountry.networks.includes(net.networkId));
+    return [...domestic, ...international];
   }, [currentCountry]);
 
   return (
@@ -160,10 +161,17 @@ export default function MobileNetworksSection() {
         {/* Dynamic Mobile Networks Grid matching detected country */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-7 lg:gap-8">
           {displayedNetworks.map((network) => {
+            const hostCountry = Object.values(COUNTRY_DATA).find((c) =>
+              c.networks.includes(network.networkId)
+            );
+            const targetCountryCode = currentCountry.networks.includes(network.networkId)
+              ? currentCountry.code
+              : hostCountry?.code || currentCountry.code;
+
             return (
               <Link
                 key={network.id}
-                href={`/products/${network.networkId}?country=${currentCountry.code}`}
+                href={`/products/${network.networkId}?country=${targetCountryCode}`}
                 className="group flex flex-col cursor-pointer transition-all duration-200"
               >
                 {/* Visual Card Canvas with rounded corners & shadow */}

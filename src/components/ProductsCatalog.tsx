@@ -69,7 +69,7 @@ export const COUNTRIES: CountryOption[] = [
     flag: "🇬🇭",
     dialCode: "+233",
     placeholder: "024 123 4567",
-    networks: ["mtn", "airtel", "telecel"],
+    networks: ["mtn", "vodafone", "airtel", "glo", "telecel"],
   },
   {
     code: "ZA",
@@ -93,7 +93,7 @@ export const COUNTRIES: CountryOption[] = [
     flag: "🇰🇪",
     dialCode: "+254",
     placeholder: "071 234 5678",
-    networks: ["safaricom", "airtel"],
+    networks: ["safaricom", "airtel", "telkom"],
   },
   {
     code: "TZ",
@@ -164,6 +164,17 @@ const PRODUCTS: ProductItem[] = [
     inStock: true,
     cardBg: "bg-[#E40000]",
     logoType: "telecel",
+  },
+  {
+    id: "vodafone-airtime",
+    name: "Vodafone",
+    networkId: "vodafone",
+    category: "Airtime",
+    range: "5 GHS - 500 GHS",
+    rating: 4.8,
+    inStock: true,
+    cardBg: "bg-[#E60000]",
+    logoType: "vodafone",
   },
   {
     id: "safaricom-airtime",
@@ -290,6 +301,17 @@ const PRODUCTS: ProductItem[] = [
     inStock: true,
     cardBg: "bg-[#E40000]",
     logoType: "telecel",
+  },
+  {
+    id: "vodafone-data",
+    name: "Vodafone",
+    networkId: "vodafone",
+    category: "Data",
+    range: "1 GB - 12 GB",
+    rating: 4.8,
+    inStock: true,
+    cardBg: "bg-[#E60000]",
+    logoType: "vodafone",
   },
   {
     id: "safaricom-data",
@@ -843,8 +865,11 @@ export default function ProductsCatalog({
               >
                 {/* Visual Card Canvas */}
                 <div
-                  className={`relative w-full aspect-[16/10] sm:aspect-[4/3] rounded-2xl flex items-center justify-center ${product.logoType === "mtn" ? "p-0 overflow-hidden" : "p-6"
-                    } transition-all duration-200 group-hover:shadow-xl group-hover:-translate-y-1 ${product.cardBg} ${product.cardBorder || ""}`}
+                  className={`relative w-full aspect-[16/10] sm:aspect-[4/3] rounded-2xl flex items-center justify-center ${
+                    ["mtn", "vodafone", "safaricom", "telkom", "cellc", "tigo", "halotel"].includes(product.logoType)
+                      ? "p-0 overflow-hidden"
+                      : "p-6"
+                  } transition-all duration-200 group-hover:shadow-xl group-hover:-translate-y-1 ${product.cardBg} ${product.cardBorder || ""}`}
                 >
                   {/* Top-left badge */}
                   {product.badge && (
@@ -863,13 +888,23 @@ export default function ProductsCatalog({
 
                   {/* Brand Logo Presentation: straight and enlarged */}
                   {product.logoType === "mtn" && (
-                    <div className="w-full h-full bg-[#FFCC00] rounded-2xl flex items-center justify-center p-4">
-                      <div className="w-36 h-22 sm:w-40 sm:h-24 border-[4.5px] border-black rounded-full flex items-center justify-center">
-                        <span className="text-3xl font-black tracking-tight text-black select-none">
-                          MTN
-                        </span>
-                      </div>
-                    </div>
+                    <Image
+                      src="/assets/telecom-card/mtn.webp"
+                      alt="MTN"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
+                    />
+                  )}
+
+                  {product.logoType === "vodafone" && (
+                    <Image
+                      src="/assets/telecom-card/vodafone.webp"
+                      alt="Vodafone"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
+                    />
                   )}
 
                   {product.logoType === "airtel" && (
@@ -930,47 +965,53 @@ export default function ProductsCatalog({
                   )}
 
                   {product.logoType === "cellc" && (
-                    <div className="flex flex-col items-center justify-center w-full px-4 select-none">
-                      <div className="w-12 h-12 rounded-full border-[4px] border-white flex items-center justify-center mb-1">
-                        <span className="text-xl font-black text-white">C</span>
-                      </div>
-                      <span className="text-xl sm:text-2xl font-black tracking-widest text-white">CELL C</span>
-                    </div>
+                    <Image
+                      src="/assets/telecom-card/cell-c.webp"
+                      alt="Cell C"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
+                    />
                   )}
 
                   {product.logoType === "telkom" && (
-                    <div className="flex flex-col items-center justify-center w-full px-4 select-none">
-                      <div className="w-10 h-10 border-3 border-white rounded-md rotate-45 flex items-center justify-center mb-1">
-                        <div className="w-3 h-3 bg-white -rotate-45" />
-                      </div>
-                      <span className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Telkom</span>
-                    </div>
+                    <Image
+                      src="/assets/telecom-card/telkom.webp"
+                      alt="Telkom"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
+                    />
                   )}
 
                   {product.logoType === "safaricom" && (
-                    <div className="flex flex-col items-center justify-center w-full px-4 select-none">
-                      <div className="w-9 h-9 rounded-full border-[3.5px] border-[#E40000] bg-white flex items-center justify-center mb-1 shadow-xs">
-                        <div className="w-3.5 h-3.5 rounded-full bg-[#009E49]" />
-                      </div>
-                      <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">Safaricom</span>
-                    </div>
+                    <Image
+                      src="/assets/telecom-card/safaricom.jfif"
+                      alt="Safaricom"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
+                    />
                   )}
 
                   {product.logoType === "tigo" && (
-                    <div className="flex flex-col items-center justify-center w-full px-4 select-none">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-3xl sm:text-4xl font-black text-white tracking-tight lowercase">tigo</span>
-                        <span className="w-3 h-3 rounded-full bg-[#FFD700]" />
-                      </div>
-                      <span className="text-[10px] font-bold text-[#FFD700] tracking-widest uppercase mt-0.5">Tanzania</span>
-                    </div>
+                    <Image
+                      src="/assets/telecom-card/tigo-tanzania.webp"
+                      alt="Tigo Tanzania"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
+                    />
                   )}
 
                   {product.logoType === "halotel" && (
-                    <div className="flex flex-col items-center justify-center w-full px-4 select-none">
-                      <span className="text-2xl sm:text-3xl font-black text-white tracking-tight lowercase">halotel</span>
-                      <div className="w-12 h-1 bg-white/70 rounded-full mt-1.5" />
-                    </div>
+                    <Image
+                      src="/assets/telecom-card/halotel.webp"
+                      alt="Halotel"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
+                    />
                   )}
                 </div>
 
@@ -1164,13 +1205,20 @@ export default function ProductsCatalog({
 
             {/* Visual Card Preview for Out Of Stock Operator */}
             {outOfStockModal.logoType === "mtn" && (
-              <div className="relative w-full h-36 bg-[#FFCC00] rounded-2xl flex items-center justify-center mb-6 shadow-sm overflow-hidden">
+              <div className="relative w-full h-36 rounded-2xl flex items-center justify-center mb-6 shadow-sm overflow-hidden">
                 <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm select-none">
                   Out Of Stock
                 </span>
-                <div className="w-32 h-20 border-[4px] border-black rounded-full flex items-center justify-center">
-                  <span className="text-2xl font-black tracking-tight text-black select-none">MTN</span>
-                </div>
+                <Image src="/assets/telecom-card/mtn.webp" alt="MTN" fill className="object-cover" />
+              </div>
+            )}
+
+            {outOfStockModal.logoType === "vodafone" && (
+              <div className="relative w-full h-36 rounded-2xl flex items-center justify-center mb-6 shadow-sm overflow-hidden">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm select-none">
+                  Out Of Stock
+                </span>
+                <Image src="/assets/telecom-card/vodafone.webp" alt="Vodafone" fill className="object-cover" />
               </div>
             )}
 
@@ -1221,47 +1269,47 @@ export default function ProductsCatalog({
             )}
 
             {outOfStockModal.logoType === "cellc" && (
-              <div className="relative w-full h-32 bg-black rounded-2xl flex flex-col items-center justify-center mb-6 shadow-sm overflow-hidden p-4 select-none">
-                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+              <div className="relative w-full h-36 rounded-2xl flex items-center justify-center mb-6 shadow-sm overflow-hidden">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm select-none">
                   Out Of Stock
                 </span>
-                <span className="text-2xl font-black text-white tracking-widest">CELL C</span>
+                <Image src="/assets/telecom-card/cell-c.webp" alt="Cell C" fill className="object-cover" />
               </div>
             )}
 
             {outOfStockModal.logoType === "telkom" && (
-              <div className="relative w-full h-32 bg-[#0089CF] rounded-2xl flex flex-col items-center justify-center mb-6 shadow-sm overflow-hidden p-4 select-none">
-                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+              <div className="relative w-full h-36 rounded-2xl flex items-center justify-center mb-6 shadow-sm overflow-hidden">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm select-none">
                   Out Of Stock
                 </span>
-                <span className="text-3xl font-black text-white">Telkom</span>
+                <Image src="/assets/telecom-card/telkom.webp" alt="Telkom" fill className="object-cover" />
               </div>
             )}
 
             {outOfStockModal.logoType === "safaricom" && (
-              <div className="relative w-full h-32 bg-[#009E49] rounded-2xl flex flex-col items-center justify-center mb-6 shadow-sm overflow-hidden p-4 select-none">
-                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+              <div className="relative w-full h-36 rounded-2xl flex items-center justify-center mb-6 shadow-sm overflow-hidden">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm select-none">
                   Out Of Stock
                 </span>
-                <span className="text-3xl font-black text-white">Safaricom</span>
+                <Image src="/assets/telecom-card/safaricom.jfif" alt="Safaricom" fill className="object-cover" />
               </div>
             )}
 
             {outOfStockModal.logoType === "tigo" && (
-              <div className="relative w-full h-32 bg-[#0033A0] rounded-2xl flex flex-col items-center justify-center mb-6 shadow-sm overflow-hidden p-4 select-none">
-                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+              <div className="relative w-full h-36 rounded-2xl flex items-center justify-center mb-6 shadow-sm overflow-hidden">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm select-none">
                   Out Of Stock
                 </span>
-                <span className="text-3xl font-black text-white lowercase">tigo</span>
+                <Image src="/assets/telecom-card/tigo-tanzania.webp" alt="Tigo Tanzania" fill className="object-cover" />
               </div>
             )}
 
             {outOfStockModal.logoType === "halotel" && (
-              <div className="relative w-full h-32 bg-[#FF6600] rounded-2xl flex flex-col items-center justify-center mb-6 shadow-sm overflow-hidden p-4 select-none">
-                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+              <div className="relative w-full h-36 rounded-2xl flex items-center justify-center mb-6 shadow-sm overflow-hidden">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm select-none">
                   Out Of Stock
                 </span>
-                <span className="text-3xl font-black text-white lowercase">halotel</span>
+                <Image src="/assets/telecom-card/halotel.webp" alt="Halotel" fill className="object-cover" />
               </div>
             )}
 

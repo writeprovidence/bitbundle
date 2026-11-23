@@ -119,7 +119,7 @@ const COUNTRY_PROFILES: Record<string, CountryProfile> = {
     localPhoneLength: 10,
     intlPhoneLength: 12,
     placeholder: "024 123 4567",
-    supportedNetworks: ["mtn", "airtel", "telecel"],
+    supportedNetworks: ["mtn", "vodafone", "airtel", "glo", "telecel"],
   },
   ZA: {
     code: "ZA",
@@ -149,7 +149,7 @@ const COUNTRY_PROFILES: Record<string, CountryProfile> = {
     localPhoneLength: 10,
     intlPhoneLength: 12,
     placeholder: "071 234 5678",
-    supportedNetworks: ["safaricom", "airtel"],
+    supportedNetworks: ["safaricom", "airtel", "telkom"],
   },
   UG: {
     code: "UG",
@@ -562,15 +562,23 @@ export default function RefillDetailsView({
 
         {/* Operator Brand Graphics (Enlarged) */}
         {operator.logoType === "mtn" && (
-          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] bg-[#FFCC00] rounded-[18px] flex items-center justify-center shadow-xs">
+          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] rounded-[18px] overflow-hidden shadow-xs">
             {!hasService && (
               <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm select-none">
                 Out Of Stock
               </span>
             )}
-            <div className="w-52 sm:w-60 md:w-64 h-30 sm:h-34 md:h-38 border-[5.5px] border-black rounded-full flex items-center justify-center">
-              <span className="text-4xl sm:text-5xl font-black tracking-tight text-black select-none">MTN</span>
-            </div>
+            <Image src="/assets/telecom-card/mtn.webp" alt="MTN" fill priority className="object-cover" />
+          </div>
+        )}
+        {operator.logoType === "vodafone" && (
+          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] rounded-[18px] overflow-hidden shadow-xs">
+            {!hasService && (
+              <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm select-none">
+                Out Of Stock
+              </span>
+            )}
+            <Image src="/assets/telecom-card/vodafone.webp" alt="Vodafone" fill priority className="object-cover" />
           </div>
         )}
         {operator.logoType === "airtel" && (
@@ -633,67 +641,53 @@ export default function RefillDetailsView({
           </div>
         )}
         {operator.logoType === "cellc" && (
-          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] bg-black rounded-[18px] flex flex-col items-center justify-center p-6 shadow-xs select-none">
+          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] rounded-[18px] overflow-hidden shadow-xs">
             {!hasService && (
               <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
                 Out Of Stock
               </span>
             )}
-            <div className="w-14 h-14 rounded-full border-[5px] border-white flex items-center justify-center mb-2">
-              <span className="text-2xl font-black text-white">C</span>
-            </div>
-            <span className="text-2xl sm:text-3xl font-black tracking-widest text-white">CELL C</span>
+            <Image src="/assets/telecom-card/cell-c.webp" alt="Cell C" fill className="object-cover" />
           </div>
         )}
         {operator.logoType === "telkom" && (
-          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] bg-[#0089CF] rounded-[18px] flex flex-col items-center justify-center p-6 shadow-xs select-none">
+          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] rounded-[18px] overflow-hidden shadow-xs">
             {!hasService && (
               <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
                 Out Of Stock
               </span>
             )}
-            <div className="w-12 h-12 border-4 border-white rounded-lg rotate-45 flex items-center justify-center mb-2">
-              <div className="w-4 h-4 bg-white -rotate-45" />
-            </div>
-            <span className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Telkom</span>
+            <Image src="/assets/telecom-card/telkom.webp" alt="Telkom" fill className="object-cover" />
           </div>
         )}
         {operator.logoType === "safaricom" && (
-          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] bg-[#009E49] rounded-[18px] flex flex-col items-center justify-center p-6 shadow-xs select-none">
+          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] rounded-[18px] overflow-hidden shadow-xs">
             {!hasService && (
               <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
                 Out Of Stock
               </span>
             )}
-            <div className="w-10 h-10 rounded-full border-4 border-[#E40000] bg-white flex items-center justify-center mb-2">
-              <div className="w-4 h-4 rounded-full bg-[#009E49]" />
-            </div>
-            <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">Safaricom</span>
+            <Image src="/assets/telecom-card/safaricom.jfif" alt="Safaricom" fill className="object-cover" />
           </div>
         )}
         {operator.logoType === "tigo" && (
-          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] bg-[#0033A0] rounded-[18px] flex flex-col items-center justify-center p-6 shadow-xs select-none">
+          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] rounded-[18px] overflow-hidden shadow-xs">
             {!hasService && (
               <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
                 Out Of Stock
               </span>
             )}
-            <div className="flex items-baseline gap-1">
-              <span className="text-4xl sm:text-5xl font-black text-white tracking-tight lowercase">tigo</span>
-              <span className="w-3.5 h-3.5 rounded-full bg-[#FFD700]" />
-            </div>
-            <span className="text-xs font-bold text-[#FFD700] tracking-widest uppercase mt-1">Tanzania</span>
+            <Image src="/assets/telecom-card/tigo-tanzania.webp" alt="Tigo Tanzania" fill className="object-cover" />
           </div>
         )}
         {operator.logoType === "halotel" && (
-          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] bg-[#FF6600] rounded-[18px] flex flex-col items-center justify-center p-6 shadow-xs select-none">
+          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] rounded-[18px] overflow-hidden shadow-xs">
             {!hasService && (
               <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
                 Out Of Stock
               </span>
             )}
-            <span className="text-3xl sm:text-4xl font-black text-white tracking-tight lowercase">halotel</span>
-            <div className="w-16 h-1 bg-white/70 rounded-full mt-2" />
+            <Image src="/assets/telecom-card/halotel.webp" alt="Halotel" fill className="object-cover" />
           </div>
         )}
       </div>

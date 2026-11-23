@@ -94,6 +94,13 @@ export const AFRICAN_NETWORKS_BY_COUNTRY: Record<string, CountryNetworkConfig> =
         isSupportedOperator: true,
         prefixes: ["020", "050"],
       },
+      vodafone: {
+        id: "vodafone",
+        name: "Vodafone",
+        fullName: "Vodafone Ghana",
+        isSupportedOperator: true,
+        prefixes: ["020", "050"],
+      },
     },
   },
   ZA: {
@@ -154,7 +161,7 @@ export const AFRICAN_NETWORKS_BY_COUNTRY: Record<string, CountryNetworkConfig> =
         id: "telkom",
         name: "Telkom",
         fullName: "Telkom Kenya",
-        isSupportedOperator: false,
+        isSupportedOperator: true,
         prefixes: ["077"],
       },
     },

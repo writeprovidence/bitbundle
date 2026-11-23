@@ -45,6 +45,14 @@ const NETWORKS: NetworkCard[] = [
     cardBorder: "border border-gray-200/90",
   },
   {
+    id: "vodafone-network",
+    name: "Vodafone",
+    networkId: "vodafone",
+    range: "5 GHS - 500 GHS",
+    rating: 4.8,
+    cardBg: "bg-[#E60000]",
+  },
+  {
     id: "9mobile-network",
     name: "9mobile",
     networkId: "9mobile",
@@ -177,7 +185,9 @@ export default function MobileNetworksSection() {
                 {/* Visual Card Canvas with rounded corners & shadow */}
                 <div
                   className={`relative w-full aspect-[16/10] sm:aspect-[4/3] rounded-2xl flex items-center justify-center ${
-                    network.networkId === "mtn" ? "p-0 overflow-hidden" : "p-6"
+                    ["mtn", "vodafone", "safaricom", "telkom", "cellc", "tigo", "halotel"].includes(network.networkId)
+                      ? "p-0 overflow-hidden"
+                      : "p-6"
                   } transition-all duration-200 group-hover:shadow-2xl group-hover:-translate-y-1.5 shadow-[0_4px_20px_rgba(0,0,0,0.08)] ${
                     network.cardBg
                   } ${network.cardBorder || ""}`}
@@ -194,12 +204,22 @@ export default function MobileNetworksSection() {
                   {/* Brand Logo Presentation */}
                   {network.networkId === "mtn" && (
                     <Image
-                      src="/assets/mtn_banner.jpg"
+                      src="/assets/telecom-card/mtn.webp"
                       alt="MTN"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
                       className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
                       priority
+                    />
+                  )}
+
+                  {network.networkId === "vodafone" && (
+                    <Image
+                      src="/assets/telecom-card/vodafone.webp"
+                      alt="Vodafone"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
                     />
                   )}
 
@@ -250,12 +270,13 @@ export default function MobileNetworksSection() {
                   )}
 
                   {network.networkId === "safaricom" && (
-                    <div className="flex flex-col items-center justify-center w-full px-4 select-none group-hover:scale-105 transition-transform">
-                      <div className="w-9 h-9 rounded-full border-[3.5px] border-[#E40000] bg-white flex items-center justify-center mb-1 shadow-xs">
-                        <div className="w-3.5 h-3.5 rounded-full bg-[#009E49]" />
-                      </div>
-                      <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">Safaricom</span>
-                    </div>
+                    <Image
+                      src="/assets/telecom-card/safaricom.jfif"
+                      alt="Safaricom"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
+                    />
                   )}
 
                   {network.networkId === "vodacom" && (
@@ -270,38 +291,43 @@ export default function MobileNetworksSection() {
                   )}
 
                   {network.networkId === "cellc" && (
-                    <div className="flex flex-col items-center justify-center w-full px-4 select-none group-hover:scale-105 transition-transform">
-                      <div className="w-12 h-12 rounded-full border-[4px] border-white flex items-center justify-center mb-1">
-                        <span className="text-xl font-black text-white">C</span>
-                      </div>
-                      <span className="text-xl sm:text-2xl font-black tracking-widest text-white">CELL C</span>
-                    </div>
+                    <Image
+                      src="/assets/telecom-card/cell-c.webp"
+                      alt="Cell C"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
+                    />
                   )}
 
                   {network.networkId === "telkom" && (
-                    <div className="flex flex-col items-center justify-center w-full px-4 select-none group-hover:scale-105 transition-transform">
-                      <div className="w-10 h-10 border-3 border-white rounded-md rotate-45 flex items-center justify-center mb-1">
-                        <div className="w-3 h-3 bg-white -rotate-45" />
-                      </div>
-                      <span className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Telkom</span>
-                    </div>
+                    <Image
+                      src="/assets/telecom-card/telkom.webp"
+                      alt="Telkom"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
+                    />
                   )}
 
                   {network.networkId === "tigo" && (
-                    <div className="flex flex-col items-center justify-center w-full px-4 select-none group-hover:scale-105 transition-transform">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-3xl sm:text-4xl font-black text-white tracking-tight lowercase">tigo</span>
-                        <span className="w-3 h-3 rounded-full bg-[#FFD700]" />
-                      </div>
-                      <span className="text-[10px] font-bold text-[#FFD700] tracking-widest uppercase mt-0.5">Tanzania</span>
-                    </div>
+                    <Image
+                      src="/assets/telecom-card/tigo-tanzania.webp"
+                      alt="Tigo Tanzania"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
+                    />
                   )}
 
                   {network.networkId === "halotel" && (
-                    <div className="flex flex-col items-center justify-center w-full px-4 select-none group-hover:scale-105 transition-transform">
-                      <span className="text-2xl sm:text-3xl font-black text-white tracking-tight lowercase">halotel</span>
-                      <div className="w-12 h-1 bg-white/70 rounded-full mt-1.5" />
-                    </div>
+                    <Image
+                      src="/assets/telecom-card/halotel.webp"
+                      alt="Halotel"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
+                    />
                   )}
                 </div>
 

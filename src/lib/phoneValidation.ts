@@ -90,17 +90,11 @@ export const AFRICAN_NETWORKS_BY_COUNTRY: Record<string, CountryNetworkConfig> =
       telecel: {
         id: "telecel",
         name: "Telecel",
-        fullName: "Telecel (Vodafone) Ghana",
+        fullName: "Telecel Ghana",
         isSupportedOperator: true,
         prefixes: ["020", "050"],
       },
-      vodafone: {
-        id: "vodafone",
-        name: "Vodafone",
-        fullName: "Vodafone Ghana",
-        isSupportedOperator: true,
-        prefixes: ["020", "050"],
-      },
+
     },
   },
   ZA: {

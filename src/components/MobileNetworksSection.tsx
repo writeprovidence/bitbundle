@@ -45,14 +45,6 @@ const NETWORKS: NetworkCard[] = [
     cardBorder: "border border-gray-200/90",
   },
   {
-    id: "vodafone-network",
-    name: "Vodafone",
-    networkId: "vodafone",
-    range: "5 GHS - 500 GHS",
-    rating: 4.8,
-    cardBg: "bg-[#E60000]",
-  },
-  {
     id: "9mobile-network",
     name: "9mobile",
     networkId: "9mobile",
@@ -177,7 +169,7 @@ export default function MobileNetworksSection() {
                 {/* Visual Card Canvas with rounded corners & shadow */}
                 <div
                   className={`relative w-full aspect-[16/10] sm:aspect-[4/3] rounded-2xl flex items-center justify-center ${
-                    ["mtn", "vodafone", "vodacom", "safaricom", "telkom", "cellc", "tigo", "halotel"].includes(network.networkId)
+                    ["mtn", "vodacom", "safaricom", "telkom", "cellc", "tigo", "halotel"].includes(network.networkId)
                       ? "p-0 overflow-hidden"
                       : "p-6"
                   } transition-all duration-200 group-hover:shadow-2xl group-hover:-translate-y-1.5 shadow-[0_4px_20px_rgba(0,0,0,0.08)] ${
@@ -204,17 +196,6 @@ export default function MobileNetworksSection() {
                       priority
                     />
                   )}
-
-                  {network.networkId === "vodafone" && (
-                    <Image
-                      src="/assets/telecom-card/vodafone.webp"
-                      alt="Vodafone"
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
-                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
-                    />
-                  )}
-
                   {network.networkId === "airtel" && (
                     <div className="flex items-center justify-center w-full px-4 select-none group-hover:scale-105 transition-transform">
                       <Image

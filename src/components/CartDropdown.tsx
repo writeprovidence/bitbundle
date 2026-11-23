@@ -103,15 +103,6 @@ export default function CartDropdown({ onCheckout }: CartDropdownProps) {
                           className="w-auto h-5 object-contain"
                         />
                       </div>
-                    ) : item.networkId === "vodafone" ? (
-                      <div className="w-12 h-12 rounded-lg relative overflow-hidden border border-gray-100 shadow-xs shrink-0">
-                        <Image
-                          src="/assets/telecom-card/vodafone.webp"
-                          alt="Vodafone"
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
                     ) : item.networkId === "vodacom" ? (
                       <div className="w-12 h-12 rounded-lg relative overflow-hidden border border-gray-100 shadow-xs shrink-0">
                         <Image

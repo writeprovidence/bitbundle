@@ -72,12 +72,7 @@ export const DATA_BUNDLES: Record<string, Record<string, DataBundlePlan[]>> = {
       { id: "tele-gh-6gb-30d", name: "6 GB Monthly", dataAmount: "6 GB", validity: "30 Days", priceLocal: 45, currency: "GHS", category: "monthly", badge: "Popular" },
       { id: "tele-gh-12gb-30d", name: "12 GB Monthly", dataAmount: "12 GB", validity: "30 Days", priceLocal: 85, currency: "GHS", category: "monthly", badge: "Best Value" },
     ],
-    vodafone: [
-      { id: "voda-gh-1gb-1d", name: "1 GB Daily", dataAmount: "1 GB", validity: "1 Day", priceLocal: 6, currency: "GHS", category: "daily" },
-      { id: "voda-gh-3gb-7d", name: "3 GB Weekly", dataAmount: "3 GB", validity: "7 Days", priceLocal: 18, currency: "GHS", category: "weekly", badge: "Hot" },
-      { id: "voda-gh-6gb-30d", name: "6 GB Monthly", dataAmount: "6 GB", validity: "30 Days", priceLocal: 45, currency: "GHS", category: "monthly", badge: "Popular" },
-      { id: "voda-gh-12gb-30d", name: "12 GB Monthly", dataAmount: "12 GB", validity: "30 Days", priceLocal: 85, currency: "GHS", category: "monthly", badge: "Best Value" },
-    ],
+
     glo: [
       { id: "glo-gh-1gb-1d", name: "1 GB Daily", dataAmount: "1 GB", validity: "1 Day", priceLocal: 5, currency: "GHS", category: "daily" },
       { id: "glo-gh-2.5gb-7d", name: "2.5 GB Weekly", dataAmount: "2.5 GB", validity: "7 Days", priceLocal: 12, currency: "GHS", category: "weekly" },

@@ -69,7 +69,7 @@ export const COUNTRIES: CountryOption[] = [
     flag: "🇬🇭",
     dialCode: "+233",
     placeholder: "024 123 4567",
-    networks: ["mtn", "vodafone", "airtel", "glo"],
+    networks: ["mtn", "telecel", "airtel", "glo"],
   },
   {
     code: "ZA",
@@ -153,17 +153,6 @@ const PRODUCTS: ProductItem[] = [
     badgeType: "discount",
     cardBg: "bg-[#045F40]",
     logoType: "9mobile",
-  },
-  {
-    id: "vodafone-airtime",
-    name: "Vodafone",
-    networkId: "vodafone",
-    category: "Airtime",
-    range: "5 GHS - 500 GHS",
-    rating: 4.8,
-    inStock: true,
-    cardBg: "bg-[#E60000]",
-    logoType: "vodafone",
   },
   {
     id: "safaricom-airtime",
@@ -279,17 +268,6 @@ const PRODUCTS: ProductItem[] = [
     badgeType: "discount",
     cardBg: "bg-[#045F40]",
     logoType: "9mobile",
-  },
-  {
-    id: "vodafone-data",
-    name: "Vodafone",
-    networkId: "vodafone",
-    category: "Data",
-    range: "1 GB - 12 GB",
-    rating: 4.8,
-    inStock: true,
-    cardBg: "bg-[#E60000]",
-    logoType: "vodafone",
   },
   {
     id: "safaricom-data",
@@ -874,17 +852,6 @@ export default function ProductsCatalog({
                       className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
                     />
                   )}
-
-                  {product.logoType === "vodafone" && (
-                    <Image
-                      src="/assets/telecom-card/vodafone.webp"
-                      alt="Vodafone"
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
-                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
-                    />
-                  )}
-
                   {product.logoType === "airtel" && (
                     <div className="flex items-center justify-center w-full px-4 select-none">
                       <Image
@@ -1177,15 +1144,6 @@ export default function ProductsCatalog({
                   Out Of Stock
                 </span>
                 <Image src="/assets/telecom-card/mtn.webp" alt="MTN" fill className="object-cover" />
-              </div>
-            )}
-
-            {outOfStockModal.logoType === "vodafone" && (
-              <div className="relative w-full h-36 rounded-2xl flex items-center justify-center mb-6 shadow-sm overflow-hidden">
-                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm select-none">
-                  Out Of Stock
-                </span>
-                <Image src="/assets/telecom-card/vodafone.webp" alt="Vodafone" fill className="object-cover" />
               </div>
             )}
 

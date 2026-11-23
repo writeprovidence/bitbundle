@@ -119,7 +119,7 @@ const COUNTRY_PROFILES: Record<string, CountryProfile> = {
     localPhoneLength: 10,
     intlPhoneLength: 12,
     placeholder: "024 123 4567",
-    supportedNetworks: ["mtn", "vodafone", "airtel", "glo"],
+    supportedNetworks: ["mtn", "telecel", "airtel", "glo"],
   },
   ZA: {
     code: "ZA",
@@ -571,16 +571,7 @@ export default function RefillDetailsView({
             <Image src="/assets/telecom-card/mtn.webp" alt="MTN" fill priority className="object-cover" />
           </div>
         )}
-        {operator.logoType === "vodafone" && (
-          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] rounded-[18px] overflow-hidden shadow-xs">
-            {!hasService && (
-              <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm select-none">
-                Out Of Stock
-              </span>
-            )}
-            <Image src="/assets/telecom-card/vodafone.webp" alt="Vodafone" fill priority className="object-cover" />
-          </div>
-        )}
+
         {operator.logoType === "airtel" && (
           <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] bg-white rounded-[18px] flex items-center justify-center p-7 shadow-xs">
             {!hasService && (
@@ -622,7 +613,7 @@ export default function RefillDetailsView({
               <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">telecel</span>
               <span className="w-3.5 h-3.5 rounded-full bg-white" />
             </div>
-            <span className="text-xs font-semibold text-white/80 tracking-wide uppercase">Vodafone Ghana</span>
+            <span className="text-xs font-semibold text-white/80 tracking-wide uppercase">Telecel Ghana</span>
           </div>
         )}
         {operator.logoType === "vodacom" && (

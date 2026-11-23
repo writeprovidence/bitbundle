@@ -94,7 +94,7 @@ export const OPERATORS: Record<string, RefillOperator> = {
   telecel: {
     id: "telecel",
     name: "Telecel",
-    fullName: "Telecel (Vodafone) Ghana",
+    fullName: "Telecel Ghana",
     countryName: "Ghana",
     countryCode: "GH",
     countryFlag: "🇬🇭",
@@ -105,27 +105,9 @@ export const OPERATORS: Record<string, RefillOperator> = {
     rating: 4.7,
     reviewsCount: 178,
     description:
-      "Telecel (formerly Vodafone Ghana) provides high-speed mobile airtime and data connectivity across Ghana.",
+      "Telecel provides high-speed mobile airtime and data connectivity across Ghana.",
     cardBgColor: "bg-[#E40000]",
     logoType: "telecel",
-  },
-  vodafone: {
-    id: "vodafone",
-    name: "Vodafone",
-    fullName: "Vodafone Ghana",
-    countryName: "Ghana",
-    countryCode: "GH",
-    countryFlag: "🇬🇭",
-    currency: "GHS",
-    minAmount: 5,
-    maxAmount: 500,
-    defaultAmount: 20,
-    rating: 4.8,
-    reviewsCount: 224,
-    description:
-      "Vodafone Ghana provides high-speed mobile airtime and data connectivity across Ghana.",
-    cardBgColor: "bg-[#E60000]",
-    logoType: "vodafone",
   },
   vodacom: {
     id: "vodacom",

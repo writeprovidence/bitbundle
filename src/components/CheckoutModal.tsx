@@ -439,16 +439,7 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                   {/* Gift Item row preview with Clear */}
                   <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
-                      {primaryItem.networkId === "vodafone" ? (
-                        <div className="w-9 h-7 rounded-md relative overflow-hidden shrink-0 shadow-xs border border-gray-100">
-                          <Image
-                            src="/assets/telecom-card/vodafone.webp"
-                            alt="Vodafone"
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                      ) : primaryItem.networkId === "vodacom" ? (
+                      {primaryItem.networkId === "vodacom" ? (
                         <div className="w-9 h-7 rounded-md relative overflow-hidden shrink-0 shadow-xs border border-gray-100">
                           <Image
                             src="/assets/telecom-card/vodacom-new.png"

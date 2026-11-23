@@ -196,6 +196,32 @@ function resolveCountryProfile(code?: string, name?: string): CountryProfile {
   return COUNTRY_PROFILES.NG;
 }
 
+function formatBundleLabel(plan: DataBundlePlan) {
+  let cleanName = plan.name;
+  if (cleanName.toLowerCase().startsWith(plan.dataAmount.toLowerCase())) {
+    cleanName = cleanName.slice(plan.dataAmount.length).trim();
+    cleanName = cleanName.replace(/^[-–—\s]+/, "");
+  }
+
+  const parts: string[] = [plan.dataAmount];
+  if (cleanName) {
+    parts.push(cleanName);
+  } else if (plan.validity) {
+    parts.push(plan.validity);
+  }
+
+  if (
+    plan.validity &&
+    cleanName &&
+    !cleanName.toLowerCase().includes(plan.validity.toLowerCase()) &&
+    !cleanName.toLowerCase().includes(plan.category.toLowerCase())
+  ) {
+    parts.push(plan.validity);
+  }
+
+  return parts.join(" - ");
+}
+
 interface RefillDetailsViewProps {
   operatorId?: "mtn" | "airtel" | "glo" | "9mobile";
   initialPhone?: string;
@@ -239,6 +265,8 @@ export default function RefillDetailsView({
   );
   const [isCountryPickerOpen, setIsCountryPickerOpen] = useState(false);
   const countryPickerRef = useRef<HTMLDivElement>(null);
+  const [isDataDropdownOpen, setIsDataDropdownOpen] = useState(false);
+  const dataDropdownRef = useRef<HTMLDivElement>(null);
 
   // Sync if parent updates countryCode or countryName
   useEffect(() => {
@@ -250,11 +278,14 @@ export default function RefillDetailsView({
     }
   }, [countryCode, countryName]);
 
-  // Click outside to close picker dropdown
+  // Click outside to close dropdowns
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (countryPickerRef.current && !countryPickerRef.current.contains(e.target as Node)) {
         setIsCountryPickerOpen(false);
+      }
+      if (dataDropdownRef.current && !dataDropdownRef.current.contains(e.target as Node)) {
+        setIsDataDropdownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -956,11 +987,11 @@ export default function RefillDetailsView({
           )}
         </div>
       ) : (
-        /* Data Bundle Mode: Plans Grid */
-        <div className="mb-6 w-full">
-          <div className="flex items-center justify-between mb-2.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Choose Data Plan
+        /* Data Bundle Mode: Dropdown Selector */
+        <div className="relative mb-6 w-full" ref={dataDropdownRef}>
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">
+              Select Data Plan
             </label>
             <div className="flex items-center gap-1">
               {(["all", "daily", "weekly", "monthly"] as const).map((cat) => (
@@ -968,10 +999,11 @@ export default function RefillDetailsView({
                   key={cat}
                   type="button"
                   onClick={() => setBundleCategoryFilter(cat)}
-                  className={`text-[11px] font-bold px-2 py-0.5 rounded-md capitalize transition-colors cursor-pointer ${bundleCategoryFilter === cat
+                  className={`text-[11px] font-bold px-2 py-0.5 rounded-md capitalize transition-colors cursor-pointer ${
+                    bundleCategoryFilter === cat
                       ? "bg-slate-900 text-white"
                       : "text-slate-500 hover:text-slate-800 bg-slate-100"
-                    }`}
+                  }`}
                 >
                   {cat}
                 </button>
@@ -979,76 +1011,74 @@ export default function RefillDetailsView({
             </div>
           </div>
 
-          {/* Data Plans List (List layout instead of box grid) */}
-          <div className="flex flex-col gap-2 max-h-[320px] overflow-y-auto pr-1">
-            {filteredBundles.map((plan) => {
-              const isSelected = selectedBundleId === plan.id;
-              const planUsd = (plan.priceLocal * profile.usdRate).toFixed(2);
-              return (
-                <button
-                  key={plan.id}
-                  type="button"
-                  onClick={() => {
-                    setSelectedBundleId(plan.id);
-                    setAmount(plan.priceLocal);
-                  }}
-                  className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl border text-left transition-all cursor-pointer ${isSelected
-                      ? "border-[#02332B] bg-emerald-50/70 shadow-2xs ring-1 ring-[#02332B]"
-                      : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/60"
-                    }`}
-                >
-                  {/* Left: Radio circle + Data Amount & Validity + Badge */}
-                  <div className="flex items-center gap-3 min-w-0">
-                    {/* Radio indicator */}
-                    <div
-                      className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 transition-all ${isSelected
-                          ? "border-[#02332B] bg-[#02332B]"
-                          : "border-slate-300 bg-white"
-                        }`}
+          {/* Dropdown Input / Trigger */}
+          <button
+            type="button"
+            onClick={() => setIsDataDropdownOpen((prev) => !prev)}
+            className="w-full bg-white border border-slate-200 hover:border-slate-300 focus:border-slate-500 rounded-[6px] px-3.5 py-3 flex items-center justify-between text-left transition-colors cursor-pointer shadow-2xs"
+          >
+            <div className="min-w-0 flex-1 pr-3">
+              {selectedBundle ? (
+                <span className="text-sm sm:text-base font-medium text-slate-900 truncate block">
+                  {formatBundleLabel(selectedBundle)}
+                </span>
+              ) : (
+                <span className="text-sm text-slate-400">Select data plan...</span>
+              )}
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              {selectedBundle && (
+                <span className="text-xs sm:text-sm font-bold text-slate-700">
+                  {profile.currencySymbol}{selectedBundle.priceLocal.toLocaleString()}
+                  <span className="text-slate-400 font-normal ml-1">
+                    (≈ ${(selectedBundle.priceLocal * profile.usdRate).toFixed(2)})
+                  </span>
+                </span>
+              )}
+              <ChevronDown
+                className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${
+                  isDataDropdownOpen ? "rotate-180" : ""
+                }`}
+              />
+            </div>
+          </button>
+
+          {/* Dropdown Menu (Matches design in screenshot) */}
+          {isDataDropdownOpen && (
+            <div className="absolute left-0 right-0 top-full mt-1.5 z-40 bg-white border border-slate-200 rounded-[6px] shadow-lg max-h-[285px] overflow-y-auto divide-y divide-gray-100 animate-in fade-in-50 zoom-in-95 duration-150 [&::-webkit-scrollbar]:w-2.5 [&::-webkit-scrollbar-track]:bg-slate-50 [&::-webkit-scrollbar-thumb]:bg-slate-400 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-slate-500">
+              {filteredBundles.length === 0 ? (
+                <div className="px-4 py-4 text-xs text-slate-500 text-center">
+                  No data plans available for this filter.
+                </div>
+              ) : (
+                filteredBundles.map((plan) => {
+                  const isSelected = selectedBundleId === plan.id;
+                  const label = formatBundleLabel(plan);
+                  return (
+                    <button
+                      key={plan.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedBundleId(plan.id);
+                        setAmount(plan.priceLocal);
+                        setIsDataDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-3 sm:py-3.5 flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer select-none ${
+                        isSelected ? "bg-slate-50/90 font-medium" : ""
+                      }`}
                     >
-                      {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
-                    </div>
-
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm sm:text-base font-extrabold text-slate-900 leading-tight">
-                          {plan.dataAmount}
-                        </span>
-                        <span className="text-xs text-slate-500 font-medium">
-                          • {plan.validity}
-                        </span>
-                        {plan.badge && (
-                          <span
-                            className={`text-[10px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-wider ${plan.badge === "Popular"
-                                ? "bg-emerald-600 text-white"
-                                : plan.badge === "Hot"
-                                  ? "bg-[#DE1D35] text-white"
-                                  : "bg-amber-500 text-black"
-                              }`}
-                          >
-                            {plan.badge}
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-[11px] text-slate-500 font-medium mt-0.5 capitalize">
-                        {plan.name}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right: Price */}
-                  <div className="text-right shrink-0 ml-3">
-                    <div className="text-sm sm:text-base font-extrabold text-slate-900 leading-tight">
-                      {profile.currencySymbol}{plan.priceLocal.toLocaleString()}
-                    </div>
-                    <div className="text-[11px] font-semibold text-slate-400 mt-0.5">
-                      ≈ ${planUsd}
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+                      <span className={`text-sm sm:text-[15px] ${isSelected ? "text-slate-900 font-semibold" : "text-[#1c3845] font-normal"}`}>
+                        {label}
+                      </span>
+                      <span className="text-xs sm:text-sm font-medium text-slate-500 shrink-0 ml-3">
+                        {profile.currencySymbol}{plan.priceLocal.toLocaleString()}
+                      </span>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          )}
         </div>
       )}
 

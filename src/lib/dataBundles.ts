@@ -67,10 +67,16 @@ export const DATA_BUNDLES: Record<string, Record<string, DataBundlePlan[]>> = {
       { id: "at-gh-10gb-30d", name: "10 GB Monthly", dataAmount: "10 GB", validity: "30 Days", priceLocal: 70, currency: "GHS", category: "monthly", badge: "Best Value" },
     ],
     telecel: [
-      { id: "tele-gh-1gb-1d", name: "1 GB Daily", dataAmount: "1 GB", validity: "1 Day", priceLocal: 6, currency: "GHS", category: "daily" },
-      { id: "tele-gh-3gb-7d", name: "3 GB Weekly", dataAmount: "3 GB", validity: "7 Days", priceLocal: 18, currency: "GHS", category: "weekly", badge: "Hot" },
-      { id: "tele-gh-6gb-30d", name: "6 GB Monthly", dataAmount: "6 GB", validity: "30 Days", priceLocal: 45, currency: "GHS", category: "monthly", badge: "Popular" },
-      { id: "tele-gh-12gb-30d", name: "12 GB Monthly", dataAmount: "12 GB", validity: "30 Days", priceLocal: 85, currency: "GHS", category: "monthly", badge: "Best Value" },
+      { id: "tele-gh-22mb-1d", name: "Starter Daily", dataAmount: "22.29MB", validity: "1 Day", priceLocal: 1, currency: "GHS", category: "daily" },
+      { id: "tele-gh-50mb-1d", name: "Browser Daily", dataAmount: "50.14MB", validity: "1 Day", priceLocal: 2, currency: "GHS", category: "daily" },
+      { id: "tele-gh-111mb-1d", name: "Chat Daily", dataAmount: "111.43MB", validity: "1 Day", priceLocal: 3, currency: "GHS", category: "daily" },
+      { id: "tele-gh-445mb-1d", name: "Browser Max Daily - 1Day", dataAmount: "445.72MB", validity: "1 Day", priceLocal: 6, currency: "GHS", category: "daily", badge: "Hot" },
+      { id: "tele-gh-780mb-3d", name: "Browser Lite Daily - 3 Days", dataAmount: "780.02MB", validity: "3 Days", priceLocal: 10, currency: "GHS", category: "daily" },
+      { id: "tele-gh-1.1gb-5d", name: "Bossu - 5 Days", dataAmount: "1.11GB", validity: "5 Days", priceLocal: 15, currency: "GHS", category: "weekly", badge: "Popular" },
+      { id: "tele-gh-2.5gb-7d", name: "Bossu Weekly", dataAmount: "2.45GB", validity: "7 Days", priceLocal: 25, currency: "GHS", category: "weekly", badge: "Best Value" },
+      { id: "tele-gh-5.5gb-30d", name: "Jumbo Monthly", dataAmount: "5.5GB", validity: "30 Days", priceLocal: 50, currency: "GHS", category: "monthly" },
+      { id: "tele-gh-12gb-30d", name: "Super Monthly", dataAmount: "12GB", validity: "30 Days", priceLocal: 90, currency: "GHS", category: "monthly" },
+      { id: "tele-gh-25gb-30d", name: "Mega Monthly", dataAmount: "25GB", validity: "30 Days", priceLocal: 180, currency: "GHS", category: "monthly" },
     ],
 
     glo: [

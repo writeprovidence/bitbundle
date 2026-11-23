@@ -104,6 +104,15 @@ export default function PurchaseAsGiftModal({
                 className="w-auto h-4 object-contain"
               />
             </div>
+          ) : data.networkId === "vodafone" ? (
+            <div className="w-10 h-7 rounded-md relative overflow-hidden shrink-0 border border-gray-100 shadow-xs">
+              <Image
+                src="/assets/telecom-card/vodafone.webp"
+                alt="Vodafone"
+                fill
+                className="object-cover"
+              />
+            </div>
           ) : data.networkId === "glo" ? (
             <div className="w-10 h-7 rounded-md bg-white border border-gray-200 flex items-center justify-center p-0.5 shrink-0">
               <Image

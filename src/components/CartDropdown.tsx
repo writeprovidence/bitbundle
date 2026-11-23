@@ -76,9 +76,7 @@ export default function CartDropdown({ onCheckout }: CartDropdownProps) {
       ) : (
         <div className="flex-1 min-h-0 overflow-y-auto pr-1 space-y-4 overscroll-contain">
           {items.map((item) => {
-            const displayName = item.networkName.toLowerCase().includes("nigeria")
-              ? item.networkName
-              : `${item.networkName} Nigeria`;
+            const displayName = item.networkName;
 
             return (
               <div
@@ -103,6 +101,15 @@ export default function CartDropdown({ onCheckout }: CartDropdownProps) {
                           width={40}
                           height={20}
                           className="w-auto h-5 object-contain"
+                        />
+                      </div>
+                    ) : item.networkId === "vodafone" ? (
+                      <div className="w-12 h-12 rounded-lg relative overflow-hidden border border-gray-100 shadow-xs shrink-0">
+                        <Image
+                          src="/assets/telecom-card/vodafone.webp"
+                          alt="Vodafone"
+                          fill
+                          className="object-cover"
                         />
                       </div>
                     ) : item.networkId === "glo" ? (

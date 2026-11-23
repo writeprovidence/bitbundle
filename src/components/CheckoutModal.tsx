@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   X,
@@ -438,9 +439,20 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                   {/* Gift Item row preview with Clear */}
                   <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-7 rounded-md bg-[#FFCC00] flex items-center justify-center p-0.5 border border-black/10 shrink-0">
-                        <span className="text-[8px] font-black tracking-tight text-black">MTN</span>
-                      </div>
+                      {primaryItem.networkId === "vodafone" ? (
+                        <div className="w-9 h-7 rounded-md relative overflow-hidden shrink-0 shadow-xs border border-gray-100">
+                          <Image
+                            src="/assets/telecom-card/vodafone.webp"
+                            alt="Vodafone"
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-9 h-7 rounded-md bg-[#FFCC00] flex items-center justify-center p-0.5 border border-black/10 shrink-0">
+                          <span className="text-[8px] font-black tracking-tight text-black">MTN</span>
+                        </div>
+                      )}
                       <div>
                         <div className="font-bold text-xs text-slate-900">{primaryItem.networkName}</div>
                         <div className="text-[11px] text-slate-500">{primaryItem.amountNgn.toFixed(2)} NGN value</div>

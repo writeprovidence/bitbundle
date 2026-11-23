@@ -926,47 +926,22 @@ export default function RefillDetailsView({
         </button>
       </div>
 
-      {/* Airtime Mode: Amount input & Quick selectors */}
+      {/* Airtime Mode: Enter Amount */}
       {topupType === "airtime" ? (
         <div className="mb-6 w-full">
           <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-            Select Amount ({profile.currency})
+            Enter Amount
           </label>
 
-          {/* Quick Amount Chips */}
-          <div className="grid grid-cols-4 gap-2 mb-3">
-            {[
-              profile.defaultAmount,
-              profile.defaultAmount * 2.5,
-              profile.defaultAmount * 5,
-              profile.defaultAmount * 10,
-            ]
-              .map((val) => Math.round(val))
-              .filter((v) => v >= profile.minAmount && v <= profile.maxAmount)
-              .map((quickVal) => (
-                <button
-                  key={quickVal}
-                  type="button"
-                  onClick={() => setAmount(quickVal)}
-                  className={`py-2 px-1 text-center rounded-lg text-xs font-bold border transition-all cursor-pointer ${amount === quickVal
-                      ? "border-emerald-600 bg-emerald-50 text-emerald-900 shadow-2xs"
-                      : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-                    }`}
-                >
-                  {profile.currencySymbol}{quickVal.toLocaleString()}
-                </button>
-              ))}
-          </div>
-
-          {/* Custom amount input */}
-          <div className="flex items-center border border-slate-200 focus-within:border-slate-600 transition-colors py-2 px-3 bg-white rounded-lg">
+          {/* Amount input */}
+          <div className="flex items-center border border-slate-200 focus-within:border-slate-600 transition-colors py-2 px-3 bg-white rounded-[6px]">
             <input
               type="number"
               min={profile.minAmount}
               max={profile.maxAmount}
               value={amount || ""}
               onChange={(e) => setAmount(Number(e.target.value))}
-              placeholder={`Custom amount (${profile.minAmount} - ${profile.maxAmount.toLocaleString()})`}
+              placeholder={`Enter amount (${profile.minAmount} - ${profile.maxAmount.toLocaleString()})`}
               className="flex-1 py-1 bg-transparent text-sm sm:text-base text-slate-900 font-semibold focus:outline-none placeholder:text-slate-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none min-w-0"
             />
             {amount > 0 && (

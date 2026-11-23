@@ -63,14 +63,6 @@ const NETWORKS: NetworkCard[] = [
     cardBg: "bg-[#045F40]",
   },
   {
-    id: "telecel-network",
-    name: "Telecel / Vodafone",
-    networkId: "telecel",
-    range: "5 GHS - 500 GHS",
-    rating: 4.7,
-    cardBg: "bg-[#E40000]",
-  },
-  {
     id: "safaricom-network",
     name: "Safaricom",
     networkId: "safaricom",
@@ -256,16 +248,6 @@ export default function MobileNetworksSection() {
                         height={180}
                         className="w-auto h-16 sm:h-20 object-contain"
                       />
-                    </div>
-                  )}
-
-                  {network.networkId === "telecel" && (
-                    <div className="flex flex-col items-center justify-center w-full px-4 select-none group-hover:scale-105 transition-transform">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">telecel</span>
-                        <span className="w-2.5 h-2.5 rounded-full bg-white" />
-                      </div>
-                      <span className="text-[11px] font-semibold text-white/80 tracking-wide uppercase mt-1">Vodafone Ghana</span>
                     </div>
                   )}
 

@@ -69,7 +69,7 @@ export const COUNTRIES: CountryOption[] = [
     flag: "🇬🇭",
     dialCode: "+233",
     placeholder: "024 123 4567",
-    networks: ["mtn", "vodafone", "airtel", "glo", "telecel"],
+    networks: ["mtn", "vodafone", "airtel", "glo"],
   },
   {
     code: "ZA",
@@ -153,17 +153,6 @@ const PRODUCTS: ProductItem[] = [
     badgeType: "discount",
     cardBg: "bg-[#045F40]",
     logoType: "9mobile",
-  },
-  {
-    id: "telecel-airtime",
-    name: "Telecel / Vodafone",
-    networkId: "telecel",
-    category: "Airtime",
-    range: "5 GHS - 500 GHS",
-    rating: 4.7,
-    inStock: true,
-    cardBg: "bg-[#E40000]",
-    logoType: "telecel",
   },
   {
     id: "vodafone-airtime",
@@ -290,17 +279,6 @@ const PRODUCTS: ProductItem[] = [
     badgeType: "discount",
     cardBg: "bg-[#045F40]",
     logoType: "9mobile",
-  },
-  {
-    id: "telecel-data",
-    name: "Telecel / Vodafone",
-    networkId: "telecel",
-    category: "Data",
-    range: "1 GB - 10 GB",
-    rating: 4.7,
-    inStock: true,
-    cardBg: "bg-[#E40000]",
-    logoType: "telecel",
   },
   {
     id: "vodafone-data",
@@ -943,16 +921,6 @@ export default function ProductsCatalog({
                     </div>
                   )}
 
-                  {product.logoType === "telecel" && (
-                    <div className="flex flex-col items-center justify-center w-full px-4 select-none">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">telecel</span>
-                        <span className="w-2.5 h-2.5 rounded-full bg-white" />
-                      </div>
-                      <span className="text-[11px] font-semibold text-white/80 tracking-wide uppercase mt-1">Vodafone Ghana</span>
-                    </div>
-                  )}
-
                   {product.logoType === "vodacom" && (
                     <div className="flex flex-col items-center justify-center w-full px-4 select-none">
                       <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center mb-1 shadow-sm">
@@ -1246,16 +1214,6 @@ export default function ProductsCatalog({
                   Out Of Stock
                 </span>
                 <Image src="/assets/9mobile-brand-logo.png" alt="9mobile" width={120} height={60} className="w-auto h-14 object-contain brightness-0 invert" />
-              </div>
-            )}
-
-            {outOfStockModal.logoType === "telecel" && (
-              <div className="relative w-full h-32 bg-[#E40000] rounded-2xl flex flex-col items-center justify-center mb-6 shadow-sm overflow-hidden p-4 select-none">
-                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
-                  Out Of Stock
-                </span>
-                <span className="text-3xl font-black text-white">telecel</span>
-                <span className="text-[10px] text-white/80 uppercase">Vodafone Ghana</span>
               </div>
             )}
 

@@ -119,7 +119,7 @@ const COUNTRY_PROFILES: Record<string, CountryProfile> = {
     localPhoneLength: 10,
     intlPhoneLength: 12,
     placeholder: "024 123 4567",
-    supportedNetworks: ["mtn", "vodafone", "airtel", "glo", "telecel"],
+    supportedNetworks: ["mtn", "vodafone", "airtel", "glo"],
   },
   ZA: {
     code: "ZA",

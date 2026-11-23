@@ -31,7 +31,7 @@ export const COUNTRY_DATA: Record<SupportedCountryCode, GeoCountryInfo> = {
     flag: "🇬🇭",
     dialCode: "+233",
     currency: "GHS",
-    networks: ["mtn", "vodafone", "airtel", "glo", "telecel"],
+    networks: ["mtn", "vodafone", "airtel", "glo"],
     placeholder: "024 123 4567",
   },
   ZA: {

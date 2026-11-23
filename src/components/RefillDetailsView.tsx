@@ -309,7 +309,6 @@ export default function RefillDetailsView({
     [profile.code, operator.id]
   );
   const [selectedBundleId, setSelectedBundleId] = useState<string>(availableBundles[0]?.id || "");
-  const [bundleCategoryFilter, setBundleCategoryFilter] = useState<"all" | "daily" | "weekly" | "monthly">("all");
 
   useEffect(() => {
     if (availableBundles.length > 0) {
@@ -343,10 +342,6 @@ export default function RefillDetailsView({
     }
   }, [topupType, selectedBundle]);
 
-  const filteredBundles = useMemo(() => {
-    if (bundleCategoryFilter === "all") return availableBundles;
-    return availableBundles.filter((b) => b.category === bundleCategoryFilter);
-  }, [availableBundles, bundleCategoryFilter]);
 
   // Check if entered phone number matches the selected operator
   const networkMatch = useMemo(() => {
@@ -989,27 +984,9 @@ export default function RefillDetailsView({
       ) : (
         /* Data Bundle Mode: Dropdown Selector */
         <div className="relative mb-6 w-full" ref={dataDropdownRef}>
-          <div className="flex items-center justify-between mb-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">
-              Select Data Plan
-            </label>
-            <div className="flex items-center gap-1">
-              {(["all", "daily", "weekly", "monthly"] as const).map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setBundleCategoryFilter(cat)}
-                  className={`text-[11px] font-bold px-2 py-0.5 rounded-md capitalize transition-colors cursor-pointer ${
-                    bundleCategoryFilter === cat
-                      ? "bg-slate-900 text-white"
-                      : "text-slate-500 hover:text-slate-800 bg-slate-100"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+            Select Data Plan
+          </label>
 
           {/* Dropdown Input / Trigger */}
           <button
@@ -1046,12 +1023,12 @@ export default function RefillDetailsView({
           {/* Dropdown Menu (Matches design in screenshot) */}
           {isDataDropdownOpen && (
             <div className="absolute left-0 right-0 top-full mt-1.5 z-40 bg-white border border-slate-200 rounded-[6px] shadow-lg max-h-[285px] overflow-y-auto divide-y divide-gray-100 animate-in fade-in-50 zoom-in-95 duration-150 [&::-webkit-scrollbar]:w-2.5 [&::-webkit-scrollbar-track]:bg-slate-50 [&::-webkit-scrollbar-thumb]:bg-slate-400 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-slate-500">
-              {filteredBundles.length === 0 ? (
+              {availableBundles.length === 0 ? (
                 <div className="px-4 py-4 text-xs text-slate-500 text-center">
-                  No data plans available for this filter.
+                  No data plans available.
                 </div>
               ) : (
-                filteredBundles.map((plan) => {
+                availableBundles.map((plan) => {
                   const isSelected = selectedBundleId === plan.id;
                   const label = formatBundleLabel(plan);
                   return (

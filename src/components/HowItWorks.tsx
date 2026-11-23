@@ -9,7 +9,7 @@ const steps = [
     title: "Choose Airtime or Data",
     description:
       "Select your network provider, choose airtime or a data plan, and enter your recipient phone number.",
-    image: "/landing-page-image/pic1.png",
+    image: "/landing-page-image/image1.png",
   },
   {
     number: "02",

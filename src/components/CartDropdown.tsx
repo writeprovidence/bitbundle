@@ -112,6 +112,15 @@ export default function CartDropdown({ onCheckout }: CartDropdownProps) {
                           className="object-cover"
                         />
                       </div>
+                    ) : item.networkId === "vodacom" ? (
+                      <div className="w-12 h-12 rounded-lg relative overflow-hidden border border-gray-100 shadow-xs shrink-0">
+                        <Image
+                          src="/assets/telecom-card/vodacom-new.png"
+                          alt="Vodacom"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
                     ) : item.networkId === "glo" ? (
                       <div className="w-12 h-12 rounded-lg bg-white border border-gray-200 flex items-center justify-center p-1 shadow-xs">
                         <Image

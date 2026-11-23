@@ -101,7 +101,7 @@ export const COUNTRIES: CountryOption[] = [
     flag: "🇹🇿",
     dialCode: "+255",
     placeholder: "078 123 4567",
-    networks: ["vodacom", "airtel", "tigo", "halotel"],
+    networks: ["airtel", "tigo", "halotel"],
   },
 ];
 
@@ -844,7 +844,7 @@ export default function ProductsCatalog({
                 {/* Visual Card Canvas */}
                 <div
                   className={`relative w-full aspect-[16/10] sm:aspect-[4/3] rounded-2xl flex items-center justify-center ${
-                    ["mtn", "vodafone", "safaricom", "telkom", "cellc", "tigo", "halotel"].includes(product.logoType)
+                    ["mtn", "vodafone", "vodacom", "safaricom", "telkom", "cellc", "tigo", "halotel"].includes(product.logoType)
                       ? "p-0 overflow-hidden"
                       : "p-6"
                   } transition-all duration-200 group-hover:shadow-xl group-hover:-translate-y-1 ${product.cardBg} ${product.cardBorder || ""}`}
@@ -922,14 +922,13 @@ export default function ProductsCatalog({
                   )}
 
                   {product.logoType === "vodacom" && (
-                    <div className="flex flex-col items-center justify-center w-full px-4 select-none">
-                      <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center mb-1 shadow-sm">
-                        <div className="w-7 h-7 rounded-full bg-[#E60000] flex items-center justify-center">
-                          <div className="w-3.5 h-3.5 rounded-full bg-white -translate-y-0.5 -translate-x-0.5" />
-                        </div>
-                      </div>
-                      <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">vodacom</span>
-                    </div>
+                    <Image
+                      src="/assets/telecom-card/vodacom-new.png"
+                      alt="Vodacom"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+                      className="object-cover rounded-2xl group-hover:scale-105 transition-transform"
+                    />
                   )}
 
                   {product.logoType === "cellc" && (
@@ -1218,11 +1217,11 @@ export default function ProductsCatalog({
             )}
 
             {outOfStockModal.logoType === "vodacom" && (
-              <div className="relative w-full h-32 bg-[#E60000] rounded-2xl flex flex-col items-center justify-center mb-6 shadow-sm overflow-hidden p-4 select-none">
-                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+              <div className="relative w-full h-36 rounded-2xl flex items-center justify-center mb-6 shadow-sm overflow-hidden">
+                <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm select-none">
                   Out Of Stock
                 </span>
-                <span className="text-3xl font-black text-white">vodacom</span>
+                <Image src="/assets/telecom-card/vodacom-new.png" alt="Vodacom" fill className="object-cover" />
               </div>
             )}
 

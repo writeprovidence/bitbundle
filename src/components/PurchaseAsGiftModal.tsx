@@ -113,6 +113,15 @@ export default function PurchaseAsGiftModal({
                 className="object-cover"
               />
             </div>
+          ) : data.networkId === "vodacom" ? (
+            <div className="w-10 h-7 rounded-md relative overflow-hidden shrink-0 border border-gray-100 shadow-xs">
+              <Image
+                src="/assets/telecom-card/vodacom-new.png"
+                alt="Vodacom"
+                fill
+                className="object-cover"
+              />
+            </div>
           ) : data.networkId === "glo" ? (
             <div className="w-10 h-7 rounded-md bg-white border border-gray-200 flex items-center justify-center p-0.5 shrink-0">
               <Image

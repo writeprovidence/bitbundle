@@ -448,6 +448,15 @@ export default function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
                             className="object-cover"
                           />
                         </div>
+                      ) : primaryItem.networkId === "vodacom" ? (
+                        <div className="w-9 h-7 rounded-md relative overflow-hidden shrink-0 shadow-xs border border-gray-100">
+                          <Image
+                            src="/assets/telecom-card/vodacom-new.png"
+                            alt="Vodacom"
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
                       ) : (
                         <div className="w-9 h-7 rounded-md bg-[#FFCC00] flex items-center justify-center p-0.5 border border-black/10 shrink-0">
                           <span className="text-[8px] font-black tracking-tight text-black">MTN</span>

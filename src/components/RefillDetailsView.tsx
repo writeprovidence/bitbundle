@@ -179,7 +179,7 @@ const COUNTRY_PROFILES: Record<string, CountryProfile> = {
     localPhoneLength: 10,
     intlPhoneLength: 12,
     placeholder: "078 123 4567",
-    supportedNetworks: ["vodacom", "airtel", "tigo", "halotel"],
+    supportedNetworks: ["airtel", "tigo", "halotel"],
   },
 };
 
@@ -626,18 +626,13 @@ export default function RefillDetailsView({
           </div>
         )}
         {operator.logoType === "vodacom" && (
-          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] bg-[#E60000] rounded-[18px] flex flex-col items-center justify-center p-6 shadow-xs select-none">
+          <div className="relative w-[300px] sm:w-[340px] md:w-[370px] h-[195px] sm:h-[220px] md:h-[240px] rounded-[18px] overflow-hidden shadow-xs">
             {!hasService && (
-              <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+              <span className="absolute top-3 left-3 z-10 bg-[#FF5A1F] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm select-none">
                 Out Of Stock
               </span>
             )}
-            <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center mb-2 shadow-sm">
-              <div className="w-8 h-8 rounded-full bg-[#E60000] flex items-center justify-center">
-                <div className="w-4 h-4 rounded-full bg-white -translate-y-0.5 -translate-x-0.5" />
-              </div>
-            </div>
-            <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">vodacom</span>
+            <Image src="/assets/telecom-card/vodacom-new.png" alt="Vodacom" fill priority className="object-cover" />
           </div>
         )}
         {operator.logoType === "cellc" && (

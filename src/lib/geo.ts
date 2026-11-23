@@ -67,7 +67,7 @@ export const COUNTRY_DATA: Record<SupportedCountryCode, GeoCountryInfo> = {
     flag: "🇹🇿",
     dialCode: "+255",
     currency: "TZS",
-    networks: ["vodacom", "airtel", "tigo", "halotel"],
+    networks: ["airtel", "tigo", "halotel"],
     placeholder: "078 123 4567",
   },
 };

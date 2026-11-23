@@ -1153,7 +1153,7 @@ export default function RefillDetailsView({
                 ? "Out of Stock"
                 : isAlreadyInCart
                   ? "In Cart (View)"
-                  : "Buy now"}
+                  : "Get started"}
           </span>
         </button>
 

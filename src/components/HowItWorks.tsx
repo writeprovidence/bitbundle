@@ -80,14 +80,13 @@ export default function HowItWorks() {
             id="how-it-works-heading"
             className="font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight text-white mb-8 sm:mb-10"
           >
-            From wallet to hello
-            <br />
+            A simpler way to{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#65EFBD] via-[#74E5E3] via-[#95CCFF] to-[#C2A8FF]">
-              made simple
+              stay connected.
             </span>
           </h2>
           <p className="text-gray-400 text-sm sm:text-base max-w-lg mx-auto">
-            Three quick steps to turn your crypto into talk time in seconds.
+            No complicated process, just three easy steps
           </p>
         </div>
 
